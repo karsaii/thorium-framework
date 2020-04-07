@@ -1,22 +1,24 @@
 package core.namespaces;
 
 import core.extensions.namespaces.CoreUtilities;
-import core.extensions.namespaces.NullableFunctions;
 import core.records.Data;
 import core.records.MethodMessageData;
 import org.apache.commons.lang3.ArrayUtils;
 import selenium.enums.CoreConstants;
 
 import static core.extensions.namespaces.CoreUtilities.Uncontains;
+import static core.extensions.namespaces.CoreUtilities.isException;
+import static core.extensions.namespaces.NullableFunctions.isNotNull;
+import static core.extensions.namespaces.NullableFunctions.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface DataFunctions {
     static boolean isValid(MethodMessageData data) {
-        return NullableFunctions.isNotNull(data) && isNotBlank(data.message) && isNotBlank(data.nameof);
+        return isNotNull(data) && isNotBlank(data.message) && isNotNull(data.nameof);
     }
 
     static boolean isValid(Data<?> data) {
-        return (NullableFunctions.isNotNull(data) && isValid(data.message));
+        return (isNotNull(data) && isValid(data.message));
     }
 
     static <T> boolean isValidNonFalse(Data<T> data) {
@@ -30,7 +32,7 @@ public interface DataFunctions {
     static String getNameIfAbsent(Data<?> data, String nameof) {
         var name = "";
         final var nameNotBlank = isNotBlank(nameof);
-        if (NullableFunctions.isNotNull(data)) {
+        if (isNotNull(data)) {
             name = data.message.nameof;
             if (nameNotBlank && Uncontains(data.message.nameof, nameof)) {
                 name = nameof + ": " + name;
@@ -63,12 +65,12 @@ public interface DataFunctions {
     }
 
     static void throwIfException(Data<?> data) throws Exception {
-        if (NullableFunctions.isNull(data)) {
+        if (isNull(data)) {
             return;
         }
 
         final var exception = data.exception;
-        if (CoreUtilities.isException(exception)) {
+        if (isException(exception)) {
             throw exception;
         }
     }
@@ -82,7 +84,7 @@ public interface DataFunctions {
     }
 
     static <T> Data<T> prependMessage(Data<T> data, String nameof, String message) {
-        return new Data<>(data.object, data.status, new MethodMessageData(nameof, message + data.message.message), data.exception, data.exceptionMessage);
+        return DataFactoryFunctions.getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, message + data.message.message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceMessage(Data<T> data, String message) {
@@ -90,7 +92,7 @@ public interface DataFunctions {
     }
 
     static <T> Data<T> replaceMessage(Data<T> data, String nameof, String message) {
-        return new Data<>(data.object, data.status, new MethodMessageData(nameof, message), data.exception, data.exceptionMessage);
+        return DataFactoryFunctions.getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> appendMessage(Data<T> data, String message) {
@@ -98,6 +100,6 @@ public interface DataFunctions {
     }
 
     static <T> Data<T> appendMessage(Data<T> data, String nameof, String message) {
-        return new Data<>(data.object, data.status, new MethodMessageData(nameof, data.message.message + message), data.exception, data.exceptionMessage);
+        return DataFactoryFunctions.getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, data.message.message + message), data.exception, data.exceptionMessage);
     }
 }
