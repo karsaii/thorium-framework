@@ -44,6 +44,7 @@ import static core.extensions.namespaces.CoreUtilities.areAnyBlank;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
+import static core.namespaces.DataFunctions.isFalse;
 import static core.namespaces.DataFunctions.isValidNonFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -374,11 +375,11 @@ public interface Formatter {
     static Data<String> isNumberConditionCore(boolean status, int number, int expected, String parameterName, String conditionDescriptor, String nameof) {
         var message = (
             isNullMessage(nameof, "Caller function's name") +
-            isNullMessage(parameterName, "Name of the parameter") +
+            isBlankMessage(parameterName, "Name of the parameter") +
             isBlankMessage(conditionDescriptor, "Condition Descriptor")
         );
 
-        final var lNameof = isBlank(nameof) ? "isNumberConditionCore: " : nameof;
+        final var lNameof = isBlank(nameof) ? "isNumberConditionCore" : nameof;
         if (isNotBlank(message)) {
             return DataFactoryFunctions.getWithNameAndMessage(Strings.EMPTY, false, lNameof, Strings.PARAMETER_ISSUES + message);
         }
@@ -386,10 +387,10 @@ public interface Formatter {
         final var lParameterName = isBlank(parameterName) ? "Number" : parameterName;
         final var option = getOptionMessage(status);
         final var object = lParameterName + "(\"" + number + "\") was" + option + " " + conditionDescriptor + " expected(\"" + expected +"\")" + Strings.END_LINE;
-        final var returnMessage = "Parameters were" + option + " okay" + Strings.END_LINE;
+        final var returnMessage = "Parameters were" + option + " okay." ;
         return status ? (
-            DataFactoryFunctions.getWithNameAndMessage(object, status, lNameof, returnMessage)
-        ) : DataFactoryFunctions.getWithNameAndMessage(Strings.EMPTY, status, lNameof, returnMessage + object);
+            DataFactoryFunctions.getWithNameAndMessage(object, status, lNameof, returnMessage + "\n")
+        ) : DataFactoryFunctions.getWithNameAndMessage(Strings.EMPTY, status, lNameof, returnMessage + " " + object);
     }
 
     static Data<String> isEqualToExpected(int number, int expected, String parameterName) {
@@ -410,8 +411,8 @@ public interface Formatter {
             final var minData = isMoreThanExpected(range.min, 0, "Range minimum");
             final var maxData = isLessThanExpected(range.max, 1000, "Range maximum");
             message += (
-                (isValidNonFalse(minData) ? minData.message.toString() : Strings.EMPTY) +
-                (isValidNonFalse(maxData) ? maxData.message.toString() : Strings.EMPTY) +
+                (isFalse(minData) ? minData.message.toString() : Strings.EMPTY) +
+                (isFalse(maxData) ? maxData.message.toString() : Strings.EMPTY) +
                 isNullMessage(range.rangeInvalidator, "Command Range validator function")
             );
         }
