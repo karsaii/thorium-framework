@@ -4,6 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import selector.extensions.SelectorComparator;
+
 import selectorSpecificity.tuples.SpecificityData;
 
 import java.util.stream.Stream;
@@ -44,8 +47,8 @@ public class SelectorComparatorTests {
                 Arguments.of("Only single ID better than zeroes - switched", zeroes, onlyId, onlyId, "right", "Single ID weren't better than zeroes, switched."),
                 Arguments.of("Only single ID better than only ones", onlyId, ones, onlyId, "left", "Single ID weren't better than only ones."),
                 Arguments.of("Only single ID better than id and class", onlyId, idAndClass, onlyId, "left", "Single ID weren't better than Id and Class."),
-                Arguments.of("Only single ID better than id and element", onlyId, oneIdAndElement, onlyId, "left", "Single ID weren't better than Id and element."),
-                Arguments.of("Only single ID better than id and element  - switched", oneIdAndElement, onlyId, onlyId, "right", "Single ID weren't better than Id and element - switched."),
+                Arguments.of("Only single ID better than id and selenium.element", onlyId, oneIdAndElement, onlyId, "left", "Single ID weren't better than Id and selenium.element."),
+                Arguments.of("Only single ID better than id and selenium.element  - switched", oneIdAndElement, onlyId, onlyId, "right", "Single ID weren't better than Id and selenium.element - switched."),
                 Arguments.of("Only single ID better than two ids", onlyId, twoIds, onlyId, "left", "Single ID weren't better than zeroes."),
                 Arguments.of("Only single ID better than xpath", onlyId, onlyXpath, onlyId, "left", "Single ID weren't better than xpath."),
                 Arguments.of("Only single ID better than class", onlyId, onlyClass, onlyId, "left", "Single ID weren't better than single class."),
@@ -54,8 +57,8 @@ public class SelectorComparatorTests {
                 Arguments.of("xpath better than anything else", noIdAndEverythingElseRandomly, onlyXpath, onlyXpath, "left", "Anything other than ID was better than xpath."),
                 Arguments.of("Only class better than only xpath", onlyClass, onlyXpath, onlyClass, "left", "Only class wasn't better than only xpath."),
                 Arguments.of("Only class better than only xpath - switched", onlyXpath, onlyClass , onlyClass, "right", "Only class wasn't better than only xpath."),
-                Arguments.of("Only class better than only element", onlyClass, onlyElement, onlyClass, "left", "Only class wasn't better than only element."),
-                Arguments.of("Only class better than only element - switched", onlyElement, onlyClass, onlyClass, "right", "Only class wasn't better than only element.")
+                Arguments.of("Only class better than only selenium.element", onlyClass, onlyElement, onlyClass, "left", "Only class wasn't better than only selenium.element."),
+                Arguments.of("Only class better than only selenium.element - switched", onlyElement, onlyClass, onlyClass, "right", "Only class wasn't better than only selenium.element.")
         );
     }
     @ParameterizedTest(name = "{0}")
