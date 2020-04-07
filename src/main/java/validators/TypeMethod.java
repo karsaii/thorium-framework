@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
+
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface TypeMethod {
