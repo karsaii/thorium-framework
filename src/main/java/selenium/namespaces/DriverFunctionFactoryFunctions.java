@@ -52,7 +52,7 @@ public interface DriverFunctionFactoryFunctions {
     }
 
     static <T> DriverFunction<T> getFunction(Function<WebDriver, Data<T>> function) {
-        return (DriverFunction<T>) function;
+        return function::apply;
     }
 
     static <T> DriverFunction<T> replaceName(DriverFunction<T> function, String nameof) {
