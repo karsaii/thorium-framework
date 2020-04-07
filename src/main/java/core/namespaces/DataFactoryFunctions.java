@@ -14,11 +14,18 @@ public interface DataFactoryFunctions {
         return new Data<>(null, false, new MethodMessageData(Strings.EMPTY), CoreConstants.NULL_EXCEPTION, Strings.NULL_EXCEPTION_MESSAGE);
     }
 
+    static <T> Data<T> getWithMethodMessage(T object, boolean status, MethodMessageData messageData, Exception exception, String exceptionMessage) {
+        final var isExceptionNull = Objects.isNull(exception);
+        final var message = (isExceptionNull ? Strings.EXCEPTION_WAS_NULL : Strings.EMPTY) + messageData.message;
+        final var exMessage = isNotBlank(exceptionMessage) ? exceptionMessage : ((isExceptionNull ? Strings.EXCEPTION_WAS_NULL : Strings.EMPTY) + exception.getMessage());
+        return getWithNameAndMessage(object, status, messageData.nameof, message, exception, exMessage);
+    }
+
     static <T> Data<T> getWithMethodMessage(T object, boolean status, MethodMessageData messageData, Exception exception) {
         final var isExceptionNull = Objects.isNull(exception);
-        final var message = (isExceptionNull ? Strings.EXCEPTION_WAS_NULL : "") + messageData.message;
-        final var exceptionMessage = (isExceptionNull ? Strings.EXCEPTION_WAS_NULL : "") + exception.getMessage();
-        return getWithNameAndMessage(object, status, messageData.nameof, message, exception, exceptionMessage);
+        final var message = (isExceptionNull ? Strings.EXCEPTION_WAS_NULL : Strings.EMPTY) + messageData.message;
+        final var exceptionMessage = (isExceptionNull ? Strings.EXCEPTION_WAS_NULL : Strings.EMPTY) + exception.getMessage();
+        return getWithMethodMessage(object, status, messageData, exception, exceptionMessage);
     }
 
     static <T> Data<T> getWithMethodMessage(T object, boolean status, MethodMessageData message) {
