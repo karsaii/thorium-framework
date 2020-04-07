@@ -43,11 +43,11 @@ public interface DataFunctions {
     }
 
     static boolean isFalse(Data<?> data, int index, int length) {
-        return isValid(data) && CoreUtilities.isFalse(data.status) && (index < length);
+        return isFalse(data) && (index < length);
     }
 
     static <T> boolean isFalse(Data<T> data) {
-        return NullableFunctions.isNotNull(data) && CoreUtilities.isFalse(data.object);
+        return isValid(data) && CoreUtilities.isFalse(data.object);
     }
 
     static boolean isExecuting(Data<?> data, int index, int length) {
