@@ -55,5 +55,5 @@ public abstract class DataConstants {
     public static final Data<Boolean> LAZY_ELEMENT_WAIT_PARAMETERS_WERE_NULL = DataFactoryFunctions.getBoolean(false, Strings.LAZY_ELEMENT_WAIT_PARAMETERS_WERE_NULL);
     public static final Data<Boolean> LAZY_ELEMENT_WAS_NULL = DataFactoryFunctions.getBoolean(false, Strings.LAZY_ELEMENT_WAS_NULL);
 
-    public static final Data<WebDriver> NULL_DRIVER = DataFactoryFunctions.getWithMessage(new RemoteWebDriver(new MutableCapabilities()), false, "No Drivers.Driver instance found.");
+    public static final Data<WebDriver> NULL_DRIVER = DataFactoryFunctions.getWithMessage(null, false, "No Drivers.Driver instance found.");
 }
