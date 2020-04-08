@@ -1,5 +1,6 @@
 package selenium.constants;
 
+import core.constants.CoreDataConstants;
 import core.extensions.boilers.WebElementList;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
@@ -10,6 +11,8 @@ import org.openqa.selenium.WebElement;
 import selenium.records.ExternalElementData;
 import selenium.records.LazyElement;
 import selenium.records.lazy.CachedLazyElementData;
+
+import java.util.function.Function;
 
 public abstract class SeleniumDataConstants {
     public static final Data<By> NULL_BY = DataFactoryFunctions.getWithMessage(By.cssSelector(Strings.EMPTY), false, "Null By Data.");
@@ -26,4 +29,6 @@ public abstract class SeleniumDataConstants {
     public static final Data<Boolean> LAZY_ELEMENT_WAS_NULL = DataFactoryFunctions.getBoolean(false, Strings.LAZY_ELEMENT_WAS_NULL);
 
     public static final Data<WebDriver> NULL_DRIVER = DataFactoryFunctions.getWithMessage(null, false, "No Drivers.Driver instance found" + Strings.END_LINE);
+
+    public static final Function<WebDriver.TargetLocator, Data<Boolean>> SWITCH_TO_NEGATIVE = targetLocator -> CoreDataConstants.NULL_BOOLEAN;
 }
