@@ -29,22 +29,27 @@ import selenium.records.scripter.ScriptParametersData;
 
 import java.util.Objects;
 
-import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
+import static core.extensions.namespaces.NullableFunctions.isNotNull;
+import static core.extensions.namespaces.NullableFunctions.isNull;
 import static core.namespaces.DataFunctions.isInvalidOrFalse;
 import static core.namespaces.DataFunctions.isValidNonFalse;
+import static core.namespaces.DataFunctions.replaceMessage;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.ExecutionCore.ifDriverFunction;
 import static selenium.namespaces.ExecutionCore.validChain;
 import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElement;
+import static selenium.namespaces.SeleniumUtilities.isNotNullWebElement;
+import static selenium.namespaces.SeleniumUtilities.isNullWebElement;
 
 public interface Execute {
     static <T> DriverFunction<T> isCommonExists(String nameof, String isExists, Data<T> defaultValue) {
         return ifDriver(
             nameof,
-            isNotBlank(isExists) && NullableFunctions.isNotNull(defaultValue),
+            isNotBlank(isExists) && isNotNull(defaultValue),
             driver -> {
                 final var result = Driver.execute(isExists).apply(driver);
                 return DataFactoryFunctions.getWithMethodMessage((T)result.object, result.status, result.message);
@@ -78,7 +83,7 @@ public interface Execute {
     static <T> DriverFunction<T> commonExecutor(String nameof, DriverFunction<WebElement> getter, String function, Data<T> defaultValue) {
         return ifDriver(
             nameof,
-            NullableFunctions.isNotNull(getter),
+            isNotNull(getter),
             driver -> {
                 final var result = Driver.executeSingleParameter(function, ScriptExecuteFunctions.handleDataParameterWithDefaults(getter.apply(driver))).apply(driver);
                 return DataFactoryFunctions.getWithMethodMessage((T)result.object, result.status, result.message);
@@ -91,7 +96,7 @@ public interface Execute {
         final var nameof = "getParameterArray";
         return ifDriver(
             nameof,
-            NullableFunctions.isNotNull(item),
+            isNotNull(item),
             driver -> {
                 final var length = 1;
                 final var parameters = new Object[1];
@@ -123,7 +128,7 @@ public interface Execute {
 
     static Data<Object[]> getParameterArray(Data<WebElement> element, String attribute, String value) {
         final var nameof = "getParameterArray";
-        if (isInvalidOrFalse(element) || areAnyNull(attribute, value)) {
+        if (isNullWebElement(element) || isBlank(attribute) || isNull(value)) {
             return CoreDataConstants.NULL_PARAMETER_ARRAY;
         }
 
@@ -140,14 +145,14 @@ public interface Execute {
         final var nameof = "getParameterArray";
         return ifDriver(
             nameof,
-            isValidNonFalse(element),
+            isNotNullWebElement(element),
             driver -> {
                 final var length = 1;
                 final var parameters = new Object[length];
                 parameters[0] = element.object;
                 return DataFactoryFunctions.getWithNameAndMessage(parameters, true, nameof, "Element was found. Array of length " + length + " was constructed" + Strings.END_LINE);
             },
-                CoreDataConstants.NULL_PARAMETER_ARRAY
+            CoreDataConstants.NULL_PARAMETER_ARRAY
         );
     }
 
@@ -157,7 +162,7 @@ public interface Execute {
             nameof,
             areNotNull(attribute, value) && isNotNullLazyElement(element),
             driver -> getParameterArray(element.get().apply(driver), attribute, value),
-                CoreDataConstants.NULL_PARAMETER_ARRAY
+            CoreDataConstants.NULL_PARAMETER_ARRAY
         );
     }
 
@@ -173,17 +178,17 @@ public interface Execute {
     }
 
     static DriverFunction<Boolean> scrollIntoViewExecutor(LazyElement data) {
-        return NullableFunctions.isNotNull(data) ? scrollIntoViewExecutor(data.get()) : DriverFunctionConstants.NULL_BOOLEAN;
+        return isNotNullLazyElement(data) ? scrollIntoViewExecutor(data.get()) : DriverFunctionConstants.NULL_BOOLEAN;
     }
 
     static DriverFunction<Boolean> scrollIntoViewExecutor(DriverFunction<WebElement> getter) {
         return ifDriver(
             "scrollIntoViewExecutor",
-            NullableFunctions.isNotNull(getter),
+            isNotNull(getter),
             driver -> {
                 final var parameters = new ScriptParametersData<>(getter.apply(driver), DataFunctions::isValidNonFalse, DataFunctions::unwrapToArray);
                 final var result = Driver.executeSingleParameter(ScrollIntoView.EXECUTE, ScriptExecuteFunctions.handleDataParameter(parameters)).apply(driver);
-                return DataFactoryFunctions.getWithMethodMessage(NullableFunctions.isNotNull(result.object), result.status, result.message);
+                return DataFactoryFunctions.getWithMethodMessage(isNotNull(result.object), result.status, result.message);
             },
             CoreDataConstants.NULL_BOOLEAN
         );
@@ -228,7 +233,7 @@ public interface Execute {
     static DriverFunction<Object> getStyle(LazyElement data) {
         return ifDriver(
             "getStyle",
-            NullableFunctions.isNotNull(data),
+            isNotNull(data),
             driver -> {
                 final var steps = validChain(data.get(), Execute::handleDataParameterDefault, CoreDataConstants.NULL_PARAMETER_ARRAY);
                 final var parameter = Executor.conditionalSequence(Driver.isElementPresent(data), steps, Object[].class).apply(driver);
@@ -242,15 +247,17 @@ public interface Execute {
     private static DriverFunction<WebElement> getShadowRootCore(Data<WebElement> data) {
         return ifDriver(
             "getShadowRootCore",
-            isValidNonFalse(data),
+            isNotNullWebElement(data),
             driver -> {
                 final var parameter = handleDataParameterDefault(data);
-                if(isValidNonFalse(parameter)) {
-                    return SeleniumDataConstants.NULL_ELEMENT;
+                if(isInvalidOrFalse(parameter)) {
+                    return replaceMessage(SeleniumDataConstants.NULL_ELEMENT, parameter.message.toString());
                 }
 
                 final var result = Driver.executeSingleParameter(ShadowRoot.GET_SHADOW_ROOT, parameter.object).apply(driver);
-                return isValidNonFalse(result) ? DataFactoryFunctions.getWithMethodMessage((WebElement)result.object, result.status, result.message) : SeleniumDataConstants.NULL_ELEMENT;
+                return isValidNonFalse(result) ? (
+                    DataFactoryFunctions.getWithMethodMessage((WebElement)result.object, result.status, result.message)
+                ) : replaceMessage(SeleniumDataConstants.NULL_ELEMENT, result.message.toString());
             },
             SeleniumDataConstants.NULL_ELEMENT
         );
@@ -261,11 +268,13 @@ public interface Execute {
     }
 
     static DriverFunction<WebElement> getShadowRoot(DriverFunction<WebElement> getter) {
-        return ifDriverFunction("getShadowRoot", NullableFunctions::isNull, getter, Execute::getShadowRootCore, SeleniumDataConstants.NULL_ELEMENT);
+        return ifDriverFunction("getShadowRoot", NullableFunctions::isNotNull, getter, Execute::getShadowRootCore, SeleniumDataConstants.NULL_ELEMENT);
     }
 
-    static DriverFunction<WebElement> getShadowRoot(LazyElement data) {
-        return NullableFunctions.isNotNull(data) ? getShadowRoot(data.get()) : DriverFunctionFactoryFunctions.get(SeleniumDataConstants.NULL_ELEMENT);
+    static DriverFunction<WebElement> getShadowRoot(LazyElement element) {
+        return isNotNullLazyElement(element) ? (
+            getShadowRoot(element.get())
+        ) : DriverFunctionFactoryFunctions.get(replaceMessage(SeleniumDataConstants.NULL_ELEMENT, "getShadowRoot", "LazyElement element" + Strings.WAS_NULL));
     }
 
     static DriverFunction<WebElement> getShadowRoot(Data<LazyElement> data) {
@@ -295,10 +304,10 @@ public interface Execute {
     static DriverFunction<String> setAttribute(Data<WebElement> element, String attribute, String value) {
         return ifDriver(
             "setAttribute",
-            areNotBlank(attribute, value) && isValidNonFalse(element),
+            areNotBlank(attribute, value) && isNotNullWebElement(element),
             driver -> {
                 final var parametersData = getParameterArray(element, attribute, value);
-                if (isValidNonFalse(parametersData)) {
+                if (isInvalidOrFalse(parametersData)) {
                     return CoreDataConstants.NULL_STRING;
                 }
 
@@ -307,14 +316,14 @@ public interface Execute {
                 final var status = isValidNonFalse(result) && Objects.equals(value, returnedValue);
                 return DataFactoryFunctions.getWithMessage(returnedValue, status, "Value \"" + value + "\" was " + Formatter.getOptionMessage(status) + "set" + Strings.END_LINE);
             },
-                CoreDataConstants.NULL_STRING
+            CoreDataConstants.NULL_STRING
         );
     }
 
     static DriverFunction<String> setAttribute(DriverFunction<WebElement> element, String attribute, String value) {
         return ifDriver(
             "setAttribute",
-            NullableFunctions.isNotNull(element) && areNotBlank(attribute, value),
+            isNotNull(element) && areNotBlank(attribute, value),
             driver -> setAttribute(element.apply(driver), attribute, value).apply(driver),
             CoreDataConstants.NULL_STRING
         );
@@ -323,7 +332,7 @@ public interface Execute {
     static DriverFunction<String> setAttribute(LazyElement element, String attribute, String value) {
         return ifDriver(
             "setAttribute",
-            NullableFunctions.isNotNull(element),
+            isNotNullLazyElement(element),
             setAttribute(element.get(), attribute, value),
             CoreDataConstants.NULL_STRING
         );
