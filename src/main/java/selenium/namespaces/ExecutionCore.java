@@ -43,7 +43,7 @@ public interface ExecutionCore {
     }
 
     private static <T, U> DriverFunction<T> conditionalDataChain(Predicate<Data<U>> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
-        return DriverFunctionFactoryFunctions.getFunction(conditionalChain(guard, dependency, positive, prependMessage(negative, "conditionalChain", "Dependency failed the guard" + Strings.END_LINE)));
+        return DriverFunctionFactoryFunctions.getFunction(conditionalChain(guard, dependency, positive, replaceMessage(negative, "conditionalChain", "Dependency failed the guard" + Strings.END_LINE)));
     }
 
     static <T, U> DriverFunction<T> conditionalChain(Predicate<Data<U>> guard, DriverFunction<U> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {

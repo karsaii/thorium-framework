@@ -32,14 +32,17 @@ import java.util.function.Predicate;
 
 import static core.extensions.namespaces.CoreUtilities.areAll;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
+import static core.extensions.namespaces.CoreUtilities.isEqual;
 import static core.extensions.namespaces.CoreUtilities.isNotEqual;
 import static core.extensions.namespaces.CoreUtilities.isNullOrEmptyList;
+import static core.extensions.namespaces.NullableFunctions.isNull;
+import static core.namespaces.DataFunctions.isInvalidOrFalse;
 import static java.util.Map.entry;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public interface SeleniumUtilities {
     static boolean isNullLazyData(LazyLocator data) {
-        return NullableFunctions.isNull(data) || isBlank(data.locator) || NullableFunctions.isNull(data.strategy);
+        return isNull(data) || isBlank(data.locator) || isNull(data.strategy);
     }
 
     static boolean areNullLazyData(LazyLocator... data) {
@@ -74,7 +77,7 @@ public interface SeleniumUtilities {
 
     static <T> boolean isNullLazyElement(AbstractLazyElement<T> element) {
         return (
-            NullableFunctions.isNull(element) ||
+            isNull(element) ||
             isBlank(element.name) ||
             areAnyNull(element.parameters, element.validator) ||
             element.parameters.isEmpty() ||
@@ -89,18 +92,26 @@ public interface SeleniumUtilities {
 
     static boolean isNullWebElement(WebElement element) {
         return (
-            NullableFunctions.isNull(element) ||
+            isNull(element) ||
             Objects.equals(SeleniumDataConstants.NULL_ELEMENT.object, element) ||
-            isNotEqual(element.getAttribute("id"), Strings.NULL_ELEMENT_ID)
+            isEqual(element.getAttribute("id"), Strings.NULL_ELEMENT_ID)
         );
     }
 
+    static boolean isNullWebElement(Data<WebElement> element) {
+        return isInvalidOrFalse(element) || Objects.equals(SeleniumDataConstants.NULL_ELEMENT, element) || isNullWebElement(element.object);
+    }
+
+    static boolean isNotNullWebElement(Data<WebElement> element) {
+        return !isNullWebElement(element);
+    }
+
     static <T> boolean isNullCommonWaitParametersData(AbstractWaitParameters<T> data) {
-        return NullableFunctions.isNull(data) || (data.duration < 0) || (data.interval < 0);
+        return isNull(data) || (data.duration < 0) || (data.interval < 0);
     }
 
     static boolean isNullElementWaitParametersData(ElementWaitParameters data) {
-        return isNullCommonWaitParametersData(data) || NullableFunctions.isNull(data.object);
+        return isNullCommonWaitParametersData(data) || isNull(data.object);
     }
 
     static boolean isNotNullElementWaitParametersData(ElementWaitParameters data) {
@@ -134,7 +145,7 @@ public interface SeleniumUtilities {
     }
 
     static LazyLocator getLazyLocator(By locator) {
-        if (NullableFunctions.isNull(locator)) {
+        if (isNull(locator)) {
             return new LazyLocator();
         }
 
@@ -155,8 +166,6 @@ public interface SeleniumUtilities {
         final var lazyLocator = getLazyLocator(locator);
         return entry(lazyLocator.strategy, constructor.apply(indexedData, lazyLocator, getter));
     }
-
-
 
     static Data<By> getLocator(Map<SelectorStrategy, Function<String, By>> strategyMap, LazyLocator data) {
         if (isNullLazyData(data)) {

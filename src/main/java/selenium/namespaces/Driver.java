@@ -109,8 +109,10 @@ import static selenium.namespaces.SeleniumUtilities.getLazyLocator;
 import static selenium.namespaces.SeleniumUtilities.getLocator;
 import static selenium.namespaces.SeleniumUtilities.isNotNullLazyData;
 import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElement;
+import static selenium.namespaces.SeleniumUtilities.isNotNullWebElement;
 import static selenium.namespaces.SeleniumUtilities.isNullLazyData;
 import static selenium.namespaces.SeleniumUtilities.isNullLazyElement;
+import static selenium.namespaces.SeleniumUtilities.isNullWebElement;
 
 public interface Driver {
     private static JavascriptExecutor getExecutor(WebDriver driver) {
@@ -519,7 +521,7 @@ public interface Driver {
             return DataFactoryFunctions.getBoolean(false, "Inverter " + Strings.WAS_NULL);
         }
 
-        final var lStatus = inverter.apply(isValidNonFalse(data));
+        final var lStatus = inverter.apply(isNotNullWebElement(data));
         final var returnData = Formatter.getConditionMessage(name, FormatterStrings.isMessageMap, lStatus, descriptor, negator);
         return DataFactoryFunctions.getBoolean(lStatus, name + " " + returnData.message.getMessage() + data.message.getMessage());
     }
@@ -568,7 +570,7 @@ public interface Driver {
     }
 
     private static Data<Boolean> isElementValidNonFalse(Data<WebElement> data) {
-        final var status = isValidNonFalse(data);
+        final var status = isNotNullWebElement(data);
         final var message = status ? ("Element is okay" + Strings.END_LINE) : ("Element was null or false: " + data.message);
         return DataFactoryFunctions.getBoolean(status, "isElementValidNonFalse", message);
     }
@@ -967,7 +969,7 @@ public interface Driver {
 
                     data = getter.apply(getLocator(locator).object).apply(driver);
                     message += index + data.message.toString() + Strings.END_LINE;
-                    if (isValidNonFalse(data)) {
+                    if (isNullWebElement(data)) {
                         continue;
                     }
 
@@ -1030,7 +1032,7 @@ public interface Driver {
 
     private static Data<WebElement> getShadowRootElementCore(Data<WebElement> data) {
         final var exception = data.exception;
-        final var status = isValidNonFalse(data);
+        final var status = isNotNullWebElement(data);
         final var messageData = new MethodMessageData("getShadowRootElementCore", Formatter.getShadowRootElementMessage(data.message.getMessage(), status));
         return CoreUtilities.isNonException(exception) ? (
             DataFactoryFunctions.getWithMethodMessage(data.object, status, messageData)
@@ -1086,7 +1088,7 @@ public interface Driver {
         final var nameof = "getRootElementByInvokedElement";
         return ifDriver(
             nameof,
-            isValidNonFalse(data) && isNotNullLazyData(locator),
+            isNotNullWebElement(data) && isNotNullLazyData(locator),
             getShadowRootElement(invokeGetElement(getLocator(locator).object).apply(getSearchContextOf("Element data", data))),
             replaceMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, "Parameters were wrong: locator or data.")
         );
@@ -1104,7 +1106,7 @@ public interface Driver {
     static DriverFunction<WebElement> getShadowRootElement(Data<WebElement> data, LazyLocatorList locators) {
         return ifDriver(
             "getShadowRootElement",
-            isValidNonFalse(data) && isNotNull(locators) && locators.isNotNullAndNonEmpty(),
+            isNotNullWebElement(data) && isNotNull(locators) && locators.isNotNullAndNonEmpty(),
             driver -> {
                 if (locators.isSingle()) {
                     return getRootElementByInvokedElement(data, locators.first()).apply(driver);
@@ -1118,7 +1120,7 @@ public interface Driver {
                     }
 
                     current = getRootElementByInvokedElement(current, shadowLocator).apply(driver);
-                    if (isInvalidOrFalse(current)) {
+                    if (isNullWebElement(current)) {
                         break;
                     }
 
@@ -1145,8 +1147,8 @@ public interface Driver {
             driver -> {
                 final var currentBy = locators.first();
                 final var current = getShadowRootElement(getLocator(currentBy).object).apply(driver);
-                if (isInvalidOrFalse(current)) {
-                    return prependMessage(SeleniumDataConstants.NULL_ELEMENT, "Current was null.");
+                if (isNullWebElement(current)) {
+                    return prependMessage(SeleniumDataConstants.NULL_ELEMENT, "Current " + Strings.WAS_NULL + current.message.toString());
                 }
 
                 return locators.isMany() ? getShadowRootElement(current, locators.tail()).apply(driver) : current;
@@ -1161,7 +1163,7 @@ public interface Driver {
             areNotNull(data, locators) && locators.isNotNullAndNonEmpty(),
             driver -> {
                 var current = data.apply(driver);
-                return isValidNonFalse(current) ? getShadowRootElement(current, locators).apply(driver) : SeleniumDataConstants.NULL_ELEMENT;
+                return isNotNullWebElement(current) ? getShadowRootElement(current, locators).apply(driver) : SeleniumDataConstants.NULL_ELEMENT;
             },
             SeleniumDataConstants.NULL_ELEMENT
         );
@@ -1184,7 +1186,9 @@ public interface Driver {
             }
 
             final var object = nestedElement.object;
-            return isNotNull(object) && object.isNotNullAndNonEmpty() ? getElementFromSingle(nestedElement) : replaceMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, "Nested Element was null." + nestedElement.message);
+            return isNotNull(object) && object.isNotNullAndNonEmpty() ? (
+                getElementFromSingle(nestedElement)
+            ) : replaceMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, "Nested Element" + Strings.WAS_NULL + nestedElement.message);
         }) : context -> replaceMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, Strings.LOCATOR_WAS_NULL);
     }
 
@@ -1199,12 +1203,12 @@ public interface Driver {
     }
 
     static Function<Data<SearchContext>, Data<WebElement>> getNestedElement(LazyLocator locator) {
-        final var nameof = "getNestedElement: ";
+        final var nameof = "getNestedElement";
         return isNotNullLazyData(locator) ? getNestedElement(getLocator(locator).object) : data -> replaceMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, Strings.LOCATOR_WAS_NULL);
     }
 
     static Function<Data<SearchContext>, Data<WebElementList>> getNestedElements(LazyLocator locator) {
-        final var nameof = "getNestedElements: ";
+        final var nameof = "getNestedElements";
         if (isNullLazyData(locator)) {
             return context -> replaceMessage(SeleniumDataConstants.NULL_LIST, nameof + "Lazy locator" + Strings.WAS_NULL);
         }
@@ -1587,7 +1591,7 @@ public interface Driver {
 
                 var locator = locators.first();
                 var data = Driver.getElement(locator).apply(driver);
-                if (isInvalidOrFalse(data)) {
+                if (isNullWebElement(data)) {
                     return DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.STOCK_ELEMENT, false, nameof, data.message.toString());
                 }
 
@@ -1601,7 +1605,7 @@ public interface Driver {
                     }
 
                     data = getNestedElement(locator).apply(getSearchContext(data.object));
-                    if (isInvalidOrFalse(data)) {
+                    if (isNullWebElement(data)) {
                         break;
                     }
                 }
@@ -1750,7 +1754,7 @@ public interface Driver {
                     parameterKey = Formatter.getUniqueGeneratedName(selectorType);
                     lep = new LazyIndexedElementParameters(false, 0, locator);
                     currentElement = getElement(lep.lazyLocators, ElementFinderConstants.singleGetterMap, SingleGetter.DEFAULT).apply(driver);
-                    if (isInvalidOrFalse(currentElement)) {
+                    if (isNullWebElement(currentElement)) {
                         break;
                     }
 
@@ -1759,7 +1763,7 @@ public interface Driver {
 
                 element.parameters.putIfAbsent(parameterKey, lep);
                 final var update = ElementRepository.updateTypeKeys(lep.lazyLocators, typeKeys, types, parameterKey);
-                return isValidNonFalse(currentElement) ? (
+                return isNotNullWebElement(currentElement) ? (
                     DataFactoryFunctions.getWithNameAndMessage(new ExternalElementData(typeKeys, currentElement), true, nameof, "External function yielded an selenium.element" + Strings.END_LINE)
                 ) : replaceMessage(defaultValue, nameof, "All(\"" + length + "\") approaches were tried" + Strings.END_LINE + currentElement.message.toString());
             },
@@ -1781,7 +1785,7 @@ public interface Driver {
 
         final var externalElement = (externalStatus ? external : regular).object;
         final var currentElement = externalElement.found;
-        return isValidNonFalse(currentElement) ? (
+        return isNotNullWebElement(currentElement) ? (
             appendMessage(currentElement, ElementRepository.cacheIfAbsent(element, getKeysCopy(externalElement.typeKeys)))
         ) : prependMessage(currentElement, "All approaches were tried" + Strings.END_LINE);
     }
@@ -1836,7 +1840,7 @@ public interface Driver {
                 final var parameterKeys = new DecoratedList<>(parameterMap.keySet(), String.class);
                 final var types = new DecoratedList<>(typeKeys.keySet(), String.class);
                 var message = CoreDataConstants.NULL_STRING;
-                var currentElement = SeleniumDataConstants.NULL_ELEMENT;
+                var currentElement = DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.STOCK_ELEMENT, true, nameof, "");
                 var parameterIndex = 0;
                 var index = 0;
                 var switchData = CoreDataConstants.NULL_BOOLEAN;
@@ -1875,6 +1879,10 @@ public interface Driver {
                     message = appendMessage(message, currentElement.message.toString());
                     message = appendMessage(message, Adjuster.adjustProbability(parameters, typeKeys, key, isValidNonFalse(currentElement), data.probabilityData).message.toString());
 
+                }
+
+                if (SeleniumUtilities.isNullWebElement(currentElement)) {
+                    currentElement = SeleniumDataConstants.NULL_ELEMENT;
                 }
 
                 final var externalData = data.externalData;

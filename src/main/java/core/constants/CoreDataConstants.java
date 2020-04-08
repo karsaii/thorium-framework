@@ -11,7 +11,6 @@ import java.lang.reflect.Method;
 
 public abstract class CoreDataConstants {
     public static final Data<Boolean> NULL_BOOLEAN = DataFactoryFunctions.getBoolean(false, "nullBoolean data" + Strings.END_LINE);
-    public static final Data<Boolean> DATA_WAS_NULL_OR_FALSE_BOOLEAN = DataFactoryFunctions.getBoolean(false, Strings.DATA_NULL_OR_FALSE);
     public static final Data<String> NULL_STRING = DataFactoryFunctions.getWithMessage(Strings.EMPTY, false, "nullString data.");
     public static final Data<Object> NULL_OBJECT = DataFactoryFunctions.getWithMessage(CoreConstants.STOCK_OBJECT, false, "null object data.");
     public static final Data<Method> NULL_METHOD = DataFactoryFunctions.getWithMessage(CoreConstants.STOCK_METHOD, false, "null method data.");
