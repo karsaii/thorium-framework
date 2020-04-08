@@ -679,7 +679,7 @@ public interface Formatter {
     }
 
     static String getUniqueGeneratedName(String selectorType) {
-        return selectorType + "-" + CoreUtilities.getIncrementalUUID(SeleniumCoreConstants.atomicCount) + "-generated";
+        return selectorType + "-" + CoreUtilities.getIncrementalUUID(SeleniumCoreConstants.ATOMIC_COUNT) + "-generated";
     }
 
     static String getProbabilityAdjustmentMessage(String key, double original, double adjusted, boolean increase, boolean generated, boolean belowThreshold) {

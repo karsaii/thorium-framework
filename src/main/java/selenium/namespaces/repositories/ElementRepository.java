@@ -1,5 +1,6 @@
 package selenium.namespaces.repositories;
 
+import core.constants.CoreDataConstants;
 import core.extensions.DecoratedList;
 import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
@@ -11,7 +12,7 @@ import selector.records.SelectorKeySpecificityData;
 import selectorSpecificity.Specificity;
 import selectorSpecificity.constants.Strategy;
 import selectorSpecificity.tuples.SpecificityData;
-import selenium.constants.DataConstants;
+import selenium.constants.SeleniumDataConstants;
 import selenium.constants.ElementStrategyMapConstants;
 import selenium.constants.RepositoryConstants;
 import selenium.enums.SelectorStrategy;
@@ -56,7 +57,7 @@ public interface ElementRepository {
     }
 
     static Data<Boolean> cacheElement(LazyElement element, Map<String, DecoratedList<SelectorKeySpecificityData>> typeKeys) {
-        return cacheElement(RepositoryConstants.elements, element, typeKeys, DataConstants.NULL_BOOLEAN);
+        return cacheElement(RepositoryConstants.elements, element, typeKeys, CoreDataConstants.NULL_BOOLEAN);
     }
 
     static Data<Boolean> containsElement(Map<String, CachedLazyElementData> elementRepository, String name, Data<Boolean> defaultValue) {
@@ -77,7 +78,7 @@ public interface ElementRepository {
     }
 
     static Data<Boolean> containsElement(String name) {
-        return containsElement(RepositoryConstants.elements, name, DataConstants.NULL_BOOLEAN);
+        return containsElement(RepositoryConstants.elements, name, CoreDataConstants.NULL_BOOLEAN);
     }
 
     static Data<CachedLazyElementData> getElement(Map<String, CachedLazyElementData> elementRepository, String name, Data<CachedLazyElementData> defaultValue) {
@@ -99,7 +100,7 @@ public interface ElementRepository {
     }
 
     static Data<CachedLazyElementData> getElement(Map<String, CachedLazyElementData> elementRepository, String name) {
-        return getElement(elementRepository, name, DataConstants.NULL_CACHED_LAZY_ELEMENT);
+        return getElement(elementRepository, name, SeleniumDataConstants.NULL_CACHED_LAZY_ELEMENT);
     }
 
     static Data<CachedLazyElementData> getElement(String name) {
@@ -130,18 +131,18 @@ public interface ElementRepository {
 
     static Data<CachedLazyElementData> getIfContains(LazyElement element) {
         final var name = element.name;
-        return isValidNonFalse(ElementRepository.containsElement(name)) ? ElementRepository.getElement(name) : DataConstants.ELEMENT_WAS_NOT_CACHED;
+        return isValidNonFalse(ElementRepository.containsElement(name)) ? ElementRepository.getElement(name) : SeleniumDataConstants.ELEMENT_WAS_NOT_CACHED;
     }
 
     static Data<Boolean> updateTypeKeys(LazyLocatorList locators, Map<String, DecoratedList<SelectorKeySpecificityData>> typeKeys, List<String> types, String key) {
         final var nameof = "updateTypeKeys";
         if (NullableFunctions.isNull(key)) {
-            return replaceMessage(DataConstants.NULL_BOOLEAN, nameof, "Strategy passed" + Strings.WAS_NULL);
+            return replaceMessage(CoreDataConstants.NULL_BOOLEAN, nameof, "Strategy passed" + Strings.WAS_NULL);
         }
 
         final var typeKey = types.stream().filter(key::contains).findFirst();
         if (typeKey.isEmpty()) {
-            return replaceMessage(DataConstants.NULL_BOOLEAN, nameof, "Types didn't contain type key(\"" + typeKey + "\")" + Strings.END_LINE);
+            return replaceMessage(CoreDataConstants.NULL_BOOLEAN, nameof, "Types didn't contain type key(\"" + typeKey + "\")" + Strings.END_LINE);
         }
 
         final var type = typeKeys.get(typeKey.get());

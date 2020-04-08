@@ -1,11 +1,12 @@
 package selenium.namespaces.repositories;
 
+import core.constants.CoreDataConstants;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import data.constants.Strings;
 import data.namespaces.Formatter;
 import org.openqa.selenium.By;
-import selenium.constants.DataConstants;
+import selenium.constants.SeleniumDataConstants;
 import selenium.constants.RepositoryConstants;
 import selenium.enums.SingleGetter;
 import selenium.records.LazyElement;
@@ -20,11 +21,11 @@ public interface LocatorRepository {
     static Data<LazyElement> getIfContains(Map<By, String> locatorRepository, Map<String, CachedLazyElementData> elementRepository, By locator, SingleGetter getter) {
         final var nameof = "getIfContains";
         final var element = locatorRepository.containsKey(locator) ? ElementRepository.getElement(elementRepository, locatorRepository.get(locator)).object.element : new LazyElement(locator, getter);
-        final var result = cacheLocator(locatorRepository, locator, element.name, DataConstants.NULL_BOOLEAN);
+        final var result = cacheLocator(locatorRepository, locator, element.name, CoreDataConstants.NULL_BOOLEAN);
         final var status = result.object;
         return status ?
             DataFactoryFunctions.getWithMethodMessage(element, result.status, nameof, result.message) :
-            replaceMessage(DataConstants.NULL_LAZY_ELEMENT, nameof, "Locator was " + Formatter.getOptionMessage(status) + " found" + Strings.END_LINE);
+            replaceMessage(SeleniumDataConstants.NULL_LAZY_ELEMENT, nameof, "Locator was " + Formatter.getOptionMessage(status) + " found" + Strings.END_LINE);
     }
 
     static Data<LazyElement> getIfContains(Map<By, String> locatorRepository, Map<String, CachedLazyElementData> elementRepository, By locator) {
@@ -56,7 +57,7 @@ public interface LocatorRepository {
     }
 
     static Data<Boolean> cacheLocator(Map<By, String> locatorRepository, By locator, String name) {
-        return cacheLocator(locatorRepository, locator, name, DataConstants.NULL_BOOLEAN);
+        return cacheLocator(locatorRepository, locator, name, CoreDataConstants.NULL_BOOLEAN);
     }
 
     static Data<Boolean> cacheLocator(By locator, String name, Data<Boolean> defaultValue) {
@@ -64,6 +65,6 @@ public interface LocatorRepository {
     }
 
     static Data<Boolean> cacheLocator(By locator, String name) {
-        return cacheLocator(RepositoryConstants.locatorElements, locator, name, DataConstants.NULL_BOOLEAN);
+        return cacheLocator(RepositoryConstants.locatorElements, locator, name, CoreDataConstants.NULL_BOOLEAN);
     }
 }

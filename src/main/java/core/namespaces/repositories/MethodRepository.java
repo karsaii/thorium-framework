@@ -1,5 +1,6 @@
 package core.namespaces.repositories;
 
+import core.constants.CoreDataConstants;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import core.records.MethodData;
@@ -7,7 +8,6 @@ import core.records.MethodGetCommonParametersData;
 import core.records.MethodParametersData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
-import selenium.constants.DataConstants;
 import validators.ElementParameters;
 
 import java.lang.reflect.Method;
@@ -21,7 +21,7 @@ public interface MethodRepository {
     private static Data<Boolean> putMethodToMap(HashMap<String, MethodData> methodMap, String methodName, Method method) {
         final var nameof = "putMethodToMap";
         if (methodMap.containsKey(methodName)) {
-            return replaceMessage(DataConstants.NULL_BOOLEAN, nameof, Strings.METHOD_ALREADY_IN_MAP);
+            return replaceMessage(CoreDataConstants.NULL_BOOLEAN, nameof, Strings.METHOD_ALREADY_IN_MAP);
         }
 
         final var status = true;
@@ -42,7 +42,7 @@ public interface MethodRepository {
     }
 
     private static Data<MethodData> getMethodFromMap(HashMap<String, MethodData> methodMap, MethodParametersData parameterData) {
-        return getMethodFromMap(methodMap, parameterData.methodName, DataConstants.NULL_METHODDATA);
+        return getMethodFromMap(methodMap, parameterData.methodName, CoreDataConstants.NULL_METHODDATA);
     }
 
     private static Data<MethodData> getMethodFromList(MethodGetCommonParametersData data, MethodParametersData parameterData) {
@@ -51,7 +51,7 @@ public interface MethodRepository {
         final var validator = parameterData.validator;
         final var list = data.list;
         final var methodMap = data.methodMap;
-        var statusData = DataConstants.NULL_BOOLEAN;
+        var statusData = CoreDataConstants.NULL_BOOLEAN;
         for (Method method : list) {
             if (!validator.test(method, methodName)) {
                 continue;

@@ -99,7 +99,7 @@ public class LazyElement extends AbstractLazyElement<LazyIndexedElementParameter
 
     public LazyElement(By locator, SingleGetter getter) {
         this(
-            CoreUtilities.getIncrementalUUID(SeleniumCoreConstants.atomicCount),
+            CoreUtilities.getIncrementalUUID(SeleniumCoreConstants.ATOMIC_COUNT),
             Collections.synchronizedMap(
                 new LinkedHashMap<>(
                     Map.ofEntries(getEntry(LazyIndexedElementParameters::new, locator, getter.getName(), false))
@@ -111,7 +111,7 @@ public class LazyElement extends AbstractLazyElement<LazyIndexedElementParameter
 
     public LazyElement(By locator) {
         this(
-                CoreUtilities.getIncrementalUUID(SeleniumCoreConstants.atomicCount),
+                CoreUtilities.getIncrementalUUID(SeleniumCoreConstants.ATOMIC_COUNT),
             Collections.synchronizedMap(
                 new LinkedHashMap<>(
                     Map.ofEntries(getEntry(LazyIndexedElementParameters::new, locator, SingleGetter.DEFAULT.getName(), false))
@@ -123,7 +123,7 @@ public class LazyElement extends AbstractLazyElement<LazyIndexedElementParameter
 
     public LazyElement(IndexedData indexData, By locator, ManyGetter getter) {
         this(
-            CoreUtilities.getIncrementalUUID(SeleniumCoreConstants.atomicCount),
+            CoreUtilities.getIncrementalUUID(SeleniumCoreConstants.ATOMIC_COUNT),
             Collections.synchronizedMap(
                 new LinkedHashMap<>(
                     Map.ofEntries(getEntryIndexed(LazyIndexedElementParameters::new, indexData, locator, getter.getName()))
