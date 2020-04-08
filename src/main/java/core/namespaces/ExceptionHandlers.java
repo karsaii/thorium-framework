@@ -14,7 +14,7 @@ import static core.extensions.namespaces.CoreUtilities.isNonException;
 public interface ExceptionHandlers {
     static <CastParameterType, ReturnType> Data<ReturnType> classCastHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        if (ScriptExecutions.isValidHandlerResultData(data)) {
+        if (!ScriptExecutions.isValidHandlerResultData(data)) {
             return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
         }
 
@@ -32,7 +32,7 @@ public interface ExceptionHandlers {
 
     static <CastParameterType, ReturnType> Data<ReturnType> invokeHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        if (ScriptExecutions.isValidHandlerResultData(data)) {
+        if (!ScriptExecutions.isValidHandlerResultData(data)) {
             return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
         }
 
@@ -55,7 +55,7 @@ public interface ExceptionHandlers {
 
     static <CastParameterType, ReturnType> Data<ReturnType> findElementsHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        if (ScriptExecutions.isValidHandlerResultData(data)) {
+        if (!ScriptExecutions.isValidHandlerResultData(data)) {
             return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
         }
 
