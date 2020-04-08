@@ -28,7 +28,6 @@ public abstract class DriverFunctionConstants {
     public static final DriverFunction<WebElement> NULL_WEBELEMENT = DriverFunctionFactoryFunctions.get(SeleniumDataConstants.NULL_ELEMENT);
     public static final DriverFunction<WebElementList> NULL_LIST = DriverFunctionFactoryFunctions.get(SeleniumDataConstants.NULL_LIST);
 
-
     public static final Map<TypeKey, DriverFunction<?>> FUNCTION_MAP = Collections.unmodifiableMap(
         new EnumMap<>(
             Map.ofEntries(
