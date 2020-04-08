@@ -577,7 +577,7 @@ public interface Driver {
         final var nameof = "isElementValidNonFalse";
         return ifDriver(
             nameof,
-            isNotNullLazyElement(element),
+            Formatter.isNullLazyElementMessage(element),
             validChain(element.get(), Driver::isElementValidNonFalse, CoreDataConstants.DATA_PARAMETER_WAS_NULL),
             CoreDataConstants.DATA_PARAMETER_WAS_NULL
         );

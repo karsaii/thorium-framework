@@ -9,7 +9,6 @@ import core.namespaces.Executor;
 import core.records.Data;
 import data.constants.Strings;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import selenium.constants.DriverFunctionConstants;
 import selenium.enums.CoreConstants;
 
@@ -22,7 +21,6 @@ import static core.namespaces.DataFunctions.isInvalidOrFalse;
 import static core.namespaces.DataFunctions.prependMessage;
 import static core.namespaces.DataFunctions.replaceMessage;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface ExecutionCore {
     static <T, U> Function<WebDriver, U> conditionalChain(Predicate<T> guard, DriverFunction<T> dependency, Function<T, U> positive, U negative) {
@@ -45,7 +43,7 @@ public interface ExecutionCore {
     }
 
     private static <T, U> DriverFunction<T> conditionalDataChain(Predicate<Data<U>> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
-        return DriverFunctionFactoryFunctions.getFunction(conditionalChain(guard, dependency, positive, negative));
+        return DriverFunctionFactoryFunctions.getFunction(conditionalChain(guard, dependency, positive, prependMessage(negative, "conditionalChain", "Dependency failed the guard" + Strings.END_LINE)));
     }
 
     static <T, U> DriverFunction<T> conditionalChain(Predicate<Data<U>> guard, DriverFunction<U> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
@@ -58,7 +56,7 @@ public interface ExecutionCore {
 
     private static <T> Data<T> ifDriverAnyWrappedCore(WebDriver driver, String nameof, DriverFunction<T> function) {
         return isNotNull(driver) ? (
-                DependencyExecutionFunctions.ifDependencyAnyCore(nameof, function.apply(driver))
+            DependencyExecutionFunctions.ifDependencyAnyCore(nameof, function.apply(driver))
         ) : DataFactoryFunctions.getWithNameAndMessage(null, false, nameof, Strings.DRIVER_WAS_NULL, CoreConstants.NULL_EXCEPTION);
     }
 
@@ -91,16 +89,8 @@ public interface ExecutionCore {
         return ifDriver(nameof, isBlank(errorMessage) && areNotNull(dependency, positive, negative), DriverFunctionFactoryFunctions.getFunction(dependency.andThen(positive)), replaceMessage(negative, nameof, errorMessage));
     }
 
-    static <T, U> DriverFunction<U> ifDriverGuardObject(String nameof, Function<WebDriver, T> dependency, Function<T, Data<U>> positive, U defaultValue) {
-        return ifDriver(nameof, areNotNull(dependency, positive, defaultValue), DriverFunctionFactoryFunctions.getFunction(dependency.andThen(positive)), DataFactoryFunctions.getWithMessage(defaultValue, false, "Negative"));
-    }
-
     static <T, U> DriverFunction<T> ifDriverGuardData(String nameof, Predicate<Data<U>> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
         return ifDriver(nameof, areNotNull(guard, dependency, positive, negative), conditionalDataChain(guard, dependency, positive, negative), negative);
-    }
-
-    static <T, U> DriverFunction<U> ifDriverWebElement(String nameof, boolean status, DriverFunction<WebElement> dependency, Function<Data<WebElement>, Data<U>> positive, Data<U> negative) {
-        return ifDriver(nameof, status && isNotNull(dependency), conditionalDataChain(DataFunctions::isValidNonFalse, dependency, positive, negative), negative);
     }
 
     static <T, U> DriverFunction<T> ifDriverGuardData(String nameof, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
@@ -141,15 +131,6 @@ public interface ExecutionCore {
 
     static <T> DriverFunction<T> ifDriver(String nameof, String errorMessage, DriverFunction<Boolean> dependency, DriverFunction<T> positive, Data<T> negative) {
         return ifDriver(nameof, isBlank(errorMessage) && areNotNull(dependency, positive, negative), Executor.execute(dependency, positive), negative);
-    }
-
-    static <T, U> DriverFunction<T> ifDriverExecute(String nameof, boolean status, DriverFunction<T> positive) {
-        return ifDriver(nameof, status && isNotNull(positive), positive, DataFactoryFunctions.getWithMessage((T)CoreConstants.STOCK_OBJECT, false, "Execution status was false" + Strings.END_LINE));
-    }
-
-    static <T, U> DriverFunction<T> ifDriverExecute(String nameof, boolean status, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive) {
-        final var negative = DataFactoryFunctions.getWithMessage((T) CoreConstants.STOCK_OBJECT, false, "Execution status was false" + Strings.END_LINE);
-        return ifDriver(nameof, status && areNotNull(dependency, positive), ifDriverGuardData(nameof, dependency, positive, negative), negative);
     }
 
     static DriverFunction<Boolean> ifDriver(String message, DriverFunction<Boolean> positive) {
