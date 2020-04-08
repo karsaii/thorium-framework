@@ -1,5 +1,6 @@
 package selenium.namespaces;
 
+import core.constants.CoreDataConstants;
 import core.exceptions.ArgumentNullException;
 import core.extensions.interfaces.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
@@ -9,7 +10,6 @@ import data.constants.Strings;
 import data.namespaces.Formatter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
-import selenium.constants.DataConstants;
 import selenium.constants.DriverFunctionConstants;
 import selenium.records.ElementWaitParameters;
 import selenium.records.LazyElement;
@@ -84,7 +84,7 @@ public interface Wait {
                 "Element located by: " + locator + " to be " + (isBlank(message) ? "clickable" : message) + Strings.END_LINE,
                 WaitTimeDataFactory.getWithDefaultClock(interval, timeout)
             )).apply(driver),
-            appendMessage(DataConstants.NULL_BOOLEAN, "Condition Getter" + Strings.WAS_NULL)
+            appendMessage(CoreDataConstants.NULL_BOOLEAN, "Condition Getter" + Strings.WAS_NULL)
         );
     }
 
@@ -101,7 +101,7 @@ public interface Wait {
                 )).apply(driver),
                 Strings.ELEMENT + data.name
             ),
-            prependMessage(DataConstants.NULL_BOOLEAN, Strings.ELEMENT + data.name)
+            prependMessage(CoreDataConstants.NULL_BOOLEAN, Strings.ELEMENT + data.name)
         );
     }
 

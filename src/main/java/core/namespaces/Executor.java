@@ -1,5 +1,6 @@
 package core.namespaces;
 
+import core.constants.CoreDataConstants;
 import core.extensions.interfaces.DriverFunction;
 import core.extensions.interfaces.functional.TriPredicate;
 import core.extensions.interfaces.functional.boilers.IGetMessage;
@@ -12,7 +13,6 @@ import core.records.executor.ExecutionParametersData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
 import org.openqa.selenium.WebDriver;
-import selenium.constants.DataConstants;
 import selenium.constants.ExecutorConstants;
 import selenium.element.functions.SimpleMessageData;
 import selenium.enums.CoreConstants;
@@ -52,7 +52,7 @@ public interface Executor {
 
     @SafeVarargs
     private static <DependencyType, ReturnType> Data<ReturnType> executeCoreStepMessagesCore(DependencyType dependency, ExecutionData executionData, Function<DependencyType, Data<?>>... steps) {
-        Data<?> data = DataConstants.NO_STEPS;
+        Data<?> data = CoreDataConstants.NO_STEPS;
         var message = "";
         var index = 0;
         var status = true;
@@ -69,7 +69,7 @@ public interface Executor {
 
     @SafeVarargs
     private static <DependencyType, ReturnType> Data<ReturnType> executeCoreNoMessagesCore(DependencyType dependency, ExecutionData executionData, Function<DependencyType, Data<?>>... steps) {
-        Data<?> data = DataConstants.NO_STEPS;
+        Data<?> data = CoreDataConstants.NO_STEPS;
         var index = 0;
         var status = true;
         final var length = steps.length;

@@ -1,5 +1,6 @@
 package selenium.element;
 
+import core.constants.CoreDataConstants;
 import core.extensions.interfaces.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;
 import core.namespaces.DataFactoryFunctions;
@@ -9,7 +10,6 @@ import data.constants.Strings;
 import data.namespaces.Formatter;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import selenium.constants.DataConstants;
 import selenium.constants.ElementWaitDefaults;
 import selenium.enums.SingleGetter;
 import selenium.namespaces.Driver;
@@ -46,7 +46,7 @@ public interface Element {
 
     static DriverFunction<String> getWhenCore(DriverFunction<Boolean> waiter, DriverFunction<String> getter) {
         final var nameof = "getWhenCore";
-        return ifDriver(nameof, areNotNull(waiter, getter), Executor.execute(nameof, waiter, getter), DataConstants.NULL_STRING);
+        return ifDriver(nameof, areNotNull(waiter, getter), Executor.execute(nameof, waiter, getter), CoreDataConstants.NULL_STRING);
     }
 
     static DriverFunction<String> getWhenCore(
@@ -57,7 +57,7 @@ public interface Element {
     ) {
         return isNotNullLazyElementWaitParametersData(data) && areNotNull(waiter, getter) && isNotBlank(input) ? (
             getWhenCore(waiter.apply(data), getter.apply(data.object, input))
-        ) : DriverFunctionFactoryFunctions.get(DataConstants.DATA_WAS_NULL_OR_FALSE_STRING);
+        ) : DriverFunctionFactoryFunctions.get(CoreDataConstants.DATA_WAS_NULL_OR_FALSE_STRING);
     }
 
     static DriverFunction<String> getWhenCore(
@@ -67,40 +67,40 @@ public interface Element {
     ) {
         return (isNotNullLazyElementWaitParametersData(data) && areNotNull(waiter, getter)) ? (
             getWhenCore(waiter.apply(data), getter.apply(data.object))
-        ) : DriverFunctionFactoryFunctions.get(DataConstants.DATA_WAS_NULL_OR_FALSE_STRING);
+        ) : DriverFunctionFactoryFunctions.get(CoreDataConstants.DATA_WAS_NULL_OR_FALSE_STRING);
     }
 
     static DriverFunction<Boolean> sendKeys(LazyElement element, String input) {
         return ifDriver(
             Formatter.getSendKeysNotSendingMessage(element, input),
-            validChain(Driver.invokeElementSendKeys(element, input), Element.actionCore("sent keys to"), DataConstants.NULL_BOOLEAN)
+            validChain(Driver.invokeElementSendKeys(element, input), Element.actionCore("sent keys to"), CoreDataConstants.NULL_BOOLEAN)
         );
     }
 
     static DriverFunction<Boolean> click(LazyElement element) {
         return ifDriver(
             Formatter.isNullLazyElementMessage(element),
-            validChain(Driver.invokeElementClick(element), Element.actionCore("clicked"), DataConstants.NULL_BOOLEAN)
+            validChain(Driver.invokeElementClick(element), Element.actionCore("clicked"), CoreDataConstants.NULL_BOOLEAN)
         );
     }
 
     static DriverFunction<Boolean> clear(LazyElement element) {
         return ifDriver(
             Formatter.isNullLazyElementMessage(element),
-            validChain(Driver.invokeElementClear(element), Element.actionCore("cleared"), DataConstants.NULL_BOOLEAN)
+            validChain(Driver.invokeElementClear(element), Element.actionCore("cleared"), CoreDataConstants.NULL_BOOLEAN)
         );
     }
 
     static DriverFunction<Boolean> sendKeys(Data<LazyElement> data, String input) {
-        return ifDriver("sendKeys", isValidNonFalse(data), sendKeys(data.object, input), DataConstants.NULL_BOOLEAN);
+        return ifDriver("sendKeys", isValidNonFalse(data), sendKeys(data.object, input), CoreDataConstants.NULL_BOOLEAN);
     }
 
     static DriverFunction<Boolean> click(Data<LazyElement> data) {
-        return ifDriver("click", isValidNonFalse(data), click(data.object), DataConstants.NULL_BOOLEAN);
+        return ifDriver("click", isValidNonFalse(data), click(data.object), CoreDataConstants.NULL_BOOLEAN);
     }
 
     static DriverFunction<Boolean> clear(Data<LazyElement> data) {
-        return ifDriver("clear", isValidNonFalse(data), clear(data.object), DataConstants.NULL_BOOLEAN);
+        return ifDriver("clear", isValidNonFalse(data), clear(data.object), CoreDataConstants.NULL_BOOLEAN);
     }
 
     static DriverFunction<Boolean> click(By locator, SingleGetter getter) {

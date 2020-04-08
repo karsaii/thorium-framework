@@ -1,5 +1,6 @@
 package selenium.namespaces;
 
+import core.constants.CoreDataConstants;
 import core.extensions.interfaces.DriverFunction;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
@@ -8,7 +9,6 @@ import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-import selenium.constants.DataConstants;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +25,7 @@ import static selenium.namespaces.ExecutionCore.validChain;
 public interface Screenshotter {
     private static Data<Boolean> takeScreenshot(TakesScreenshot shotter, String path) {
         final var formattedPath = Formatter.getScreenshotFileName(path);
-        var data = DataConstants.NULL_BOOLEAN;
+        var data = CoreDataConstants.NULL_BOOLEAN;
         try {
             FileUtils.copyFile(shotter.getScreenshotAs(OutputType.FILE), new File(formattedPath));
             data = DataFactoryFunctions.getBoolean(true, "Successfully taken screenshot, as: " + formattedPath);
@@ -48,8 +48,8 @@ public interface Screenshotter {
         return ifDriver(
             "takeScreenShot",
             Formatter.isBlankMessage(path, "Path"),
-            validChain(Driver.getScreenshotter(), Screenshotter.takeScreenshot(path), DataConstants.NULL_BOOLEAN),
-            DataConstants.NULL_BOOLEAN
+            validChain(Driver.getScreenshotter(), Screenshotter.takeScreenshot(path), CoreDataConstants.NULL_BOOLEAN),
+            CoreDataConstants.NULL_BOOLEAN
         );
     }
 
@@ -69,7 +69,7 @@ public interface Screenshotter {
             "takeScreenShotOnDataFailure",
             areNotNull(assertion, data) && isNotBlank(path),
             driver -> {
-                var ldata = DataConstants.NULL_BOOLEAN;
+                var ldata = CoreDataConstants.NULL_BOOLEAN;
                 if (isInvalidOrFalse(data)) {
                     ldata = appendMessage(Screenshotter.takeScreenShot(EnvironmentUtilities.getUsersProjectRootDirectory() + path).apply(driver), data.message.getMessage());
                 }
@@ -78,7 +78,7 @@ public interface Screenshotter {
 
                 return ldata;
             },
-            DataConstants.NULL_BOOLEAN
+            CoreDataConstants.NULL_BOOLEAN
         );
     }
 }

@@ -4,7 +4,7 @@ import core.extensions.namespaces.NullableFunctions;
 import core.records.Data;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import selenium.constants.DataConstants;
+import selenium.constants.SeleniumDataConstants;
 
 import java.util.HashMap;
 
@@ -17,7 +17,7 @@ public class DriverFactory {
         defaultId = "0";
 
     private static WebDriver getDriverObject(Data<WebDriver> data) {
-        return (data.status ? data : DataConstants.NULL_DRIVER).object;
+        return (data.status ? data : SeleniumDataConstants.NULL_DRIVER).object;
     }
 
     /*public static WebDriver getDriver(String browserType, String id) {

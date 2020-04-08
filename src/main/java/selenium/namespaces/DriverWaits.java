@@ -1,11 +1,11 @@
 package selenium.namespaces;
 
+import core.constants.CoreDataConstants;
 import core.extensions.interfaces.DriverFunction;
 import core.extensions.namespaces.BasicPredicateFunctions;
 import core.namespaces.Executor;
 import core.namespaces.WaitTimeDataFactory;
 import core.records.WaitData;
-import selenium.constants.DataConstants;
 
 import static core.extensions.namespaces.CoreUtilities.areAll;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -17,7 +17,7 @@ public interface DriverWaits {
                 "waitNavigatedTo",
                 isNotBlank(url) && areAll(BasicPredicateFunctions::isPositiveNonZero, interval, timeout) && (interval < timeout),
                 driver -> Wait.untilCore(new WaitData<>(EC.isUrlContainsData(url), WaitPredicateFunctions::isTruthyData, "Waiting for url", WaitTimeDataFactory.getWithDefaultClock(interval, timeout))).apply(driver),
-                DataConstants.PARAMETERS_NULL_BOOLEAN
+                CoreDataConstants.PARAMETERS_NULL_BOOLEAN
         );
     }
 
@@ -26,7 +26,7 @@ public interface DriverWaits {
                 "navigateAndWait",
                 isNotBlank(url) && areAll(BasicPredicateFunctions::isPositiveNonZero, interval, timeout) && (interval < timeout),
                 Executor.execute(Driver.navigate(url), waitNavigatedTo(url, interval, timeout)),
-                DataConstants.PARAMETERS_NULL_BOOLEAN
+                CoreDataConstants.PARAMETERS_NULL_BOOLEAN
         );
     }
 }

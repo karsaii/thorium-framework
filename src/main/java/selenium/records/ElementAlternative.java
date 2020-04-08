@@ -1,12 +1,12 @@
 package selenium.records;
 
+import core.constants.CoreDataConstants;
 import core.extensions.interfaces.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;
 import core.records.Data;
 import data.constants.Strings;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import selenium.constants.DataConstants;
 import selenium.constants.DriverFunctionConstants;
 import selenium.constants.ElementFinderConstants;
 import selenium.element.Element;
@@ -44,11 +44,11 @@ public class ElementAlternative {
     }
 
     public DriverFunction<Boolean> clickWhenCore(Data<LazyElement> data, DriverFunction<Boolean> condition) {
-        return ifDriver("clickWhenCore", isValidNonFalse(data), clickWhenCore(data.object, condition), DataConstants.NULL_BOOLEAN);
+        return ifDriver("clickWhenCore", isValidNonFalse(data), clickWhenCore(data.object, condition), CoreDataConstants.NULL_BOOLEAN);
     }
 
     public DriverFunction<Boolean> clearWhenCore(Data<LazyElement> data, DriverFunction<Boolean> condition) {
-        return ifDriver("clearWhenCore", isValidNonFalse(data), clearWhenCore(data.object, condition), DataConstants.NULL_BOOLEAN);
+        return ifDriver("clearWhenCore", isValidNonFalse(data), clearWhenCore(data.object, condition), CoreDataConstants.NULL_BOOLEAN);
     }
 
     public DriverFunction<Boolean> clickWhenCore(By locator, Function<By, DriverFunction<Boolean>> condition, SingleGetter getter) {
@@ -80,7 +80,7 @@ public class ElementAlternative {
             "inputWhenCore",
             isValidNonFalse(data),
             inputWhenCore(new ActionWhenData<>(condition.apply(data.object), sender.apply(data.object, input))),
-            DataConstants.NULL_BOOLEAN
+            CoreDataConstants.NULL_BOOLEAN
         );
     }
 

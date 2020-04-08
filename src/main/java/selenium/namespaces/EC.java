@@ -1,5 +1,6 @@
 package selenium.namespaces;
 
+import core.constants.CoreDataConstants;
 import core.extensions.interfaces.DriverFunction;
 import core.extensions.namespaces.BasicPredicateFunctions;
 import core.extensions.namespaces.CoreUtilities;
@@ -11,7 +12,6 @@ import data.namespaces.Formatter;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import selenium.constants.DataConstants;
 import selenium.records.LazyElement;
 
 import java.util.Objects;
@@ -76,7 +76,7 @@ public interface EC {
             areNotBlank(descriptor, conditionDescriptor)
         ) ? (
             replaceName(isValuesDataCore(is(data, expected, checker), expected, descriptor, conditionDescriptor), nameof)
-        ) : replaceMessage(DataConstants.NULL_BOOLEAN, nameof, Strings.PARAMETER_ISSUES);
+        ) : replaceMessage(CoreDataConstants.NULL_BOOLEAN, nameof, Strings.PARAMETER_ISSUES);
     }
 
     static DriverFunction<Boolean> isValuesData(String descriptor, String expected, DriverFunction<String> getter, BiFunction<String, String, Boolean> checker, String conditionDescriptor) {
@@ -85,7 +85,7 @@ public interface EC {
             nameof,
             areNotNull(expected, getter, checker) && areNotBlank(descriptor, conditionDescriptor),
             driver -> isValuesDataCore(is(getter, expected, checker).apply(driver), expected, descriptor, conditionDescriptor),
-            replaceMessage(DataConstants.NULL_BOOLEAN, nameof, "Expected was: \"" + expected +"\" and actual was: \"" + getter + Strings.END_LINE)
+            replaceMessage(CoreDataConstants.NULL_BOOLEAN, nameof, "Expected was: \"" + expected +"\" and actual was: \"" + getter + Strings.END_LINE)
         );
     }
 
@@ -302,8 +302,8 @@ public interface EC {
         return ifDriver(
             "isNumberOfWindowsEqualTo",
             BasicPredicateFunctions.isPositiveNonZero(expected),
-            ExecutionCore.validChain(Driver.getWindowHandleAmount(), EC.isNumberOfWindowsEqualToCore(expected), DataConstants.NULL_BOOLEAN),
-            DataConstants.NULL_BOOLEAN
+            ExecutionCore.validChain(Driver.getWindowHandleAmount(), EC.isNumberOfWindowsEqualToCore(expected), CoreDataConstants.NULL_BOOLEAN),
+            CoreDataConstants.NULL_BOOLEAN
         );
     }
 }

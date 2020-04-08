@@ -6,6 +6,7 @@ import core.records.MethodData;
 import data.constants.Strings;
 import org.openqa.selenium.WebElement;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,4 +29,7 @@ public abstract class CoreConstants {
     public static final Function<Object, Boolean> BOOLEAN_CASTER_FUNCTION = CoreUtilities::castToBoolean;
     public static final Function<Object, Void> VOID_CASTER_FUNCTION = object -> null;
     public static final Function<Object, WebElement> WEB_ELEMENT_CASTER_FUNCTION = WebElement.class::cast;
+
+    public static final Method STOCK_METHOD = Object.class.getDeclaredMethods()[0];
+    public static final MethodData STOCK_METHOD_DATA = new MethodData(STOCK_METHOD, CoreConstants.STOCK_METHOD_PARAMETER_TYPES.toString(), Strings.VOID_CLASS_GENERIC);
 }

@@ -1,7 +1,7 @@
 package core.extensions.namespaces;
 
 import core.extensions.DecoratedList;
-import selenium.constants.DataConstants;
+import selenium.constants.SeleniumDataConstants;
 
 import java.util.Objects;
 
@@ -11,7 +11,7 @@ public interface DecoratedListFunctions {
             CoreUtilities.areAny(NullableFunctions::isNotNull, list, clazz) &&
             list.isNotNullAndNonEmpty() &&
             Objects.equals(clazz.getTypeName(), list.getType()) &&
-            !Objects.equals(DataConstants.NULL_ELEMENT, list.first())
+            !Objects.equals(SeleniumDataConstants.NULL_ELEMENT, list.first())
         );
     }
 }

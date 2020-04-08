@@ -11,7 +11,7 @@ import org.openqa.selenium.WebElement;
 import selector.records.SelectorKeySpecificityData;
 import selenium.abstracts.AbstractLazyElement;
 import selenium.abstracts.AbstractWaitParameters;
-import selenium.constants.DataConstants;
+import selenium.constants.SeleniumDataConstants;
 import selenium.constants.ElementStrategyMapConstants;
 import selenium.enums.SelectorStrategy;
 import selenium.records.ElementWaitParameters;
@@ -90,7 +90,7 @@ public interface SeleniumUtilities {
     static boolean isNullWebElement(WebElement element) {
         return (
             NullableFunctions.isNull(element) ||
-            Objects.equals(DataConstants.NULL_ELEMENT.object, element) ||
+            Objects.equals(SeleniumDataConstants.NULL_ELEMENT.object, element) ||
             isNotEqual(element.getAttribute("id"), Strings.NULL_ELEMENT_ID)
         );
     }
@@ -160,7 +160,7 @@ public interface SeleniumUtilities {
 
     static Data<By> getLocator(Map<SelectorStrategy, Function<String, By>> strategyMap, LazyLocator data) {
         if (isNullLazyData(data)) {
-            return DataConstants.NULL_BY;
+            return SeleniumDataConstants.NULL_BY;
         }
 
         final var locator = data.locator;
