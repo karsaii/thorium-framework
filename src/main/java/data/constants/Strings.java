@@ -28,7 +28,7 @@ public class Strings {
     public static final String DEFAULT_GETTER_ELEMENTS = "getElements";
 
 
-    public static final String ELEMENT = "selenium/element ";
+    public static final String ELEMENT = "Element";
 
     public static final String LAZY_ELEMENT = "Lazy " + ELEMENT;
     public static final String LOCATOR = "Locator ";
@@ -45,6 +45,7 @@ public class Strings {
     public static final String TITLE_OF_WINDOW = "Title of window ";
     public static final String END_LINE = ".\n";
     public static final String WAS_NULL = " was null" + END_LINE;
+    public static final String WERE_NULL = " were null" + END_LINE;
     public static final String WASNT_NULL = " wasn't null" + END_LINE;
     public static final String NULL_ELEMENT_ID = "NULL_ELEMENT_ID";
 
@@ -56,9 +57,10 @@ public class Strings {
 
     public static final String NULL_DATA = "nullData.";
     public static final String EXECUTION_ENDED = "Execution ended.";
-    public static final String PARAMETER_ISSUES = " There were parameter issue(s):\n";
+    public static final String PARAMETER_ISSUES = " There were parameter issue(s)";
+    public static final String PARAMETER_ISSUES_LINE = PARAMETER_ISSUES + ":\n";
 
-    public static final String PARAMETER_ISSUES_END = "There were parameter issues" + Strings.END_LINE;
+    public static final String PARAMETER_ISSUES_END = PARAMETER_ISSUES + Strings.END_LINE;
 
     public static final String DEFAULT_ERROR_MESSAGE_STRING = "Returning default empty string" + END_LINE;
     public static final String ELEMENT_CLICKABLE = " " + ELEMENT + "is clickable" + END_LINE;
@@ -66,10 +68,10 @@ public class Strings {
     public static final String PARAMETERS_WERE_WRONG = "Parameters were wrong" + END_LINE;
     public static final String ELEMENT_WAS_FOUND = "Element was found" + END_LINE;
     public static final String DRIVER_WAS_NULL = "Driver" + WAS_NULL;
-    public static final String NULL_EXCEPTION_MESSAGE = "No exception occured" + END_LINE;
+    public static final String NULL_EXCEPTION_MESSAGE = "No exception occurred" + END_LINE;
 
     public static final String EXCEPTION_WAS_NULL = "Exception" + WAS_NULL;
-    public static final String LAZY_ELEMENT_WAIT_PARAMETERS_WERE_NULL = LAZY_ELEMENT + " wait parameters were null" + END_LINE;
+    public static final String LAZY_ELEMENT_WAIT_PARAMETERS_WERE_NULL = LAZY_ELEMENT + " wait parameters" + WERE_NULL;
     public static final String LAZY_ELEMENT_WAS_NULL = LAZY_ELEMENT + WAS_NULL;
     public static final String GET_FORMATTED_ELEMENT_VALUE_ERROR = "Element value not found. Parameters were wrong" + END_LINE;
     public static final String RAW_WEBELEMENT_PASSED = "Raw WebElement passed, anything might happen" + END_LINE;

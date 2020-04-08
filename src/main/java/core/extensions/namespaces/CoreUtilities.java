@@ -60,7 +60,7 @@ public interface CoreUtilities {
         }
 
         final boolean guardValue = conditionData.guardValue,
-                finalValue = conditionData.finalValue;
+            finalValue = conditionData.finalValue;
         final Function<Predicate<T>, Predicate<T>> inverter = CardinalitiesFunctions.getPredicate(conditionData.invert);
         final var checker = inverter.apply(condition);
         final var length = objects.length;
