@@ -89,6 +89,7 @@ import java.util.function.UnaryOperator;
 
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
+import static core.extensions.namespaces.NullableFunctions.isNull;
 import static core.namespaces.DataFunctions.appendMessage;
 import static core.namespaces.DataFunctions.isInvalidOrFalse;
 import static core.namespaces.DataFunctions.isValidNonFalse;
@@ -358,7 +359,7 @@ public interface Driver {
     ) {
         final var negative = FunctionRepository.get(data.functionMap, data.negativeKeyData);
         final var handlerData = functionData.handler;
-        if (!(NullableFunctions.isNull(parameters) || handlerData.validator.test(parameters))) {
+        if (!(isNull(parameters) || handlerData.validator.test(parameters))) {
             return negative;
         }
 
@@ -391,7 +392,7 @@ public interface Driver {
     }
 
     private static Data<WebElement> invokeGetElement(Data<SearchContext> context, By locator) {
-        if (isInvalidOrFalse(context) || NullableFunctions.isNull(locator)) {
+        if (isInvalidOrFalse(context) || isNull(locator)) {
             return SeleniumDataConstants.NULL_ELEMENT;
         }
 
@@ -410,7 +411,7 @@ public interface Driver {
     }
 
     private static DriverFunction<Void> invokeElementVoidMethod(String nameof, LazyElement data, MethodParametersData parameterData) {
-        if (isNullLazyElement(data) || NullableFunctions.isNull(parameterData)) {
+        if (isNullLazyElement(data) || isNull(parameterData)) {
             return DriverFunctionConstants.NULL_VOID;
         }
 
@@ -421,7 +422,7 @@ public interface Driver {
     }
 
     private static DriverFunction<Boolean> invokeElementBooleanMethod(String nameof, LazyElement data, MethodParametersData parameterData) {
-        if (isNullLazyElement(data) || NullableFunctions.isNull(parameterData)) {
+        if (isNullLazyElement(data) || isNull(parameterData)) {
             return DriverFunctionConstants.NULL_BOOLEAN;
         }
 
@@ -432,7 +433,7 @@ public interface Driver {
     }
 
     private static DriverFunction<String> invokeElementStringMethod(String nameof, LazyElement data, MethodParametersData parameterData) {
-        if (isNullLazyElement(data) || NullableFunctions.isNull(parameterData)) {
+        if (isNullLazyElement(data) || isNull(parameterData)) {
             return DriverFunctionConstants.NULL_STRING;
         }
 
@@ -443,7 +444,7 @@ public interface Driver {
     }
 
     private static DriverFunction<String> invokeElementStringMethod(String nameof, LazyElement data, String parameter, MethodParametersData parameterData) {
-        if (isNullLazyElement(data) || NullableFunctions.isNull(parameterData)) {
+        if (isNullLazyElement(data) || isNull(parameterData)) {
             return DriverFunctionConstants.NULL_STRING;
         }
 
@@ -513,7 +514,7 @@ public interface Driver {
     }
 
     private static Data<Boolean> isElementCondition(String name, Data<WebElement> data, UnaryOperator<Boolean> inverter, String descriptor, String negator) {
-        if (NullableFunctions.isNull(inverter)) {
+        if (isNull(inverter)) {
             return DataFactoryFunctions.getBoolean(false, "Inverter " + Strings.WAS_NULL);
         }
 
@@ -853,7 +854,7 @@ public interface Driver {
         }
 
         final var context = contextData.object;
-        if (NullableFunctions.isNull(context)) {
+        if (isNull(context)) {
             return negative;
         }
 
@@ -959,7 +960,7 @@ public interface Driver {
                 LazyLocator locator;
                 for(var index = 0; index < length; ++index) {
                     locator = locators.get(index);
-                    if (NullableFunctions.isNull(locator)) {
+                    if (isNull(locator)) {
                         return SeleniumDataConstants.NULL_LIST;
                     }
 
@@ -1106,7 +1107,7 @@ public interface Driver {
                 var current = data;
                 var message = "";
                 for (var shadowLocator : locators) {
-                    if (NullableFunctions.isNull(shadowLocator)) {
+                    if (isNull(shadowLocator)) {
                         break;
                     }
 
@@ -1167,7 +1168,7 @@ public interface Driver {
     static Function<Data<SearchContext>, Data<WebElement>> getNestedElement(By locator) {
         final var nameof = "getNestedElement: ";
         return NullableFunctions.isNotNull(locator) ? (context -> {
-            if (NullableFunctions.isNull(context)) {
+            if (isNull(context)) {
                 return replaceMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, Strings.PASSED_DATA_WAS_NULL);
             }
 
@@ -1208,7 +1209,7 @@ public interface Driver {
     static Function<Data<SearchContext>, Data<WebElementList>> getNestedElementsAmount(By locator, int count) {
         final var nameof = "getNestedElementsAmount: ";
         return NullableFunctions.isNotNull(locator) && BasicPredicateFunctions.isNonNegative(count) ? (context -> {
-            if (NullableFunctions.isNull(context)) {
+            if (isNull(context)) {
                 return replaceMessage(SeleniumDataConstants.NULL_LIST, Strings.PASSED_DATA_WAS_NULL);
             }
 
@@ -1272,7 +1273,7 @@ public interface Driver {
         BiFunction<Boolean, SwitchResultMessageData<Void>, String> formatter,
         SwitchResultMessageData<Void> messageData
     ) {
-        if (NullableFunctions.isNull(locator)) {
+        if (isNull(locator)) {
             DataFactoryFunctions.getBoolean(false, formatter.apply(false, messageData));
         }
 
@@ -1457,7 +1458,7 @@ public interface Driver {
                 for(; index < length; ++index) {
                     locator = locators.get(index);
                     message += index + ".: ";
-                    if (NullableFunctions.isNull(locator)) {
+                    if (isNull(locator)) {
                         message += (Strings.LOCATOR_WAS_NULL);
                         break;
                     }
@@ -1614,7 +1615,7 @@ public interface Driver {
                 }
 
                 final var function = ElementFinderConstants.frameNestedStrategyMap.get("" + locators.hasMoreThan(2));
-                if (NullableFunctions.isNull(function)) {
+                if (isNull(function)) {
                     return replaceMessage(defaultValue, nameof, "Function from Frame nested Strategy map " + Strings.WAS_NULL);
                 }
 
@@ -1782,7 +1783,7 @@ public interface Driver {
     static <T> Data<Integer> getNextCachedKey(Map<String, T> parameterMap, Iterator<String> getOrder, Map<String, DecoratedList<SelectorKeySpecificityData>> typeKeys, int parameterIndex) {
         final var nameof = "getNextCachedKey";
         var type = typeKeys.getOrDefault(getOrder.next(), null);
-        if (NullableFunctions.isNull(type)) {
+        if (isNull(type)) {
             return replaceMessage(CoreDataConstants.NULL_INTEGER, nameof, "Type" + Strings.WAS_NULL);
         }
 
@@ -1817,7 +1818,7 @@ public interface Driver {
                 final var dataElement = data.element;
                 final var name = dataElement.name;
                 final var cached2 = ElementRepository.containsElement(dataElement.name);
-                if (isValidNonFalse(cached2)) {
+                if (isInvalidOrFalse(cached2)) {
                     return SeleniumDataConstants.NULL_ELEMENT;
                 }
 
@@ -1831,9 +1832,15 @@ public interface Driver {
                 var message = CoreDataConstants.NULL_STRING;
                 var currentElement = SeleniumDataConstants.NULL_ELEMENT;
                 var parameterIndex = 0;
+                var index = 0;
+                var switchResult = CoreDataConstants.NULL_BOOLEAN;
                 final var length = data.internalData.limit;
-                for (var index = 0; isValidNonFalse(currentElement) && (index < length); ++index, ++parameterIndex) {
-                    switchToDefaultContent().apply(driver);
+                for (; isValidNonFalse(currentElement) && (index < length); ++index, ++parameterIndex) {
+                    switchResult = switchToDefaultContent().apply(driver);
+                    if (isInvalidOrFalse(switchResult)) {
+                        return replaceMessage(currentElement, nameof, switchResult.message.toString());
+                    }
+
                     var keyData = isCached ? getNextCachedKey(parameterMap, getOrder, typeKeys, parameterIndex) : getNextKey(parameterKeys, parameterIndex);
                     if (isValidNonFalse(keyData)) {
                         return replaceMessage(currentElement, nameof, "Parameter key wasn't found in " + (isCached ? "cached" : "") + " keys" + Strings.END_LINE);
@@ -1841,7 +1848,7 @@ public interface Driver {
                     parameterIndex = isCached ? keyData.object : parameterIndex;
                     var key = keyData.message.message;
                     var parameters = parameterMap.get(key);
-                    if (NullableFunctions.isNull(parameters) || parameters.lazyLocators.isNullOrEmpty()) {
+                    if (isNull(parameters) || parameters.lazyLocators.isNullOrEmpty()) {
                         continue;
                     }
 
@@ -1850,7 +1857,6 @@ public interface Driver {
                     if (isValidNonFalse(update)) {
                         continue;
                     }
-
 
                     var getter = parameters.getter;
                     var indexData = parameters.indexData;
@@ -1916,12 +1922,12 @@ public interface Driver {
                 boolean isIndexed;
                 var currentElements = SeleniumDataConstants.NULL_LIST;
                 for (var currentStrategy : getOrder) {
-                    if (NullableFunctions.isNull(currentStrategy)) {
+                    if (isNull(currentStrategy)) {
                         continue;
                     }
 
                     var parameters = parameterMap.get(currentStrategy);
-                    if (NullableFunctions.isNull(parameters)) {
+                    if (isNull(parameters)) {
                         continue;
                     }
 

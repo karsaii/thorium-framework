@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 import static java.util.Map.entry;
 
-public class ElementStrategyMapConstants {
+public abstract class ElementStrategyMapConstants {
     public static final Map<SelectorStrategy, Function<String, By>> STRATEGY_MAP = Collections.unmodifiableMap(
         new EnumMap<>(
             Map.ofEntries(
