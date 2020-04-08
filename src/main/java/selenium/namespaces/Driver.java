@@ -1817,7 +1817,7 @@ public interface Driver {
                 final var dataElement = data.element;
                 final var name = dataElement.name;
                 final var cached2 = ElementRepository.containsElement(dataElement.name);
-                if (isValidNonFalse(cached2)) {
+                if (isInvalidOrFalse(cached2)) {
                     return SeleniumDataConstants.NULL_ELEMENT;
                 }
 
@@ -1831,9 +1831,15 @@ public interface Driver {
                 var message = CoreDataConstants.NULL_STRING;
                 var currentElement = SeleniumDataConstants.NULL_ELEMENT;
                 var parameterIndex = 0;
+                var index = 0;
+                var switchData = CoreDataConstants.NULL_BOOLEAN;
                 final var length = data.internalData.limit;
-                for (var index = 0; isValidNonFalse(currentElement) && (index < length); ++index, ++parameterIndex) {
-                    switchToDefaultContent().apply(driver);
+                for (; isValidNonFalse(currentElement) && (index < length); ++index, ++parameterIndex) {
+                    switchData = switchToDefaultContent().apply(driver);
+                    if (isInvalidOrFalse(switchData)) {
+                        return replaceMessage(currentElement, nameof, switchData.message.toString());
+                    }
+
                     var keyData = isCached ? getNextCachedKey(parameterMap, getOrder, typeKeys, parameterIndex) : getNextKey(parameterKeys, parameterIndex);
                     if (isValidNonFalse(keyData)) {
                         return replaceMessage(currentElement, nameof, "Parameter key wasn't found in " + (isCached ? "cached" : "") + " keys" + Strings.END_LINE);
