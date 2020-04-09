@@ -1840,7 +1840,7 @@ public interface Driver {
                 final var parameterKeys = new DecoratedList<>(parameterMap.keySet(), String.class);
                 final var types = new DecoratedList<>(typeKeys.keySet(), String.class);
                 var message = CoreDataConstants.NULL_STRING;
-                var currentElement = DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.STOCK_ELEMENT, true, nameof, "");
+                var currentElement = DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.STOCK_ELEMENT, true, nameof, "Internal null element" + Strings.END_LINE);
                 var parameterIndex = 0;
                 var index = 0;
                 var switchData = CoreDataConstants.NULL_BOOLEAN;
