@@ -96,7 +96,7 @@ public interface ElementParameters {
             message +=  (
                 Formatter.isNullMessage(data.methodMap, "Method map") +
                 Formatter.isNullMessage(data.list, "Method List") +
-                Formatter.isInvalidOrFalseMessage(data.defaultValue, "Default Value")
+                Formatter.isFalseMessage(data.defaultValue, "Default Value")
             );
         }
         return isNotBlank(message) ? "validateMethodGetCommonParametersData: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
