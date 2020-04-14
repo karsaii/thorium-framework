@@ -106,6 +106,20 @@ public interface ScriptExecutions {
         return isNotNull(data) && areNotNull(data.caster, data.parameter, data.defaultValue);
     }
 
+    static <T, U> String isInvalidHandlerResultDataMessage(HandleResultData<T, U> data) {
+        final var baseName = "Handle Result Data";
+        var message = isNullMessage(data, baseName);
+        if (isBlank(message)) {
+            message += (
+                isNullMessage(data.caster, baseName + " Caster") +
+                isNullMessage(data.parameter, baseName + " Parameter") +
+                isNullMessage(data.defaultValue, baseName + " Default Value")
+            );
+        }
+        return isNotBlank(message) ? "isInvalidHandlerResultDataMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+    }
+
+
     static <T, U, V> boolean isValidExecutorResultFunctionsData(ExecutorResultFunctionsData<T, U, V> data) {
         return isNotNull(data) && areNotNull(data.castHandler, data.messageHandler);
     }

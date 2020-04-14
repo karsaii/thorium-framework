@@ -71,7 +71,7 @@ public interface Executor {
             status = executionData.endStatus.test(data.status);
         }
 
-        return DataFactoryFunctions.getWithMessage((ReturnType)data.object, status, index < length ? "Execution ended early:\n" + data.message : "");
+        return DataFactoryFunctions.getWithMessage((ReturnType)data.object, status, index < length ? "Execution ended early:\n" + "\t" + data.message.toString().replaceAll("\n", "\n\t") : "");
     }
 
     @SafeVarargs

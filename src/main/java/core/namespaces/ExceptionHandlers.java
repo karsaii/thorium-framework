@@ -10,12 +10,14 @@ import core.constants.CoreConstants;
 import validators.ScriptExecutions;
 
 import static core.extensions.namespaces.CoreUtilities.isNonException;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface ExceptionHandlers {
     static <CastParameterType, ReturnType> Data<ReturnType> classCastHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        if (!ScriptExecutions.isValidHandlerResultData(data)) {
-            return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
+        final var errorMessage = ScriptExecutions.isInvalidHandlerResultDataMessage(data);
+        if (isNotBlank(errorMessage)) {
+            return DataFactoryFunctions.getInvalidWithNameAndMessage(defaultValue, "classCastHandler", errorMessage);
         }
 
         var exception = CoreConstants.EXCEPTION;
@@ -32,8 +34,9 @@ public interface ExceptionHandlers {
 
     static <CastParameterType, ReturnType> Data<ReturnType> invokeHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        if (!ScriptExecutions.isValidHandlerResultData(data)) {
-            return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
+        final var errorMessage = ScriptExecutions.isInvalidHandlerResultDataMessage(data);
+        if (isNotBlank(errorMessage)) {
+            return DataFactoryFunctions.getInvalidWithNameAndMessage(defaultValue, "invokeHandler", errorMessage);
         }
 
         var exception = CoreConstants.EXCEPTION;
@@ -55,8 +58,9 @@ public interface ExceptionHandlers {
 
     static <CastParameterType, ReturnType> Data<ReturnType> findElementsHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        if (!ScriptExecutions.isValidHandlerResultData(data)) {
-            return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
+        final var errorMessage = ScriptExecutions.isInvalidHandlerResultDataMessage(data);
+        if (isNotBlank(errorMessage)) {
+            return DataFactoryFunctions.getInvalidWithNameAndMessage(defaultValue, "findElementsHandler", errorMessage);
         }
 
         var exception = CoreConstants.EXCEPTION;
