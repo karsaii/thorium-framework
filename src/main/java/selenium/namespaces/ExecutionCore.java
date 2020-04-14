@@ -1,6 +1,7 @@
 package selenium.namespaces;
 
 import core.namespaces.validators.DataValidators;
+import org.openqa.selenium.WebElement;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.NullableFunctions;
 import core.namespaces.DataFactoryFunctions;
@@ -51,6 +52,10 @@ public interface ExecutionCore {
 
     static <ParameterType, ReturnType> DriverFunction<ReturnType> validChain(DriverFunction<ParameterType> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
         return conditionalDataChain(DataValidators::isValidNonFalse, dependency, positive, negative);
+    }
+
+    static <ReturnType> DriverFunction<ReturnType> validElementChain(DriverFunction<WebElement> dependency, Function<Data<WebElement>, Data<ReturnType>> positive, Data<ReturnType> negative) {
+        return conditionalDataChain(SeleniumUtilities::isNotNullWebElement, dependency, positive, negative);
     }
 
     private static <T> Data<T> ifDriverAnyWrappedCore(WebDriver driver, String nameof, DriverFunction<T> function) {

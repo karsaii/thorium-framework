@@ -586,8 +586,9 @@ public interface Formatter {
         return isNotBlank(message) ? "getLazyParameterErrorMessage: " + message : Strings.EMPTY;
     }
 
-    static String getIsElementConditionMessage(DriverFunction<WebElement> getter, UnaryOperator<Boolean> inverter) {
-        return isNullMessage(getter, "Getter") + isNullMessage(inverter, "Boolean inverter");
+    static String getElementConditionMessage(DriverFunction<WebElement> getter, UnaryOperator<Boolean> inverter) {
+        var message = isNullMessage(getter, "Getter") + isNullMessage(inverter, "Boolean inverter");
+        return isNotBlank(message) ? "getElementConditionMessage: " + Strings.PARAMETER_ISSUES_LINE + message + Strings.NEW_LINE : Strings.EMPTY;
     }
 
     static <T> String getManyGetterErrorMessage(Map<ManyGetter, Function<LazyLocatorList, DriverFunction<T>>> getterMap, ManyGetter key) {
