@@ -1,6 +1,6 @@
 package selenium.records.lazy;
 
-import core.extensions.boilers.WebElementList;
+import selenium.namespaces.extensions.boilers.WebElementList;
 import org.openqa.selenium.WebElement;
 import selenium.constants.LazyElementConstants;
 import selenium.records.IndexedData;

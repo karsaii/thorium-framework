@@ -1,7 +1,7 @@
 package selenium.abstracts;
 
-import core.extensions.interfaces.DriverFunction;
-import core.extensions.interfaces.functional.boilers.IElement;
+import selenium.namespaces.extensions.boilers.DriverFunction;
+import selenium.namespaces.extensions.boilers.IElement;
 import org.openqa.selenium.WebElement;
 
 import java.util.Map;

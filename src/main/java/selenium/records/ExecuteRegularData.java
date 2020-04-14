@@ -1,6 +1,6 @@
 package selenium.records;
 
-import core.extensions.interfaces.functional.boilers.ScriptFunction;
+import selenium.namespaces.extensions.boilers.ScriptFunction;
 import core.extensions.namespaces.NullableFunctions;
 import core.records.ExecuteCommonData;
 import data.constants.Strings;

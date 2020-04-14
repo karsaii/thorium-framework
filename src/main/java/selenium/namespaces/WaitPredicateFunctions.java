@@ -4,8 +4,8 @@ import core.extensions.namespaces.CoreUtilities;
 import core.records.Data;
 import selenium.records.LazyElement;
 
-import static core.namespaces.DataFunctions.isInvalidOrFalse;
-import static core.namespaces.DataFunctions.isValidNonFalse;
+import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
 
 public interface WaitPredicateFunctions {
     static <T> boolean isFalsyData(T object) {

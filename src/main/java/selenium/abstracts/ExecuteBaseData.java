@@ -1,6 +1,6 @@
 package selenium.abstracts;
 
-import core.extensions.interfaces.functional.boilers.ScriptFunction;
+import selenium.namespaces.extensions.boilers.ScriptFunction;
 import core.records.ExecuteCommonData;
 
 public abstract class ExecuteBaseData<ParameterType, ReturnType> implements ScriptFunction<ReturnType> {

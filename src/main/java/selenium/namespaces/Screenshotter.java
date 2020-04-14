@@ -1,8 +1,7 @@
 package selenium.namespaces;
 
 import core.constants.CoreDataConstants;
-import core.extensions.interfaces.DriverFunction;
-import core.namespaces.DataFactoryFunctions;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.records.Data;
 import data.namespaces.Formatter;
 import org.apache.commons.io.FileUtils;
@@ -16,8 +15,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
-import static core.namespaces.DataFunctions.appendMessage;
-import static core.namespaces.DataFunctions.isInvalidOrFalse;
+import static core.namespaces.DataFactoryFunctions.appendMessage;
+import static core.namespaces.DataFactoryFunctions.getBoolean;
+import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.ExecutionCore.validChain;
@@ -28,9 +28,9 @@ public interface Screenshotter {
         var data = CoreDataConstants.NULL_BOOLEAN;
         try {
             FileUtils.copyFile(shotter.getScreenshotAs(OutputType.FILE), new File(formattedPath));
-            data = DataFactoryFunctions.getBoolean(true, "Successfully taken screenshot, as: " + formattedPath);
+            data = getBoolean(true, "Successfully taken screenshot, as: " + formattedPath);
         } catch (IOException ex) {
-            data = DataFactoryFunctions.getBoolean(false, "Couldn't take screenshot, exception occurred: " + ex.getMessage() + "\n As: " + formattedPath, ex, ex.getMessage());
+            data = getBoolean(false, "Couldn't take screenshot, exception occurred: " + ex.getMessage() + "\n As: " + formattedPath, ex, ex.getMessage());
         }
 
         return data;

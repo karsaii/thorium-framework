@@ -1,7 +1,7 @@
 package selenium.records;
 
 import core.constants.CoreDataConstants;
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;
 import core.records.Data;
 import data.constants.Strings;
@@ -20,7 +20,8 @@ import selenium.records.lazy.LazyElementWaitParameters;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static core.namespaces.DataFunctions.isValidNonFalse;
+
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.SeleniumUtilities.getLazyLocatorList;
 

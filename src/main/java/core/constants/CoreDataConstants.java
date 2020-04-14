@@ -5,7 +5,6 @@ import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import core.records.MethodData;
 import data.constants.Strings;
-import selenium.enums.CoreConstants;
 
 import java.lang.reflect.Method;
 

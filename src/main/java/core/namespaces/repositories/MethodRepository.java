@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import static core.namespaces.DataFunctions.replaceMessage;
+import static core.namespaces.DataFactoryFunctions.replaceMessage;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface MethodRepository {

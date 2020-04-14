@@ -2,11 +2,11 @@ package selenium.constants;
 
 import core.constants.CoreDataConstants;
 import core.extensions.DecoratedList;
-import core.extensions.boilers.WebElementList;
+import selenium.namespaces.extensions.boilers.WebElementList;
 import core.records.MethodGetCommonParametersData;
 import org.openqa.selenium.WebElement;
 import selector.records.SelectorKeySpecificityData;
-import selenium.enums.CoreConstants;
+import core.constants.CoreConstants;
 import selenium.namespaces.repositories.ElementRepository;
 import selenium.namespaces.utilities.BasicTypeUtilities;
 import selenium.records.ExternalElementData;
@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import static core.extensions.namespaces.CoreUtilities.getIncrementalUUID;
 
@@ -36,4 +37,5 @@ public abstract class SeleniumCoreConstants {
 
     public static final List<Class<?>> CLASSES_OF_GET_MECHANISMS = Arrays.asList(WebElementList.class, WebElement.class);
     public static final MethodGetCommonParametersData DEFAULT_WEB_ELEMENT_METHOD_PARAMETERS = new MethodGetCommonParametersData(CoreConstants.METHODS, SeleniumCoreConstants.WEB_ELEMENT_METHOD_LIST, CoreDataConstants.NULL_METHODDATA);
+    public static final Function<Object, WebElement> WEB_ELEMENT_CASTER_FUNCTION = WebElement.class::cast;
 }

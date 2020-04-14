@@ -1,7 +1,7 @@
 package selenium.namespaces;
 
 import core.constants.CoreDataConstants;
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.BasicPredicateFunctions;
 import core.extensions.namespaces.CoreUtilities;
 import core.namespaces.DataFactoryFunctions;
@@ -21,10 +21,11 @@ import java.util.function.Function;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
-import static core.namespaces.DataFunctions.isInvalidOrFalse;
-import static core.namespaces.DataFunctions.isValidNonFalse;
-import static core.namespaces.DataFunctions.replaceMessage;
-import static core.namespaces.DataFunctions.replaceName;
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
+import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
+import static core.namespaces.DataFactoryFunctions.replaceMessage;
+import static core.namespaces.DataFactoryFunctions.replaceName;
+
 import static selenium.namespaces.ExecutionCore.ifDriver;
 
 public interface EC {

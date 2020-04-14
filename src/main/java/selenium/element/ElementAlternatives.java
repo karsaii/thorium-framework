@@ -1,7 +1,7 @@
 package selenium.element;
 
 import core.constants.CoreDataConstants;
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.records.Data;
 import data.constants.Strings;
 import org.openqa.selenium.By;
@@ -9,7 +9,8 @@ import selenium.enums.SingleGetter;
 import selenium.namespaces.repositories.LocatorRepository;
 import selenium.records.LazyElement;
 
-import static core.namespaces.DataFunctions.isValidNonFalse;
+
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElement;
 

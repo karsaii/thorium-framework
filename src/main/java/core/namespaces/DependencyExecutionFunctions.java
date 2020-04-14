@@ -2,12 +2,12 @@ package core.namespaces;
 
 import core.records.Data;
 import data.constants.Strings;
-import selenium.enums.CoreConstants;
+import core.constants.CoreConstants;
 
 import java.util.function.Function;
 
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
-import static core.namespaces.DataFunctions.replaceMessage;
+import static core.namespaces.DataFactoryFunctions.replaceMessage;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -16,13 +16,13 @@ public interface DependencyExecutionFunctions {
         final var name = isNotBlank(nameof) ? nameof : "ifDriverAnyCore";
         return isNotNull(data) ? (
             DataFactoryFunctions.getWithNameAndMessage(data.object, data.status, DataFunctions.getNameIfAbsent(data, name), data.message.message, data.exception)
-        ) : DataFactoryFunctions.getWithNameAndMessage(null, false, name, "Data " + Strings.WAS_NULL, CoreConstants.NULL_EXCEPTION);
+        ) : DataFactoryFunctions.getWithNameAndMessage(null, false, name, "Data " + Strings.WAS_NULL, CoreConstants.EXCEPTION);
     }
 
     private static <T, U> Data<U> ifDependencyAnyWrappedCore(T dependency, String nameof, Function<T, Data<U>> function) {
         return isNotNull(dependency) ? (
             ifDependencyAnyCore(nameof, function.apply(dependency))
-        ) : DataFactoryFunctions.getWithNameAndMessage(null, false, nameof, Strings.DRIVER_WAS_NULL, CoreConstants.NULL_EXCEPTION);
+        ) : DataFactoryFunctions.getWithNameAndMessage(null, false, nameof, Strings.DRIVER_WAS_NULL, CoreConstants.EXCEPTION);
     }
 
     private static <T, U> Function<T, Data<U>> ifDependencyAnyWrappedCore(String nameof, Function<T, Data<U>> function) {

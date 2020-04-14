@@ -1,5 +1,7 @@
 package core.extensions.namespaces;
 
+import java.util.Objects;
+
 import static core.extensions.namespaces.NullableFunctions.isNull;
 
 public interface ArrayFunctions {
@@ -10,6 +12,9 @@ public interface ArrayFunctions {
 
         final var length = array.length;
         final var expectedSize = 1;
-        return (length < expectedSize) || ((length == expectedSize) && isNull(array[0]));
+        return (
+            BasicPredicateFunctions.isBiggerThan(expectedSize, length) ||
+            (Objects.equals(length, expectedSize) && isNull(array[0]))
+        );
     }
 }

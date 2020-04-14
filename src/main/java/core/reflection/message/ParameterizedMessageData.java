@@ -1,5 +1,8 @@
 package core.reflection.message;
 
+import core.records.reflection.message.InvokeCommonMessageParametersData;
+import core.records.reflection.message.InvokeParameterizedMessageData;
+
 import java.util.Objects;
 import java.util.function.Function;
 

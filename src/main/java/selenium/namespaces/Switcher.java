@@ -1,6 +1,6 @@
 package selenium.namespaces;
 
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import data.constants.Strings;

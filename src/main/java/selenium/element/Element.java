@@ -1,7 +1,8 @@
 package selenium.element;
 
 import core.constants.CoreDataConstants;
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.SeleniumExecutor;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;
 import core.namespaces.DataFactoryFunctions;
 import core.namespaces.Executor;
@@ -25,7 +26,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
-import static core.namespaces.DataFunctions.isValidNonFalse;
+
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.ExecutionCore.validChain;
@@ -46,7 +48,7 @@ public interface Element {
 
     static DriverFunction<String> getWhenCore(DriverFunction<Boolean> waiter, DriverFunction<String> getter) {
         final var nameof = "getWhenCore";
-        return ifDriver(nameof, areNotNull(waiter, getter), Executor.execute(nameof, waiter, getter), CoreDataConstants.NULL_STRING);
+        return ifDriver(nameof, areNotNull(waiter, getter), SeleniumExecutor.execute(nameof, waiter, getter), CoreDataConstants.NULL_STRING);
     }
 
     static DriverFunction<String> getWhenCore(
@@ -128,14 +130,14 @@ public interface Element {
     }
 
     static <T, U> DriverFunction<U> actionWhenCore(ActionWhenData<T, U> data) {
-        return Executor.execute(Executor::aggregateMessage, data.condition, data.action);
+        return SeleniumExecutor.execute(Executor::aggregateMessage, data.condition, data.action);
     }
 
     static <T, U> DriverFunction<U> actionWhenCore(LazyElement data, Function<LazyElement, DriverFunction<U>> action, Function<LazyElement, DriverFunction<T>> condition) {
         return ifDriver(
             "actionWhenCore",
             Formatter.isNullLazyElementMessage(data),
-            Executor.execute(Executor::aggregateMessage, condition.apply(data), action.apply(data)),
+            SeleniumExecutor.execute(Executor::aggregateMessage, condition.apply(data), action.apply(data)),
             DataFactoryFunctions.getWithMessage(null, false, "")
         );
     }
@@ -144,7 +146,7 @@ public interface Element {
         return ifDriver(
             "actionWhenCore",
             isNotNullLazyElementWaitParametersData(data),
-            Executor.execute(Executor::aggregateMessage, condition.apply(data), action.apply(data.object)),
+            SeleniumExecutor.execute(Executor::aggregateMessage, condition.apply(data), action.apply(data.object)),
             DataFactoryFunctions.getWithMessage(null, false, Strings.LAZY_ELEMENT_WAIT_PARAMETERS_WERE_NULL)
         );
     }

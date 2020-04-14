@@ -2,7 +2,7 @@ package selenium.namespaces;
 
 import core.constants.CoreDataConstants;
 import core.exceptions.ArgumentNullException;
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
 import core.namespaces.WaitTimeDataFactory;
 import core.records.WaitData;
@@ -19,9 +19,9 @@ import validators.ElementParameters;
 import java.util.function.Function;
 
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
-import static core.namespaces.DataFunctions.appendMessage;
+import static core.namespaces.DataFactoryFunctions.appendMessage;
+import static core.namespaces.DataFactoryFunctions.prependMessage;
 import static core.namespaces.DataFunctions.getMessageFromData;
-import static core.namespaces.DataFunctions.prependMessage;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;

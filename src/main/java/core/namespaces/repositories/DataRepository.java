@@ -1,8 +1,8 @@
 package core.namespaces.repositories;
 
-import core.enums.TypedEnumKeyData;
+import core.records.TypedEnumKeyData;
 import core.records.Data;
-import selenium.enums.TypeKey;
+import core.enums.TypeKey;
 
 import java.util.Map;
 

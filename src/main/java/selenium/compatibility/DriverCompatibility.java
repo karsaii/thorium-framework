@@ -1,7 +1,7 @@
 package selenium.compatibility;
 
-import core.extensions.boilers.WebElementList;
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.WebElementList;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import selenium.constants.SeleniumDataConstants;

@@ -14,7 +14,7 @@ import selenium.records.lazy.CachedLazyElementData;
 
 import java.util.Map;
 
-import static core.namespaces.DataFunctions.replaceMessage;
+import static core.namespaces.DataFactoryFunctions.replaceMessage;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public interface LocatorRepository {

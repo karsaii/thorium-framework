@@ -6,7 +6,7 @@ import core.records.HandleResultData;
 import data.constants.Strings;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
-import selenium.enums.CoreConstants;
+import core.constants.CoreConstants;
 import validators.ScriptExecutions;
 
 import static core.extensions.namespaces.CoreUtilities.isNonException;
@@ -18,7 +18,7 @@ public interface ExceptionHandlers {
             return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
         }
 
-        var exception = CoreConstants.NULL_EXCEPTION;
+        var exception = CoreConstants.EXCEPTION;
         var result = defaultValue;
         try {
             result = data.caster.apply(data.parameter);
@@ -36,7 +36,7 @@ public interface ExceptionHandlers {
             return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
         }
 
-        var exception = CoreConstants.NULL_EXCEPTION;
+        var exception = CoreConstants.EXCEPTION;
         var result = defaultValue;
         try {
             result = data.caster.apply(data.parameter);
@@ -59,7 +59,7 @@ public interface ExceptionHandlers {
             return DataFactoryFunctions.getWithMessage(defaultValue, false, Strings.PARAMETER_ISSUES);
         }
 
-        var exception = CoreConstants.NULL_EXCEPTION;
+        var exception = CoreConstants.EXCEPTION;
         var result = defaultValue;
         try {
             result = data.caster.apply(data.parameter);

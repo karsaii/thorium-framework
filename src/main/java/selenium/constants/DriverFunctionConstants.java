@@ -1,12 +1,12 @@
 package selenium.constants;
 
 import core.constants.CoreDataConstants;
-import core.enums.TypedEnumKeyData;
+import core.records.TypedEnumKeyData;
 import core.extensions.boilers.StringSet;
-import core.extensions.boilers.WebElementList;
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.WebElementList;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import org.openqa.selenium.WebElement;
-import selenium.enums.TypeKey;
+import core.enums.TypeKey;
 import selenium.namespaces.DriverFunctionFactoryFunctions;
 
 import java.util.Collections;

@@ -1,18 +1,17 @@
 package data.namespaces;
 
 import core.extensions.DecoratedList;
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
 import core.namespaces.DataFactoryFunctions;
 import core.records.ActionData;
 import core.records.Data;
 import core.records.command.CommandRangeData;
-import core.reflection.message.InvokeCommonMessageParametersData;
-import core.reflection.message.InvokeParameterizedMessageData;
+import core.records.reflection.message.InvokeCommonMessageParametersData;
+import core.records.reflection.message.InvokeParameterizedMessageData;
 import data.constants.FormatterStrings;
 import data.constants.Strings;
-import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebDriver;
@@ -45,7 +44,7 @@ import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.namespaces.DataFunctions.isFalse;
-import static core.namespaces.DataFunctions.isValidNonFalse;
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.SeleniumUtilities.getLocator;
@@ -67,17 +66,17 @@ public interface Formatter {
         return isNullMessage(object, "Object");
     }
 
-    static String isNullOrFalseDataMessage(Data object, String parameterName) {
-        final var result = isParameterMessage(isValidNonFalse(object), parameterName, "false data");
-        return StringUtils.isBlank(result) ? result : result + object.message;
+    static String isInvalidOrFalseMessage(Data data, String parameterName) {
+        final var result = isParameterMessage(isValidNonFalse(data), parameterName, "false data");
+        return isNotBlank(result) ? result + data.message : result;
     }
 
-    static String isNullOrFalseDataMessage(Data object) {
-        return isNullOrFalseDataMessage(object, "data");
+    static String isInvalidOrFalseMessage(Data object) {
+        return isInvalidOrFalseMessage(object, "data");
     }
 
     static String isNullOrFalseDataWebElementMessage(Data object) {
-        return isNullOrFalseDataMessage(object, "data");
+        return isInvalidOrFalseMessage(object, "data");
     }
 
     static String isBlankMessage(String object, String parameterName) {
@@ -97,7 +96,7 @@ public interface Formatter {
             isNullMessage(keyCondition, valuesMessage + "boolean") +
             isNullMessage(map, valuesMessage + " map") +
             isNullMessage(expected, valuesMessage + "expected value") +
-            isNullOrFalseDataMessage(object, valuesMessage + "object")
+            isInvalidOrFalseMessage(object, valuesMessage + "object")
         );
 
         if (isNotBlank(errorMessage)) {
@@ -133,7 +132,7 @@ public interface Formatter {
 
     static Data<String> getValueMessage(Data<String> data, String descriptor) {
         final var defaultMessage = "getValueMessageString: Returning default empty string" + Strings.END_LINE;
-        var message = isNullOrFalseDataMessage(data);
+        var message = isInvalidOrFalseMessage(data);
         var object = "";
         if (isNotBlank(message)) {
             object = data.object;
@@ -202,7 +201,7 @@ public interface Formatter {
     }
 
     static String getNestedElementsErrorMessage(By locator, Data<SearchContext> context) {
-        return getLocatorErrorMessage(locator) + isNullOrFalseDataMessage(context, "Search Context");
+        return getLocatorErrorMessage(locator) + isInvalidOrFalseMessage(context, "Search Context");
     }
 
     static String getElementClickableMessage(boolean status, String message) {
@@ -301,7 +300,7 @@ public interface Formatter {
     }
 
     static String getWhenCoreMessage(Data<Boolean> data) {
-        var message = isNullOrFalseDataMessage(data);
+        var message = isInvalidOrFalseMessage(data);
         if (isNotBlank(message)) {
             message += Strings.END_LINE + "Wait result was null or false" + Strings.END_LINE;
         }
@@ -316,7 +315,7 @@ public interface Formatter {
     static <T> String getDataNullnessStatusMessage(T object) {
         var errorMessage = "";
         if (object instanceof Data) {
-            errorMessage = isNullOrFalseDataMessage((Data)object);
+            errorMessage = isInvalidOrFalseMessage((Data)object);
         }
         if (object instanceof LazyElement) {
             errorMessage = isNullLazyElementMessage((LazyElement)object);
@@ -624,11 +623,14 @@ public interface Formatter {
         return isNotBlank(message) ? nameof + message : Strings.EMPTY;
     }
 
-    static String isNotNullLazyDataMessage(LazyLocator locator) {
+    static String isNullLazyDataMessage(LazyLocator locator) {
         final var parameterName = "Lazy locator";
         var message = isNullMessage(locator, parameterName);
         if (isBlank(message)) {
-            message += isNullMessage(locator.locator, parameterName + " value") + isNullMessage(locator.strategy, parameterName + " strategy");
+            message += (
+                isNullMessage(locator.locator, parameterName + " value") +
+                isNullMessage(locator.strategy, parameterName + " strategy")
+            );
         }
 
         if (isBlank(message)) {
@@ -777,7 +779,7 @@ public interface Formatter {
 
     static String getElementAttributeMessage(Data<LazyElement> data, String value, String parameterName) {
         final var name = isBlank(parameterName) ? "Value" : parameterName;
-        var message = isNullOrFalseDataMessage(data, "Element data");
+        var message = isInvalidOrFalseMessage(data, "Element data");
         if (isBlank(message)) {
             message += isBlankMessage(value, name);
         }

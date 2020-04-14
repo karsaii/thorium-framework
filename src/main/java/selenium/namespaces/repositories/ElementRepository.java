@@ -27,10 +27,11 @@ import java.util.List;
 import java.util.Map;
 
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
-import static core.namespaces.DataFunctions.isInvalidOrFalse;
-import static core.namespaces.DataFunctions.isValidNonFalse;
-import static core.namespaces.DataFunctions.prependMessage;
-import static core.namespaces.DataFunctions.replaceMessage;
+import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
+import static core.namespaces.DataFactoryFunctions.prependMessage;
+import static core.namespaces.DataFactoryFunctions.replaceMessage;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static selenium.namespaces.SeleniumUtilities.isNullLazyElement;
 

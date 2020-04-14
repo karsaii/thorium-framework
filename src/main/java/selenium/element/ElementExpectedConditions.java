@@ -1,6 +1,6 @@
 package selenium.element;
 
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import data.constants.Strings;
 import selenium.namespaces.EC;
 import selenium.records.LazyElement;
