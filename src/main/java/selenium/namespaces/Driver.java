@@ -113,6 +113,7 @@ import static selenium.namespaces.ExecutionCore.ifData;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.ExecutionCore.ifDriverGuardData;
 import static selenium.namespaces.ExecutionCore.validChain;
+import static selenium.namespaces.ExecutionCore.validElementChain;
 import static selenium.namespaces.SeleniumUtilities.getKeysCopy;
 import static selenium.namespaces.SeleniumUtilities.getLazyLocator;
 import static selenium.namespaces.SeleniumUtilities.getLocator;
@@ -413,52 +414,48 @@ public interface Driver {
         ) : context -> DataFactoryFunctions.getInvalidWithNameAndMessage(SeleniumCoreConstants.STOCK_ELEMENT, "invokeGetElement", message);
     }
 
-    private static DriverFunction<Void> invokeElementVoidMethod(String name, LazyElement data, MethodParametersData parameterData) {
+    private static DriverFunction<Void> invokeElementVoidMethod(String name, LazyElement element, MethodParametersData parameterData) {
         final var nameof = isNotBlank(name) ? name : "invokeElementVoidMethod";
-        final var errorMessage = isNullLazyElementMessage(data) + MethodParametersDataValidators.isValid(parameterData);
+        final var errorMessage = isNullLazyElementMessage(element) + MethodParametersDataValidators.isValid(parameterData);
         if (isNotBlank(errorMessage)) {
             return driver -> DataFactoryFunctions.getInvalidWithNameAndMessage(null, nameof, errorMessage);
         }
 
         final var methodData = MethodRepository.getMethod(SeleniumCoreConstants.DEFAULT_WEB_ELEMENT_METHOD_PARAMETERS, parameterData);
         final var messageHandler = new RegularMessageData(Formatter::getInvokeMethodCommonMessageFunction);
-        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.VOID_REGULAR, messageHandler, InvokeFunctions::invoke, data.get());
+        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.VOID_REGULAR, messageHandler, InvokeFunctions::invoke, element.get());
         return DriverFunctionFactoryFunctions.prependMessage(result, parameterData.methodName + Strings.COLON_SPACE);
     }
 
-    private static DriverFunction<Boolean> invokeElementBooleanMethod(String name, LazyElement data, MethodParametersData parameterData) {
+    private static DriverFunction<Boolean> invokeElementBooleanMethod(String name, LazyElement element, MethodParametersData parameterData) {
         final var nameof = isNotBlank(name) ? name : "invokeElementBooleanMethod";
-        final var errorMessage = isNullLazyElementMessage(data) + MethodParametersDataValidators.isValid(parameterData);
+        final var errorMessage = isNullLazyElementMessage(element) + MethodParametersDataValidators.isValid(parameterData);
         if (isNotBlank(errorMessage)) {
             return driver -> DataFactoryFunctions.getInvalidWithNameAndMessage(null, nameof, errorMessage);
         }
 
         final var methodData = MethodRepository.getMethod(SeleniumCoreConstants.DEFAULT_WEB_ELEMENT_METHOD_PARAMETERS, parameterData);
         final var messageHandler = new RegularMessageData(Formatter::getInvokeMethodCommonMessageFunction);
-        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.BOOLEAN_REGULAR, messageHandler, InvokeFunctions::invoke, data.get());
+        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.BOOLEAN_REGULAR, messageHandler, InvokeFunctions::invoke, element.get());
         return DriverFunctionFactoryFunctions.prependMessage(result, parameterData.methodName + Strings.COLON_SPACE);
     }
 
-    private static DriverFunction<String> invokeElementStringMethod(String name, LazyElement data, MethodParametersData parameterData) {
+    private static DriverFunction<String> invokeElementStringMethod(String name, LazyElement element, MethodParametersData parameterData) {
         final var nameof = isNotBlank(name) ? name : "invokeElementStringMethod";
-        final var errorMessage = isNullLazyElementMessage(data) + MethodParametersDataValidators.isValid(parameterData);
+        final var errorMessage = isNullLazyElementMessage(element) + MethodParametersDataValidators.isValid(parameterData);
         if (isNotBlank(errorMessage)) {
             return driver -> DataFactoryFunctions.getInvalidWithNameAndMessage(null, nameof, errorMessage);
         }
 
         final var methodData = MethodRepository.getMethod(SeleniumCoreConstants.DEFAULT_WEB_ELEMENT_METHOD_PARAMETERS, parameterData);
         final var messageHandler = new RegularMessageData(Formatter::getInvokeMethodCommonMessageFunction);
-        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.STRING_REGULAR, messageHandler, InvokeFunctions::invoke, data.get());
+        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.STRING_REGULAR, messageHandler, InvokeFunctions::invoke, element.get());
         return DriverFunctionFactoryFunctions.prependMessage(result, parameterData.methodName + Strings.COLON_SPACE);
     }
 
-    private static DriverFunction<String> invokeElementStringMethod(String name, LazyElement data, String parameter, MethodParametersData parameterData) {
+    private static DriverFunction<String> invokeElementStringMethod(String name, LazyElement element, String parameter, MethodParametersData parameterData) {
         final var nameof = isNotBlank(name) ? name : "invokeElementStringMethod";
-        final var errorMessage = (
-            isNullLazyElementMessage(data) +
-            MethodParametersDataValidators.isValid(parameterData) +
-            isBlankMessage(parameter, "Execution parameter value")
-        );
+        final var errorMessage = isNullLazyElementMessage(element) + MethodParametersDataValidators.isValid(parameterData) + isBlankMessage(parameter, "Execution parameter value");
         if (isNotBlank(errorMessage)) {
             return driver -> DataFactoryFunctions.getInvalidWithNameAndMessage(null, nameof, errorMessage);
         }
@@ -466,58 +463,58 @@ public interface Driver {
         final var methodData = MethodRepository.getMethod(SeleniumCoreConstants.DEFAULT_WEB_ELEMENT_METHOD_PARAMETERS, parameterData);
         final var handler = new InvokerParameterizedParametersFieldData<>(CoreUtilities.toSingleElementArray(parameter, StringUtils::isNotBlank), SeleniumInvokeFunctionDefaults.SINGLE_PARAMETER);
         final var messageHandler = new ParameterizedMessageData(parameter, Formatter::getInvokeMethodParameterizedMessageFunction);
-        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.STRING_PARAMETERS, messageHandler, handler, data.get());
+        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.STRING_PARAMETERS, messageHandler, handler, element.get());
         return DriverFunctionFactoryFunctions.prependMessage(result, parameterData.methodName + Strings.COLON_SPACE);
     }
 
-    private static DriverFunction<Boolean> invokeElementDisplayed(LazyElement data) {
-        return invokeElementBooleanMethod(InvokeConstants.ELEMENT_DISPLAYED, data, MethodDefaults.IS_DISPLAYED);
+    private static DriverFunction<Boolean> invokeElementDisplayed(LazyElement element) {
+        return invokeElementBooleanMethod(InvokeConstants.ELEMENT_DISPLAYED, element, MethodDefaults.IS_DISPLAYED);
     }
 
-    private static DriverFunction<Boolean> invokeElementEnabled(LazyElement data) {
-        return invokeElementBooleanMethod(InvokeConstants.ELEMENT_ENABLED, data, MethodDefaults.IS_ENABLED);
+    private static DriverFunction<Boolean> invokeElementEnabled(LazyElement element) {
+        return invokeElementBooleanMethod(InvokeConstants.ELEMENT_ENABLED, element, MethodDefaults.IS_ENABLED);
     }
 
-    private static DriverFunction<Boolean> invokeElementSelected(LazyElement data) {
-        return invokeElementBooleanMethod(InvokeConstants.ELEMENT_SELECTED, data, MethodDefaults.IS_SELECTED);
+    private static DriverFunction<Boolean> invokeElementSelected(LazyElement element) {
+        return invokeElementBooleanMethod(InvokeConstants.ELEMENT_SELECTED, element, MethodDefaults.IS_SELECTED);
     }
 
-    private static DriverFunction<String> invokeGetElementText(LazyElement data) {
-        return invokeElementStringMethod(InvokeConstants.GET_ELEMENT_TEXT, data, MethodDefaults.GET_TEXT);
+    private static DriverFunction<String> invokeGetElementText(LazyElement element) {
+        return invokeElementStringMethod(InvokeConstants.GET_ELEMENT_TEXT, element, MethodDefaults.GET_TEXT);
     }
 
-    private static DriverFunction<String> invokeGetElementTagname(LazyElement data) {
-        return invokeElementStringMethod(InvokeConstants.GET_ELEMENT_TAGNAME, data, MethodDefaults.GET_TAG_NAME);
+    private static DriverFunction<String> invokeGetElementTagname(LazyElement element) {
+        return invokeElementStringMethod(InvokeConstants.GET_ELEMENT_TAGNAME, element, MethodDefaults.GET_TAG_NAME);
     }
 
-    private static DriverFunction<String> invokeGetElementAttribute(LazyElement data, String attribute) {
-        return invokeElementStringMethod(InvokeConstants.GET_ELEMENT_ATTRIBUTE, data, attribute, MethodDefaults.GET_ATTRIBUTE);
+    private static DriverFunction<String> invokeGetElementAttribute(LazyElement element, String attribute) {
+        return invokeElementStringMethod(InvokeConstants.GET_ELEMENT_ATTRIBUTE, element, attribute, MethodDefaults.GET_ATTRIBUTE);
     }
 
-    private static DriverFunction<String> invokeGetElementCssValue(LazyElement data, String cssValue) {
-        return invokeElementStringMethod(InvokeConstants.GET_ELEMENT_CSS_VALUE, data, cssValue, MethodDefaults.GET_CSS_VALUE);
+    private static DriverFunction<String> invokeGetElementCssValue(LazyElement element, String cssValue) {
+        return invokeElementStringMethod(InvokeConstants.GET_ELEMENT_CSS_VALUE, element, cssValue, MethodDefaults.GET_CSS_VALUE);
     }
 
-    private static DriverFunction<Boolean> invokeElementClickable(LazyElement data) {
+    private static DriverFunction<Boolean> invokeElementClickable(LazyElement element) {
         return ifDriver(
             InvokeConstants.ELEMENT_CLICKABLE,
-            isNullMessage(data, "data"),
-            SeleniumExecutor.execute(Executor::aggregateMessage, invokeElementDisplayed(data), invokeElementEnabled(data)),
+            isNullLazyElementMessage(element),
+            SeleniumExecutor.execute(Executor::aggregateMessage, invokeElementDisplayed(element), invokeElementEnabled(element)),
             CoreDataConstants.NULL_BOOLEAN
         );
     }
 
-    static DriverFunction<Void> invokeElementClick(LazyElement data) {
-        return invokeElementVoidMethod(InvokeConstants.CLICK, data, MethodDefaults.CLICK);
+    static DriverFunction<Void> invokeElementClick(LazyElement element) {
+        return invokeElementVoidMethod(InvokeConstants.CLICK, element, MethodDefaults.CLICK);
     }
 
-    static DriverFunction<Void> invokeElementClear(LazyElement data) {
-        return invokeElementVoidMethod(InvokeConstants.CLEAR, data, MethodDefaults.CLEAR);
+    static DriverFunction<Void> invokeElementClear(LazyElement element) {
+        return invokeElementVoidMethod(InvokeConstants.CLEAR, element, MethodDefaults.CLEAR);
     }
 
-    static DriverFunction<Void> invokeElementSendKeys(LazyElement data, String parameter) {
+    static DriverFunction<Void> invokeElementSendKeys(LazyElement element, String parameter) {
         final var nameof = "invokeElementSendKeys";
-        final var errorMessage = isNullLazyElementMessage(data) + isBlankMessage(parameter, "Send keys value");
+        final var errorMessage = isNullLazyElementMessage(element) + isBlankMessage(parameter, "Send keys value");
         if (isNotBlank(errorMessage)) {
             return driver -> DataFactoryFunctions.getInvalidWithNameAndMessage(null, nameof, errorMessage);
         }
@@ -527,7 +524,7 @@ public interface Driver {
         final var keyData = new CharSequence[]{parameter};
         final var handler = new InvokerParameterizedParametersFieldData<>(CoreUtilities.toSingleElementArray(keyData, NullableFunctions::isNotNull), SeleniumInvokeFunctionDefaults.SINGLE_PARAMETER);
         final var messageHandler = new ParameterizedMessageData(parameter, Formatter::getInvokeMethodParameterizedMessageFunction);
-        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.VOID_PARAMETERS, messageHandler, handler, data.get());
+        final var result = invokeCore(nameof, methodData, SeleniumInvokeFunctionDefaults.VOID_PARAMETERS, messageHandler, handler, element.get());
         return DriverFunctionFactoryFunctions.prependMessage(result, methodParameterData.methodName + Strings.COLON_SPACE);
     }
 
@@ -538,7 +535,8 @@ public interface Driver {
             return DataFactoryFunctions.getInvalidBooleanWithNameAndMessage(false, nameof, errorMessage);
         }
 
-        final var lStatus = inverter.apply(isNotNullWebElement(data));
+        final var status = isNotNullWebElement(data);
+        final var lStatus = inverter.apply(status);
         final var returnData = Formatter.getConditionMessage(nameof, FormatterStrings.isMessageMap, lStatus, descriptor, negator);
         var message = returnData.message.getMessage();
         if (CoreUtilities.isFalse(lStatus)) {
@@ -553,11 +551,21 @@ public interface Driver {
     }
 
     private static DriverFunction<Boolean> isElementCondition(String name, DriverFunction<WebElement> getter, UnaryOperator<Boolean> inverter, String descriptor, String negator) {
+        final var negative = CoreDataConstants.NULL_BOOLEAN;
         return ifDriver(
             "isElementCondition",
-            Formatter.getIsElementConditionMessage(getter, inverter),
-            conditionalChain(NullableFunctions::isNotNull, getter, isElementCondition(name, inverter, descriptor, negator), CoreDataConstants.NULL_BOOLEAN),
-            CoreDataConstants.NULL_BOOLEAN
+            Formatter.getElementConditionMessage(getter, inverter),
+            validElementChain(getter, isElementCondition(name, inverter, descriptor, negator), negative),
+            negative
+        );
+    }
+
+    private static DriverFunction<Boolean> isElementConditionDataCore(LazyElement element, Function<LazyElement, DriverFunction<Boolean>> condition, String descriptor, String negator) {
+        return ifDriver(
+            "isElementConditionDataCore",
+            isNotNullLazyElement(element) && areNotNull(condition, negator) && isNotBlank(descriptor),
+            isElementCondition(element.name, SeleniumExecutor.execute(condition.apply(element), element.get()), CardinalitiesFunctions::noopBoolean, descriptor, negator),
+            CoreDataConstants.DATA_PARAMETER_WAS_NULL
         );
     }
 
@@ -569,19 +577,10 @@ public interface Driver {
         return isElementConditionDataCore(data.data, data.condition, data.descriptor, Strings.OPTION_NOT);
     }
 
-    private static DriverFunction<Boolean> isElementConditionDataCore(LazyElement element, Function<LazyElement, DriverFunction<Boolean>> condition, String descriptor, String negator) {
-        return ifDriver(
-            "isElementConditionDataCore",
-            areNotNull(condition, negator, element) && isNotBlank(descriptor),
-            isElementCondition(element.name, SeleniumExecutor.execute(condition.apply(element), element.get()), CardinalitiesFunctions::noopBoolean, descriptor, negator),
-            DataFactoryFunctions.getBoolean(false, "Data " + Strings.WAS_NULL)
-        );
-    }
-
     static DriverFunction<Boolean> isElementAbsent(LazyElement element) {
         return ifDriver(
             "isElementAbsent",
-            isNotNull(element),
+            isNotNullLazyElement(element),
             isElementCondition(element.name, element.get(), CardinalitiesFunctions::invertBoolean, Strings.ABSENT, Strings.OPTION_NOT),
             CoreDataConstants.NULL_BOOLEAN
         );
@@ -592,40 +591,40 @@ public interface Driver {
     }
 
 
-    static DriverFunction<Boolean> isElementPresent(LazyElement data) {
-        return isElementCondition(new ElementCondition(data, SeleniumDataValidators::isValidWebElement, Strings.PRESENT));
+    static DriverFunction<Boolean> isElementPresent(LazyElement element) {
+        return isElementCondition(new ElementCondition(element, SeleniumDataValidators::isValidWebElement, Strings.PRESENT));
     }
 
     static DriverFunction<Boolean> isElementLambdaDataCore(
-        LazyElement data,
+        LazyElement element,
         Function<LazyElement, DriverFunction<Boolean>> condition,
         Function<ElementCondition, DriverFunction<Boolean>> formatter,
         String descriptor
     ) {
         return ifDriver(
             "isElementLambdaDataCore",
-            areNotNull(data, condition, formatter) && isNotBlank(descriptor),
-            SeleniumExecutor.execute(isElementPresent(data), formatter.apply(new ElementCondition(data, condition, descriptor))),
+            isNotNullLazyElement(element) && areNotNull(condition, formatter) && isNotBlank(descriptor),
+            SeleniumExecutor.execute(isElementPresent(element), formatter.apply(new ElementCondition(element, condition, descriptor))),
             CoreDataConstants.PARAMETERS_NULL_BOOLEAN
         );
     }
 
     static DriverFunction<String> getElementValueLambdaDataCore(
-        LazyElement data,
+        LazyElement element,
         Function<LazyElement, DriverFunction<String>> getter,
         BiFunction<DriverFunction<String>, String, DriverFunction<String>> formatter,
         String descriptor
     ) {
         return ifDriver(
             "getElementValueLambdaDataCore",
-            areNotNull(data, getter, formatter) && isNotBlank(descriptor),
-            SeleniumExecutor.execute(isElementPresent(data), formatter.apply(getter.apply(data), descriptor)),
+            isNotNullLazyElement(element) && areNotNull(getter, formatter) && isNotBlank(descriptor),
+            SeleniumExecutor.execute(isElementPresent(element), formatter.apply(getter.apply(element), descriptor)),
             CoreDataConstants.PARAMETERS_NULL_STRING
         );
     }
 
     static <T> DriverFunction<String> getElementValueLambdaDataCore(
-        LazyElement data,
+        LazyElement element,
         T parameter,
         BiFunction<LazyElement, T, DriverFunction<String>> getter,
         BiFunction<DriverFunction<String>, String, DriverFunction<String>> formatter,
@@ -633,30 +632,30 @@ public interface Driver {
     ) {
         return ifDriver(
             "getElementValueLambdaDataCore",
-            areNotNull(data, getter, formatter) && isNotBlank(descriptor),
-            SeleniumExecutor.execute(isElementPresent(data), formatter.apply(getter.apply(data, parameter), descriptor)),
+            isNotNullLazyElement(element) && areNotNull(getter, formatter) && isNotBlank(descriptor),
+            SeleniumExecutor.execute(isElementPresent(element), formatter.apply(getter.apply(element, parameter), descriptor)),
             CoreDataConstants.PARAMETERS_NULL_STRING
         );
     }
 
-    static DriverFunction<Boolean> isElementConditionLambdaDataCore(LazyElement data, Function<LazyElement, DriverFunction<Boolean>> condition, String descriptor) {
-        return isElementLambdaDataCore(data, condition, Driver::isElementCondition, descriptor);
+    static DriverFunction<Boolean> isElementConditionLambdaDataCore(LazyElement element, Function<LazyElement, DriverFunction<Boolean>> condition, String descriptor) {
+        return isElementLambdaDataCore(element, condition, Driver::isElementCondition, descriptor);
     }
 
-    static DriverFunction<Boolean> isElementNotConditionLambdaDataCore(LazyElement data, Function<LazyElement, DriverFunction<Boolean>> condition, String descriptor) {
-        return isElementLambdaDataCore(data, condition, Driver::isElementNotCondition, descriptor);
+    static DriverFunction<Boolean> isElementNotConditionLambdaDataCore(LazyElement element, Function<LazyElement, DriverFunction<Boolean>> condition, String descriptor) {
+        return isElementLambdaDataCore(element, condition, Driver::isElementNotCondition, descriptor);
     }
 
-    static DriverFunction<String> getElementValueData(LazyElement data, Function<LazyElement, DriverFunction<String>> getter, String descriptor) {
-        return getElementValueLambdaDataCore(data, getter, Driver::getFormattedElementValueData, descriptor);
+    static DriverFunction<String> getElementValueData(LazyElement element, Function<LazyElement, DriverFunction<String>> getter, String descriptor) {
+        return getElementValueLambdaDataCore(element, getter, Driver::getFormattedElementValueData, descriptor);
     }
 
-    static <T> DriverFunction<String> getElementValueData(LazyElement data, T parameter, BiFunction<LazyElement, T, DriverFunction<String>> getter, String descriptor) {
-        return getElementValueLambdaDataCore(data, parameter, getter, Driver::getFormattedElementValueData, descriptor);
+    static <T> DriverFunction<String> getElementValueData(LazyElement element, T parameter, BiFunction<LazyElement, T, DriverFunction<String>> getter, String descriptor) {
+        return getElementValueLambdaDataCore(element, parameter, getter, Driver::getFormattedElementValueData, descriptor);
     }
 
-    static DriverFunction<Boolean> isElement(Function<LazyElement, DriverFunction<Boolean>> elementCondition, LazyElement data) {
-        return ifDriver("isElement", areNotNull(elementCondition, data), elementCondition.apply(data), CoreDataConstants.PARAMETERS_NULL_BOOLEAN);
+    static DriverFunction<Boolean> isElement(Function<LazyElement, DriverFunction<Boolean>> elementCondition, LazyElement element) {
+        return ifDriver("isElement", isNotNullLazyElement(element) && areNotNull(elementCondition), elementCondition.apply(element), CoreDataConstants.PARAMETERS_NULL_BOOLEAN);
     }
 
     static DriverFunction<Boolean> isElement(Function<LazyElement, DriverFunction<Boolean>> elementCondition, Data<LazyElement> data) {
@@ -693,56 +692,56 @@ public interface Driver {
         );
     }
 
-    static DriverFunction<Boolean> isElementDisplayed(LazyElement data) {
-        return isElementConditionLambdaDataCore(data, Driver::invokeElementDisplayed, Strings.DISPLAYED);
+    static DriverFunction<Boolean> isElementDisplayed(LazyElement element) {
+        return isElementConditionLambdaDataCore(element, Driver::invokeElementDisplayed, Strings.DISPLAYED);
     }
 
-    static DriverFunction<Boolean> isElementEnabled(LazyElement data) {
-        return isElementConditionLambdaDataCore(data, Driver::invokeElementEnabled, Strings.ENABLED);
+    static DriverFunction<Boolean> isElementEnabled(LazyElement element) {
+        return isElementConditionLambdaDataCore(element, Driver::invokeElementEnabled, Strings.ENABLED);
     }
 
-    static DriverFunction<Boolean> isElementClickable(LazyElement data) {
-        return isElementConditionLambdaDataCore(data, Driver::invokeElementClickable, Strings.CLICKABLE);
+    static DriverFunction<Boolean> isElementClickable(LazyElement element) {
+        return isElementConditionLambdaDataCore(element, Driver::invokeElementClickable, Strings.CLICKABLE);
     }
 
-    static DriverFunction<Boolean> isElementSelected(LazyElement data) {
-        return isElementConditionLambdaDataCore(data, Driver::invokeElementSelected, Strings.SELECTED);
+    static DriverFunction<Boolean> isElementSelected(LazyElement element) {
+        return isElementConditionLambdaDataCore(element, Driver::invokeElementSelected, Strings.SELECTED);
     }
 
-    static DriverFunction<Boolean> isElementHidden(LazyElement data) {
-        return isElementNotConditionLambdaDataCore(data, Driver::invokeElementDisplayed, Strings.HIDDEN);
+    static DriverFunction<Boolean> isElementHidden(LazyElement element) {
+        return isElementNotConditionLambdaDataCore(element, Driver::invokeElementDisplayed, Strings.HIDDEN);
     }
 
-    static DriverFunction<Boolean> isElementDisabled(LazyElement data) {
-        return isElementNotConditionLambdaDataCore(data, Driver::invokeElementEnabled, Strings.DISABLED);
+    static DriverFunction<Boolean> isElementDisabled(LazyElement element) {
+        return isElementNotConditionLambdaDataCore(element, Driver::invokeElementEnabled, Strings.DISABLED);
     }
 
-    static DriverFunction<Boolean> isElementUnclickable(LazyElement data) {
-        return isElementNotConditionLambdaDataCore(data, Driver::invokeElementClickable, Strings.UNCLICKABLE);
+    static DriverFunction<Boolean> isElementUnclickable(LazyElement element) {
+        return isElementNotConditionLambdaDataCore(element, Driver::invokeElementClickable, Strings.UNCLICKABLE);
     }
 
-    static DriverFunction<Boolean> isElementUnselected(LazyElement data) {
-        return isElementNotConditionLambdaDataCore(data, Driver::invokeElementSelected, Strings.UNSELECTED);
+    static DriverFunction<Boolean> isElementUnselected(LazyElement element) {
+        return isElementNotConditionLambdaDataCore(element, Driver::invokeElementSelected, Strings.UNSELECTED);
     }
 
-    static DriverFunction<String> getElementText(LazyElement data) {
-        return getElementValueData(data, Driver::invokeGetElementText, "Text");
+    static DriverFunction<String> getElementText(LazyElement element) {
+        return getElementValueData(element, Driver::invokeGetElementText, "Text");
     }
 
-    static DriverFunction<String> getElementTagName(LazyElement data) {
-        return getElementValueData(data, Driver::invokeGetElementTagname, "Tagname");
+    static DriverFunction<String> getElementTagName(LazyElement element) {
+        return getElementValueData(element, Driver::invokeGetElementTagname, "Tagname");
     }
 
-    static DriverFunction<String> getElementAttribute(LazyElement data, String attribute) {
-        return getElementValueData(data, attribute, Driver::invokeGetElementAttribute, "Attribute(\"" + attribute + "\")");
+    static DriverFunction<String> getElementAttribute(LazyElement element, String attribute) {
+        return getElementValueData(element, attribute, Driver::invokeGetElementAttribute, "Attribute(\"" + attribute + "\")");
     }
 
-    static DriverFunction<String> getElementAttributeValue(LazyElement data) {
-        return getElementAttribute(data, "value");
+    static DriverFunction<String> getElementAttributeValue(LazyElement element) {
+        return getElementAttribute(element, "value");
     }
 
-    static DriverFunction<String> getElementCssValue(LazyElement data, String cssValue) {
-        return getElementValueData(data, cssValue, Driver::invokeGetElementCssValue, "Css value(\"" + cssValue + "\")");
+    static DriverFunction<String> getElementCssValue(LazyElement element, String cssValue) {
+        return getElementValueData(element, cssValue, Driver::invokeGetElementCssValue, "Css value(\"" + cssValue + "\")");
     }
 
     static DriverFunction<Boolean> isElementPresent(By locator, SingleGetter getter) {
@@ -1061,8 +1060,8 @@ public interface Driver {
         return ifDriver("getShadowRootElement", isNullMessage(getter, "Getter"), Execute.getShadowRoot(getter), SeleniumDataConstants.NULL_ELEMENT);
     }
 
-    static DriverFunction<WebElement> getShadowRootElement(LazyElement data) {
-        return getShadowRootElement(data.get());
+    static DriverFunction<WebElement> getShadowRootElement(LazyElement element) {
+        return getShadowRootElement(element.get());
     }
 
     static DriverFunction<WebElement> getShadowRootElement(By locator, SingleGetter getter) {
@@ -1083,12 +1082,12 @@ public interface Driver {
         );
     }
 
-    static DriverFunction<WebElement> getRootElementByInvokedElement(LazyElement data, By locator) {
+    static DriverFunction<WebElement> getRootElementByInvokedElement(LazyElement element, By locator) {
         final var nameof = "getRootElementByInvokedElement";
         return ifDriver(
             nameof,
-            areNotNull(data, locator),
-            getRootElementByInvokedElement(data, getLazyLocator(locator)),
+            isNotNullLazyElement(element) && isNotNull(locator),
+            getRootElementByInvokedElement(element, getLazyLocator(locator)),
             replaceMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, "Parameters were wrong: locator or data.")
         );
     }
@@ -1103,11 +1102,11 @@ public interface Driver {
         );
     }
 
-    static DriverFunction<WebElement> getRootElementByInvokedElement(LazyElement data, LazyLocator locator) {
+    static DriverFunction<WebElement> getRootElementByInvokedElement(LazyElement element, LazyLocator locator) {
         return ifDriver(
             "getRootElementByInvokedElement",
-            isNotNullLazyElement(data) && isNotNullLazyData(locator),
-            driver -> getShadowRootElement(invokeGetElement(getLocator(locator).object).apply(getSearchContextOf("Element data", data.get().apply(driver)))).apply(driver),
+            isNotNullLazyElement(element) && isNotNullLazyData(locator),
+            driver -> getShadowRootElement(invokeGetElement(getLocator(locator).object).apply(getSearchContextOf("Element data", element.get().apply(driver)))).apply(driver),
             SeleniumDataConstants.NULL_ELEMENT//, nameof, "Parameters were wrong: locator or data.")
         );
     }
@@ -1266,7 +1265,7 @@ public interface Driver {
             areNotNull(getter, locators, defaultValue) && locators.isNotNullAndNonEmpty() && isNotNullLazyData(locator),
             driver -> isValidNonFalse(switchToDefaultContent().apply(driver)) ? (
                 getter.apply(locator).apply(getSearchContext(getShadowRootElement(locators).apply(driver).object))
-            ) : DataFactoryFunctions.getWithNameAndMessage(defaultValue, false, nameof, "Couldn't switch to default content" + Strings.END_LINE),
+            ) : DataFactoryFunctions.getInvalidWithNameAndMessage(defaultValue, nameof, "Couldn't switch to default content" + Strings.END_LINE),
             DataFactoryFunctions.getWithMessage(defaultValue, false, "There were parameter issues" + Strings.END_LINE)
         );
     }

@@ -2,6 +2,7 @@ package selenium.namespaces;
 
 import core.extensions.DecoratedList;
 import core.extensions.interfaces.functional.TriFunction;
+import core.extensions.namespaces.BasicPredicateFunctions;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import data.constants.Strings;
@@ -30,6 +31,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static core.extensions.namespaces.CoreUtilities.areAll;
+import static core.extensions.namespaces.CoreUtilities.areAny;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.isEqual;
 import static core.extensions.namespaces.CoreUtilities.isNullOrEmptyList;
@@ -87,7 +89,6 @@ public interface SeleniumUtilities {
         return !isNullLazyElement(data);
     }
 
-
     static boolean isNullWebElement(WebElement element) {
         return (
             isNull(element) ||
@@ -105,7 +106,7 @@ public interface SeleniumUtilities {
     }
 
     static <T> boolean isNullCommonWaitParametersData(AbstractWaitParameters<T> data) {
-        return isNull(data) || (data.duration < 0) || (data.interval < 0);
+        return isNull(data) || areAny(BasicPredicateFunctions::isNegative, data.duration, data.interval);
     }
 
     static boolean isNullElementWaitParametersData(ElementWaitParameters data) {
@@ -129,7 +130,7 @@ public interface SeleniumUtilities {
             return Strings.EMPTY;
         }
 
-        final var colonIndex = locator.indexOf(':');
+        final var colonIndex = locator.indexOf(Strings.COLON);
         return locator.substring(3, colonIndex);
     }
 
@@ -138,7 +139,7 @@ public interface SeleniumUtilities {
             return Strings.EMPTY;
         }
 
-        final var locatorStartIndex = locator.indexOf(':') + 2;
+        final var locatorStartIndex = locator.indexOf(Strings.COLON) + 2;
         return locator.substring(locatorStartIndex);
     }
 

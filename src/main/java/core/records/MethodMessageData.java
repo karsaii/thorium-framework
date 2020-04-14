@@ -17,12 +17,8 @@ public class MethodMessageData {
         this(Strings.EMPTY, message);
     }
 
-    public MethodMessageData() {
-        this(Strings.EMPTY, Strings.EMPTY);
-    }
-
     public String getMessage() {
-        return "" + nameof + ": " + message;
+        return nameof + ": " + message;
     }
 
     public String getMessage(String nameof) {
@@ -44,6 +40,6 @@ public class MethodMessageData {
 
     @Override
     public String toString() {
-        return "" + nameof + ": " + message;
+        return getMessage();
     }
 }

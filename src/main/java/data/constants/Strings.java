@@ -43,7 +43,8 @@ public class Strings {
     public static final String ELEMENT_ATTRIBUTE_VALUE = ELEMENT_ATTRIBUTE + " value";
 
     public static final String TITLE_OF_WINDOW = "Title of window ";
-    public static final String END_LINE = ".\n";
+    public static final String NEW_LINE = "\n";
+    public static final String END_LINE = "." + NEW_LINE;
     public static final String WAS_NULL = " was null" + END_LINE;
     public static final String WERE_NULL = " were null" + END_LINE;
     public static final String WASNT_NULL = " wasn't null" + END_LINE;
@@ -60,7 +61,7 @@ public class Strings {
     public static final String EXECUTION_STATUS = "Execution status";
     public static final String PARAMETER_ISSUES = " There were parameter issue(s)";
     public static final String COLON = ":";
-    public static final String COLON_NEWLINE = COLON + "\n";
+    public static final String COLON_NEWLINE = COLON + NEW_LINE;
     public static final String COLON_SPACE = COLON + " ";
     public static final String PARAMETER_ISSUES_LINE = PARAMETER_ISSUES + COLON_NEWLINE;
     public static final String EXECUTION_STATUS_COLON_SPACE = EXECUTION_STATUS + COLON_SPACE;
