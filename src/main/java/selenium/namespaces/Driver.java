@@ -535,13 +535,20 @@ public interface Driver {
     }
 
     private static Data<Boolean> isElementCondition(String name, Data<WebElement> data, UnaryOperator<Boolean> inverter, String descriptor, String negator) {
-        if (isNull(inverter)) {
-            return DataFactoryFunctions.getBoolean(false, "Inverter " + Strings.WAS_NULL);
+        final var nameof = isNotBlank(name) ? name : "isElementCondition";
+        final var errorMessage = isNullMessage(inverter, "Inverter");
+        if (isNotBlank(errorMessage)) {
+            return DataFactoryFunctions.getInvalidBooleanWithNameAndMessage(false, nameof, errorMessage);
         }
 
         final var lStatus = inverter.apply(isNotNullWebElement(data));
-        final var returnData = Formatter.getConditionMessage(name, FormatterStrings.isMessageMap, lStatus, descriptor, negator);
-        return DataFactoryFunctions.getBoolean(lStatus, name + " " + returnData.message.getMessage() + data.message.getMessage());
+        final var returnData = Formatter.getConditionMessage(nameof, FormatterStrings.isMessageMap, lStatus, descriptor, negator);
+        var message = returnData.message.getMessage();
+        if (CoreUtilities.isFalse(lStatus)) {
+            message += data.message.getMessage();
+        }
+
+        return DataFactoryFunctions.getBoolean(lStatus, nameof, message);
     }
 
     private static Function<Data<WebElement>, Data<Boolean>> isElementCondition(String name, UnaryOperator<Boolean> inverter, String descriptor, String negator) {
