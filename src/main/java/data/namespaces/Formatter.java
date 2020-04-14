@@ -1,6 +1,7 @@
 package data.namespaces;
 
 import core.extensions.DecoratedList;
+import selenium.constants.SeleniumDataConstants;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
@@ -50,6 +51,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.SeleniumUtilities.getLocator;
 import static selenium.namespaces.SeleniumUtilities.isNullAbstractLazyElementParametersList;
+import static selenium.namespaces.validators.SeleniumDataValidators.isNullWebElement;
 
 public interface Formatter {
     static String getOptionMessage(boolean status) {
@@ -811,5 +813,42 @@ public interface Formatter {
 
     static Function<Boolean, String> isFormatterAndMessageValid(BiFunction<String, Boolean, String> formatter, String message) {
         return status -> formatter.apply(message, status);
+    }
+
+    static String isEqualMessage(Object left, String leftDescriptor, Object right, String rightDescriptor) {
+        var message = isNullMessage(left, "Left Object") + isNullMessage(right, "Right Object");
+        if (isBlank(message) && Objects.equals(left, right)) {
+            message += (
+                (
+                    areAnyBlank(leftDescriptor, rightDescriptor) ? "The two objects" : (leftDescriptor + " and " + rightDescriptor)
+                ) + " are equal" + Strings.END_LINE
+            );
+        }
+
+        return isNotBlank(message) ? "isEqualMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+    }
+
+    static String isNullWebElementMessage(WebElement element) {
+        var message = isNullMessage(element, "Element");
+        if (isBlank(message)) {
+            message += (
+                isEqualMessage(SeleniumCoreConstants.STOCK_ELEMENT, "Null Selenium Element", element, "Element Parameter") +
+                isEqualMessage(element.getAttribute("id"), "Element ID", Strings.NULL_ELEMENT_ID, "Null Element ID")
+            );
+        }
+
+        return isNotBlank(message) ? "isNullWebElementMessage: " + Strings.PARAMETER_ISSUES_LINE + message + Strings.END_LINE : Strings.EMPTY;
+    }
+
+    static String isNullWebElementDataMessage(Data<WebElement> element) {
+        var message = isInvalidOrFalseMessage(element);
+        if (isBlank(message)) {
+            message += (
+                isEqualMessage(SeleniumDataConstants.NULL_ELEMENT, "Null Selenium Element Data", element, "Element Data Parameter") +
+                isNullWebElementMessage(element.object)
+            );
+        }
+
+        return isNotBlank(message) ? "isNullWebElementMessage: " + Strings.PARAMETER_ISSUES_LINE + message + Strings.END_LINE : Strings.EMPTY;
     }
 }
