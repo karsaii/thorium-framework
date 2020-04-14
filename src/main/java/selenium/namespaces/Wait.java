@@ -25,6 +25,8 @@ import static core.namespaces.DataFunctions.getMessageFromData;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;
+import static selenium.namespaces.SeleniumUtilities.isNotNullElementWaitParametersData;
+import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElementWaitParametersData;
 
 public interface Wait {
     static <T, V> V untilCore(T dependency, WaitData<T, V> waitData) {
@@ -106,10 +108,10 @@ public interface Wait {
     }
 
     static DriverFunction<Boolean> waitConditionCore(ElementWaitParameters data, Function<By, DriverFunction<Boolean>> conditionGetter, String option, String message) {
-        return SeleniumUtilities.isNotNullElementWaitParametersData(data) ? waitConditionCore(data.object, conditionGetter, option, data.interval, data.duration, message) : DriverFunctionConstants.NULL_BOOLEAN;
+        return isNotNullElementWaitParametersData(data) ? waitConditionCore(data.object, conditionGetter, option, data.interval, data.duration, message) : DriverFunctionConstants.NULL_BOOLEAN;
     }
 
     static DriverFunction<Boolean> waitConditionCore(LazyElementWaitParameters data, Function<LazyElement, DriverFunction<Boolean>> conditionGetter, String option, String message) {
-        return SeleniumUtilities.isNotNullLazyElementWaitParametersData(data) ? waitConditionCore(data.object, conditionGetter, option, data.interval, data.duration, message) : DriverFunctionConstants.NULL_BOOLEAN;
+        return isNotNullLazyElementWaitParametersData(data) ? waitConditionCore(data.object, conditionGetter, option, data.interval, data.duration, message) : DriverFunctionConstants.NULL_BOOLEAN;
     }
 }

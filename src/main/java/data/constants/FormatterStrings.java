@@ -9,7 +9,7 @@ import static java.util.Map.entry;
 public abstract class FormatterStrings {
     public static final String IS = "is";
     public static final String ISN_T = "isn't";
-    public static final String ELEMENT = "selenium/element ";
+    public static final String ELEMENT = "Element ";
     public static final String WAITING_FAILED = "Waiting failed: ";
     public static final String EXTENSION = ".png";
     public static final String NAME_START = "ss";

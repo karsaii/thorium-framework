@@ -56,9 +56,14 @@ public class Strings {
     public static final String SUCCESSFULLY_SWITCHED_TO = "Couldn't switch to ";
 
     public static final String NULL_DATA = "nullData.";
-    public static final String EXECUTION_ENDED = "Execution ended.";
+    public static final String EXECUTION_ENDED = "Execution ended" + Strings.END_LINE;
+    public static final String EXECUTION_STATUS = "Execution status";
     public static final String PARAMETER_ISSUES = " There were parameter issue(s)";
-    public static final String PARAMETER_ISSUES_LINE = PARAMETER_ISSUES + ":\n";
+    public static final String COLON = ":";
+    public static final String COLON_NEWLINE = COLON + "\n";
+    public static final String COLON_SPACE = COLON + " ";
+    public static final String PARAMETER_ISSUES_LINE = PARAMETER_ISSUES + COLON_NEWLINE;
+    public static final String EXECUTION_STATUS_COLON_SPACE = EXECUTION_STATUS + COLON_SPACE;
 
     public static final String PARAMETER_ISSUES_END = PARAMETER_ISSUES + Strings.END_LINE;
 
@@ -78,7 +83,7 @@ public class Strings {
     public static final String WAITING_WAS_SUCCESSFUL = "Waiting was successful" + END_LINE;
     public static final String SCRIPT_RAN_SUCCESSFULLY = "Script ran successfully" + END_LINE;
 
-    public static final String ELEMENT_LIST_EMPTY_OR_NULL = "No elements found, or selenium.element list " + WAS_NULL;
+    public static final String ELEMENT_LIST_EMPTY_OR_NULL = "No elements found, or element list " + WAS_NULL;
 
     public static final String LOCATOR_WAS_NULL = "Locator" + WAS_NULL;
     public static final String PASSED_DATA_WAS_NULL = "Passed data" + WAS_NULL;
