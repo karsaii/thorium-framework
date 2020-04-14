@@ -78,7 +78,7 @@ public class Strings {
     public static final String WAITING_WAS_SUCCESSFUL = "Waiting was successful" + END_LINE;
     public static final String SCRIPT_RAN_SUCCESSFULLY = "Script ran successfully" + END_LINE;
 
-    public static final String ELEMENT_LIST_EMPTY_OR_NULL = "No elements found, or selenium.element list " + WAS_NULL;
+    public static final String ELEMENT_LIST_EMPTY_OR_NULL = "No elements found, or element list " + WAS_NULL;
 
     public static final String LOCATOR_WAS_NULL = "Locator" + WAS_NULL;
     public static final String PASSED_DATA_WAS_NULL = "Passed data" + WAS_NULL;

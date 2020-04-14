@@ -904,7 +904,7 @@ public interface Driver {
 
         final var size = object.size();
         final var status = (size > index);
-        return DataFactoryFunctions.getWithNameAndMessage(object.get(index), status, nameof, "selenium/element " + (status ? "" : "not ") + "found by index: " + index + ", list size: " + size + Strings.END_LINE + data.message);
+        return DataFactoryFunctions.getWithNameAndMessage(object.get(index), status, nameof, "Element " + (status ? "" : "not ") + "found by index: " + index + ", list size: " + size + Strings.END_LINE + data.message);
     }
 
     private static Function<Data<WebElementList>, Data<WebElement>> getElementIndexWasNegative(int index) {
