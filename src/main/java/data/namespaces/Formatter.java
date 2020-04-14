@@ -68,15 +68,20 @@ public interface Formatter {
 
     static String isInvalidOrFalseMessage(Data data, String parameterName) {
         final var result = isParameterMessage(isInvalidOrFalse(data), parameterName, "false data");
-        return isNotBlank(result) ? result + data.message : result;
+        return isNotBlank(result) ? result + data.message : Strings.EMPTY;
     }
 
-    static String isInvalidOrFalseMessage(Data object) {
-        return isInvalidOrFalseMessage(object, "data");
+    static String isInvalidOrFalseMessage(Data data) {
+        return isInvalidOrFalseMessage(data, "data");
     }
 
-    static String isNullOrFalseDataWebElementMessage(Data object) {
-        return isInvalidOrFalseMessage(object, "data");
+    static String isFalseMessage(Data data, String parameterName) {
+        final var result = isParameterMessage(isFalse(data), parameterName, "false data");
+        return isNotBlank(result) ? result + data.message : Strings.EMPTY;
+    }
+
+    static String isFalseMessage(Data data) {
+        return isFalseMessage(data, "data");
     }
 
     static String isBlankMessage(String object, String parameterName) {
