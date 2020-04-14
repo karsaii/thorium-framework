@@ -116,14 +116,13 @@ public interface Formatter {
     }
 
     static Data<String> getConditionMessage(String name, Map<String, String> map, boolean keyCondition, String descriptor, String negator) {
-        final var nameof = "getConditionMessage: ";
+        final var nameof = isNotBlank(name) ? name : "getConditionMessage: ";
         final var conditionMessage = "Condition descriptor";
         final var errorMessage = (
             isBlankMessage(descriptor, conditionMessage) +
             isNullMessage(negator, conditionMessage + " negator") +
             isNullMessage(map, conditionMessage + " map")
         );
-
         if (isNotBlank(errorMessage)) {
             return DataFactoryFunctions.getWithNameAndMessage(Strings.EMPTY, false, nameof, Strings.PARAMETER_ISSUES + Strings.DEFAULT_ERROR_MESSAGE_STRING + errorMessage);
         }
