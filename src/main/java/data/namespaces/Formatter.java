@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
@@ -173,7 +174,7 @@ public interface Formatter {
     }
 
     static String getMethodFromMapMessage(String methodName, boolean status) {
-        return "Method(" + methodName + ") " + getOptionMessage(status) + " found in map.";
+        return "Method(" + methodName + ") " + getOptionMessage(status) + " found in map" + Strings.END_LINE;
     }
 
     static String getExecuteFragment(boolean status) {
@@ -793,5 +794,21 @@ public interface Formatter {
 
     static String getCountOfElementsMessage(boolean status, int value) {
         return (status ? value : "No") + " elements found" + Strings.END_LINE;
+    }
+
+    static Function<Boolean, String> isFormatterNullAndMessageBlank() {
+        return status -> Strings.EXECUTION_STATUS_COLON_SPACE + status + Strings.END_LINE;
+    }
+
+    static Function<Boolean, String> isFormatterNull(String message) {
+        return status -> Strings.EXECUTION_STATUS_COLON_SPACE + status + Strings.END_LINE + "Message: " + message;
+    }
+
+    static Function<Boolean, String> isMessageBlank(BiFunction<String, Boolean, String> formatter) {
+        return status -> Strings.EXECUTION_STATUS_COLON_SPACE + status + "Message was empty, please fix - result: " + formatter.apply(Strings.EMPTY, status) + Strings.END_LINE;
+    }
+
+    static Function<Boolean, String> isFormatterAndMessageValid(BiFunction<String, Boolean, String> formatter, String message) {
+        return status -> formatter.apply(message, status);
     }
 }
