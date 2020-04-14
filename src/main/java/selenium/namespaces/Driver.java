@@ -861,13 +861,13 @@ public interface Driver {
 
         final var context = contextData.object;
         errorMessage = isNullMessage(context, "Context");
-        if (isNull(context)) {
+        if (isNotBlank(errorMessage)) {
             return DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.NULL_ELEMENT_LIST, false, nameof, errorMessage);
         }
 
         final var lLocator = getLocator(locator);
         errorMessage = isInvalidOrFalseMessage(lLocator);
-        if (isBlank(errorMessage)) {
+        if (isNotBlank(errorMessage)) {
             return DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.NULL_ELEMENT_LIST, false, nameof, errorMessage);
         }
 
