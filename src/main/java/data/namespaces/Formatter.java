@@ -44,7 +44,7 @@ import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.namespaces.DataFunctions.isFalse;
-import static core.namespaces.validators.DataValidators.isValidNonFalse;
+import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.SeleniumUtilities.getLocator;
@@ -67,7 +67,7 @@ public interface Formatter {
     }
 
     static String isInvalidOrFalseMessage(Data data, String parameterName) {
-        final var result = isParameterMessage(isValidNonFalse(data), parameterName, "false data");
+        final var result = isParameterMessage(isInvalidOrFalse(data), parameterName, "false data");
         return isNotBlank(result) ? result + data.message : result;
     }
 
