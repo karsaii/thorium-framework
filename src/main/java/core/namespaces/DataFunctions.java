@@ -2,33 +2,18 @@ package core.namespaces;
 
 import core.extensions.namespaces.CoreUtilities;
 import core.records.Data;
-import core.records.MethodMessageData;
 import org.apache.commons.lang3.ArrayUtils;
-import selenium.enums.CoreConstants;
+import core.constants.CoreConstants;
 
 import static core.extensions.namespaces.CoreUtilities.Uncontains;
 import static core.extensions.namespaces.CoreUtilities.isException;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNull;
+import static core.namespaces.validators.DataValidators.isValid;
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface DataFunctions {
-    static boolean isValid(MethodMessageData data) {
-        return isNotNull(data) && isNotBlank(data.message) && isNotNull(data.nameof);
-    }
-
-    static boolean isValid(Data<?> data) {
-        return (isNotNull(data) && isValid(data.message));
-    }
-
-    static <T> boolean isValidNonFalse(Data<T> data) {
-        return isValid(data) && data.status;
-    }
-
-    static boolean isInvalidOrFalse(Data<?> data) {
-        return !isValidNonFalse(data);
-    }
-
     static String getNameIfAbsent(Data<?> data, String nameof) {
         var name = "";
         final var nameNotBlank = isNotBlank(nameof);
@@ -48,7 +33,7 @@ public interface DataFunctions {
         return isFalse(data) && (index < length);
     }
 
-    static <T> boolean isFalse(Data<T> data) {
+    static boolean isFalse(Data<?> data) {
         return isValid(data) && CoreUtilities.isFalse(data.object);
     }
 
@@ -73,33 +58,5 @@ public interface DataFunctions {
         if (isException(exception)) {
             throw exception;
         }
-    }
-
-    static <T> Data<T> replaceName(Data<T> data, String nameof) {
-        return DataFactoryFunctions.getWithMessage(data.object, data.status, data.message.getMessage(nameof), data.exception, data.exceptionMessage);
-    }
-
-    static <T> Data<T> prependMessage(Data<T> data, String message) {
-        return DataFactoryFunctions.getWithMessage(data.object, data.status, message + data.message, data.exception, data.exceptionMessage);
-    }
-
-    static <T> Data<T> prependMessage(Data<T> data, String nameof, String message) {
-        return DataFactoryFunctions.getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, message + data.message.message), data.exception, data.exceptionMessage);
-    }
-
-    static <T> Data<T> replaceMessage(Data<T> data, String message) {
-        return DataFactoryFunctions.getWithMessage(data.object, data.status, message, data.exception, data.exceptionMessage);
-    }
-
-    static <T> Data<T> replaceMessage(Data<T> data, String nameof, String message) {
-        return DataFactoryFunctions.getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, message), data.exception, data.exceptionMessage);
-    }
-
-    static <T> Data<T> appendMessage(Data<T> data, String message) {
-        return DataFactoryFunctions.getWithMessage(data.object, data.status, data.message + message, data.exception, data.exceptionMessage);
-    }
-
-    static <T> Data<T> appendMessage(Data<T> data, String nameof, String message) {
-        return DataFactoryFunctions.getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, data.message.message + message), data.exception, data.exceptionMessage);
     }
 }

@@ -1,7 +1,7 @@
 package core.namespaces;
 
 import core.records.WaitTimeData;
-import selenium.constants.WaitConstants;
+import core.constants.WaitConstants;
 
 import java.time.Clock;
 import java.time.Duration;

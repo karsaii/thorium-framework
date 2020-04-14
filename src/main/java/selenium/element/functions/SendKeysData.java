@@ -1,6 +1,6 @@
 package selenium.element.functions;
 
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;
 import org.openqa.selenium.By;
 import selenium.element.Element;

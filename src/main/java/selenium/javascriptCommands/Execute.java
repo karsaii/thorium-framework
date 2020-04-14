@@ -1,7 +1,10 @@
 package selenium.javascriptCommands;
 
 import core.constants.CoreDataConstants;
-import core.extensions.interfaces.DriverFunction;
+import core.namespaces.validators.DataValidators;
+import org.apache.commons.lang3.ArrayUtils;
+import selenium.namespaces.SeleniumExecutor;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
 import core.namespaces.DataFactoryFunctions;
@@ -32,18 +35,18 @@ import java.util.Objects;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
-import static core.extensions.namespaces.NullableFunctions.isNull;
-import static core.namespaces.DataFunctions.isInvalidOrFalse;
-import static core.namespaces.DataFunctions.isValidNonFalse;
-import static core.namespaces.DataFunctions.replaceMessage;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
+import static core.namespaces.DataFactoryFunctions.getArrayWithName;
+import static core.namespaces.DataFactoryFunctions.getWithMethodMessage;
+import static core.namespaces.DataFactoryFunctions.replaceMessage;
+
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.ExecutionCore.ifDriverFunction;
 import static selenium.namespaces.ExecutionCore.validChain;
 import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElement;
 import static selenium.namespaces.SeleniumUtilities.isNotNullWebElement;
-import static selenium.namespaces.SeleniumUtilities.isNullWebElement;
 
 public interface Execute {
     static <T> DriverFunction<T> isCommonExists(String nameof, String isExists, Data<T> defaultValue) {
@@ -52,7 +55,7 @@ public interface Execute {
             isNotBlank(isExists) && isNotNull(defaultValue),
             driver -> {
                 final var result = Driver.execute(isExists).apply(driver);
-                return DataFactoryFunctions.getWithMethodMessage((T)result.object, result.status, result.message);
+                return getWithMethodMessage((T)result.object, result.status, result.message);
             },
             defaultValue
         );
@@ -86,83 +89,9 @@ public interface Execute {
             isNotNull(getter),
             driver -> {
                 final var result = Driver.executeSingleParameter(function, ScriptExecuteFunctions.handleDataParameterWithDefaults(getter.apply(driver))).apply(driver);
-                return DataFactoryFunctions.getWithMethodMessage((T)result.object, result.status, result.message);
+                return getWithMethodMessage((T)result.object, result.status, result.message);
             },
             defaultValue
-        );
-    }
-
-    static DriverFunction<Object[]> getParameterArray(String item) {
-        final var nameof = "getParameterArray";
-        return ifDriver(
-            nameof,
-            isNotNull(item),
-            driver -> {
-                final var length = 1;
-                final var parameters = new Object[1];
-                parameters[0] = item;
-
-                return DataFactoryFunctions.getWithNameAndMessage(parameters, true, nameof, "Array of length " + length + " was constructed" + Strings.END_LINE);
-            },
-            CoreDataConstants.NULL_PARAMETER_ARRAY
-        );
-    }
-
-    static DriverFunction<Object[]> getParameterArray(String first, String second) {
-        final var nameof = "getParameterArray";
-        return ifDriver(
-            nameof,
-            areNotNull(first, second),
-            driver -> {
-                final var length = 2;
-                final var parameters = new Object[length];
-                parameters[0] = first;
-                parameters[1] = second;
-
-                return DataFactoryFunctions.getWithNameAndMessage(parameters, true, nameof, "Array of length " + length + " was constructed" + Strings.END_LINE);
-            },
-            CoreDataConstants.NULL_PARAMETER_ARRAY
-        );
-    }
-
-
-    static Data<Object[]> getParameterArray(Data<WebElement> element, String attribute, String value) {
-        final var nameof = "getParameterArray";
-        if (isNullWebElement(element) || isBlank(attribute) || isNull(value)) {
-            return CoreDataConstants.NULL_PARAMETER_ARRAY;
-        }
-
-        final var length = 3;
-        final var parameters = new Object[length];
-        parameters[0] = element.object;
-        parameters[1] = attribute;
-        parameters[2] = value;
-
-        return DataFactoryFunctions.getWithNameAndMessage(parameters, true, nameof, "Element was found. Array of length " + length + " was constructed" + Strings.END_LINE);
-    }
-
-    static DriverFunction<Object[]> getParameterArray(Data<WebElement> element) {
-        final var nameof = "getParameterArray";
-        return ifDriver(
-            nameof,
-            isNotNullWebElement(element),
-            driver -> {
-                final var length = 1;
-                final var parameters = new Object[length];
-                parameters[0] = element.object;
-                return DataFactoryFunctions.getWithNameAndMessage(parameters, true, nameof, "Element was found. Array of length " + length + " was constructed" + Strings.END_LINE);
-            },
-            CoreDataConstants.NULL_PARAMETER_ARRAY
-        );
-    }
-
-    static DriverFunction<Object[]> getParameterArray(LazyElement element, String attribute, String value) {
-        final var nameof = "getParameterArray";
-        return ifDriver(
-            nameof,
-            areNotNull(attribute, value) && isNotNullLazyElement(element),
-            driver -> getParameterArray(element.get().apply(driver), attribute, value),
-            CoreDataConstants.NULL_PARAMETER_ARRAY
         );
     }
 
@@ -171,7 +100,7 @@ public interface Execute {
             "isScrollIntoViewExistsData",
             driver -> {
                 final var result = Driver.execute(ScrollIntoView.IS_EXISTS).apply(driver);
-                return DataFactoryFunctions.getWithMethodMessage(Boolean.valueOf(result.object.toString()), result.status, result.message);
+                return getWithMethodMessage(Boolean.valueOf(result.object.toString()), result.status, result.message);
             },
             CoreDataConstants.NULL_BOOLEAN
         );
@@ -186,9 +115,9 @@ public interface Execute {
             "scrollIntoViewExecutor",
             isNotNull(getter),
             driver -> {
-                final var parameters = new ScriptParametersData<>(getter.apply(driver), DataFunctions::isValidNonFalse, DataFunctions::unwrapToArray);
+                final var parameters = new ScriptParametersData<>(getter.apply(driver), DataValidators::isValidNonFalse, DataFunctions::unwrapToArray);
                 final var result = Driver.executeSingleParameter(ScrollIntoView.EXECUTE, ScriptExecuteFunctions.handleDataParameter(parameters)).apply(driver);
-                return DataFactoryFunctions.getWithMethodMessage(isNotNull(result.object), result.status, result.message);
+                return getWithMethodMessage(isNotNull(result.object), result.status, result.message);
             },
             CoreDataConstants.NULL_BOOLEAN
         );
@@ -198,7 +127,7 @@ public interface Execute {
         return ifDriver(
             "setScrollIntoView",
             driver -> {
-                final var result = Executor.conditionalSequence(Executor::isFalse, isScrollIntoViewExistsData(), Driver.execute(ScrollIntoView.SET_FUNCTIONS)).apply(driver);
+                final var result = SeleniumExecutor.conditionalSequence(Executor::isFalse, isScrollIntoViewExistsData(), Driver.execute(ScrollIntoView.SET_FUNCTIONS)).apply(driver);
                 final var status = isValidNonFalse(result);
                 return DataFactoryFunctions.getBoolean(status, Formatter.getScrollIntoViewMessage(result.message.getMessage(), status));
             },
@@ -207,7 +136,7 @@ public interface Execute {
     }
 
     static DriverFunction<Boolean> scrollIntoView(LazyElement data) {
-        return Executor.execute(Driver.isElementHidden(data), setScrollIntoView(), scrollIntoViewExecutor(data));
+        return SeleniumExecutor.execute(Driver.isElementHidden(data), setScrollIntoView(), scrollIntoViewExecutor(data));
     }
 
     static DriverFunction<Boolean> scrollIntoView(Data<LazyElement> data) {
@@ -224,7 +153,7 @@ public interface Execute {
 
     static <T> Data<Object[]> handleDataParameterDefault(Data<T> parameter) {
         return DataFactoryFunctions.getWithMessage(
-            ScriptExecuteFunctions.handleDataParameter(new ScriptParametersData<>(parameter, DataFunctions::isValidNonFalse, DataFunctions::unwrapToArray)),
+            ScriptExecuteFunctions.handleDataParameter(new ScriptParametersData<>(parameter, DataValidators::isValidNonFalse, DataFunctions::unwrapToArray)),
             false,
             ""
         );
@@ -236,7 +165,7 @@ public interface Execute {
             isNotNull(data),
             driver -> {
                 final var steps = validChain(data.get(), Execute::handleDataParameterDefault, CoreDataConstants.NULL_PARAMETER_ARRAY);
-                final var parameter = Executor.conditionalSequence(Driver.isElementPresent(data), steps, Object[].class).apply(driver);
+                final var parameter = SeleniumExecutor.conditionalSequence(Driver.isElementPresent(data), steps, Object[].class).apply(driver);
 
                 return isValidNonFalse(parameter) ? Driver.executeSingleParameter(GetStyle.GET_STYLES_IN_JSON, parameter.object).apply(driver) : CoreDataConstants.NULL_OBJECT;
             },
@@ -256,7 +185,7 @@ public interface Execute {
 
                 final var result = Driver.executeSingleParameter(ShadowRoot.GET_SHADOW_ROOT, parameter.object).apply(driver);
                 return isValidNonFalse(result) ? (
-                    DataFactoryFunctions.getWithMethodMessage((WebElement)result.object, result.status, result.message)
+                    getWithMethodMessage((WebElement)result.object, result.status, result.message)
                 ) : replaceMessage(SeleniumDataConstants.NULL_ELEMENT, result.message.toString());
             },
             SeleniumDataConstants.NULL_ELEMENT
@@ -302,11 +231,12 @@ public interface Execute {
     }
 
     static DriverFunction<String> setAttribute(Data<WebElement> element, String attribute, String value) {
+        final var nameof = "setAttribute";
         return ifDriver(
-            "setAttribute",
+            nameof,
             areNotBlank(attribute, value) && isNotNullWebElement(element),
             driver -> {
-                final var parametersData = getParameterArray(element, attribute, value);
+                final var parametersData = getArrayWithName(ArrayUtils.toArray(element, attribute, value));
                 if (isInvalidOrFalse(parametersData)) {
                     return CoreDataConstants.NULL_STRING;
                 }

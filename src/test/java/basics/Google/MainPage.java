@@ -1,6 +1,6 @@
 package basics.Google;
 
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import selenium.namespaces.DriverWaits;
 
 public interface MainPage {

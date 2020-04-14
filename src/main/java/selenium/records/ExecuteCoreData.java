@@ -1,8 +1,8 @@
 package selenium.records;
 
-import core.enums.TypedEnumKeyData;
-import core.extensions.interfaces.DriverFunction;
-import selenium.enums.TypeKey;
+import core.records.TypedEnumKeyData;
+import selenium.namespaces.extensions.boilers.DriverFunction;
+import core.enums.TypeKey;
 import selenium.records.scripter.ExecutorData;
 
 import java.util.Map;

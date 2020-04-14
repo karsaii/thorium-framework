@@ -1,8 +1,8 @@
 package selenium.namespaces.repositories;
 
-import core.enums.TypedEnumKeyData;
-import core.extensions.interfaces.DriverFunction;
-import selenium.enums.TypeKey;
+import core.records.TypedEnumKeyData;
+import selenium.namespaces.extensions.boilers.DriverFunction;
+import core.enums.TypeKey;
 
 import java.util.Map;
 

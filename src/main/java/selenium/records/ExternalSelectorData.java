@@ -1,6 +1,6 @@
 package selenium.records;
 
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.records.Data;
 import core.records.command.CommandRangeData;
 

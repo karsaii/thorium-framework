@@ -1,6 +1,6 @@
 package core.extensions.namespaces;
 
-import core.extensions.ExtensionListData;
+import core.extensions.records.ExtensionListData;
 import core.extensions.constants.IExtendedListConstants;
 
 import java.util.Collection;

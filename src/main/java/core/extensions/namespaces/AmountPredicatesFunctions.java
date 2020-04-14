@@ -2,17 +2,25 @@ package core.extensions.namespaces;
 
 import java.util.function.Supplier;
 
+import static core.extensions.namespaces.BasicPredicateFunctions.isBiggerThan;
+import static core.extensions.namespaces.BasicPredicateFunctions.isNonNegative;
+import static core.extensions.namespaces.NullableFunctions.isNotNull;
+import static core.extensions.namespaces.SizableFunctions.isSizeEqualTo;
+
 public interface AmountPredicatesFunctions {
     static boolean isSingle(Supplier<Integer> sizeFunction) {
-        return SizableFunctions.isSizeEqualTo(sizeFunction, 1);
+        return isSizeEqualTo(sizeFunction, 1);
     }
 
     static boolean isDouble(Supplier<Integer> sizeFunction) {
-        return SizableFunctions.isSizeEqualTo(sizeFunction, 2);
+        return isSizeEqualTo(sizeFunction, 2);
     }
 
     static boolean hasMoreThan(Supplier<Integer> sizeFunction, int amount) {
-        return BasicPredicateFunctions.isNonNegative(amount) && (SizableFunctions.size(sizeFunction) > amount);
+        return (
+            isNonNegative(amount) &&
+            isBiggerThan(SizableFunctions.size(sizeFunction), amount)
+        );
     }
 
     static boolean isAtleastDouble(Supplier<Integer> sizeFunction) {
@@ -29,5 +37,13 @@ public interface AmountPredicatesFunctions {
 
     static boolean hasIndex(Supplier<Integer> sizeFunction, int index) {
         return hasMoreThan(sizeFunction, index);
+    }
+
+    static boolean isSingle(Object[] object) {
+        return isNotNull(object) && isSizeEqualTo(object.length, 1);
+    }
+
+    static boolean isNonZero(Object[] object) {
+        return isNotNull(object) && isBiggerThan(object.length, 0);
     }
 }

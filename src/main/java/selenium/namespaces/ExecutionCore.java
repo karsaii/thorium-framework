@@ -1,25 +1,24 @@
 package selenium.namespaces;
 
-import core.extensions.interfaces.DriverFunction;
+import core.namespaces.validators.DataValidators;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.NullableFunctions;
 import core.namespaces.DataFactoryFunctions;
-import core.namespaces.DataFunctions;
 import core.namespaces.DependencyExecutionFunctions;
-import core.namespaces.Executor;
 import core.records.Data;
 import data.constants.Strings;
 import org.openqa.selenium.WebDriver;
 import selenium.constants.DriverFunctionConstants;
-import selenium.enums.CoreConstants;
+import core.constants.CoreConstants;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
-import static core.namespaces.DataFunctions.isInvalidOrFalse;
-import static core.namespaces.DataFunctions.prependMessage;
-import static core.namespaces.DataFunctions.replaceMessage;
+import static core.namespaces.DataFactoryFunctions.prependMessage;
+import static core.namespaces.DataFactoryFunctions.replaceMessage;
+import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public interface ExecutionCore {
@@ -51,13 +50,13 @@ public interface ExecutionCore {
     }
 
     static <ParameterType, ReturnType> DriverFunction<ReturnType> validChain(DriverFunction<ParameterType> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
-        return conditionalDataChain(DataFunctions::isValidNonFalse, dependency, positive, negative);
+        return conditionalDataChain(DataValidators::isValidNonFalse, dependency, positive, negative);
     }
 
     private static <T> Data<T> ifDriverAnyWrappedCore(WebDriver driver, String nameof, DriverFunction<T> function) {
         return isNotNull(driver) ? (
             DependencyExecutionFunctions.ifDependencyAnyCore(nameof, function.apply(driver))
-        ) : DataFactoryFunctions.getWithNameAndMessage(null, false, nameof, Strings.DRIVER_WAS_NULL, CoreConstants.NULL_EXCEPTION);
+        ) : DataFactoryFunctions.getWithNameAndMessage(null, false, nameof, Strings.DRIVER_WAS_NULL, CoreConstants.EXCEPTION);
     }
 
     private static <T> Function<WebDriver, Data<T>> ifDriverAnyWrappedCore(String nameof, DriverFunction<T> function) {
@@ -130,7 +129,7 @@ public interface ExecutionCore {
     }
 
     static <T> DriverFunction<T> ifDriver(String nameof, String errorMessage, DriverFunction<Boolean> dependency, DriverFunction<T> positive, Data<T> negative) {
-        return ifDriver(nameof, isBlank(errorMessage) && areNotNull(dependency, positive, negative), Executor.execute(dependency, positive), negative);
+        return ifDriver(nameof, isBlank(errorMessage) && areNotNull(dependency, positive, negative), SeleniumExecutor.execute(dependency, positive), negative);
     }
 
     static DriverFunction<Boolean> ifDriver(String message, DriverFunction<Boolean> positive) {

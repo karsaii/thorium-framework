@@ -1,8 +1,7 @@
 package selenium.namespaces;
 
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.namespaces.DataFactoryFunctions;
-import core.namespaces.DataFunctions;
 import core.records.Data;
 import core.records.MethodMessageData;
 import data.constants.Strings;
@@ -56,10 +55,14 @@ public interface DriverFunctionFactoryFunctions {
     }
 
     static <T> DriverFunction<T> replaceName(DriverFunction<T> function, String nameof) {
-        return driver -> DataFunctions.replaceName(function.apply(driver), nameof);
+        return driver -> DataFactoryFunctions.replaceName(function.apply(driver), nameof);
     }
 
-    static <T> DriverFunction<T> prependMessage(DriverFunction<T> data, String message) {
-        return driver -> DataFunctions.prependMessage(data.apply(driver), message);
+    static <T> DriverFunction<T> prependMessage(DriverFunction<T> function, String message) {
+        return driver -> DataFactoryFunctions.prependMessage(function.apply(driver), message);
+    }
+
+    static <T> DriverFunction<T> appendMessage(DriverFunction<T> function, String message) {
+        return driver -> DataFactoryFunctions.appendMessage(function.apply(driver), message);
     }
 }

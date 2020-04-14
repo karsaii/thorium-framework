@@ -1,10 +1,11 @@
 package selenium.namespaces;
 
-import core.extensions.interfaces.functional.boilers.ScriptFunction;
-import core.extensions.interfaces.functional.boilers.ScriptHandlerFunction;
+import core.namespaces.validators.DataValidators;
+import selenium.namespaces.extensions.boilers.ScriptFunction;
+import selenium.namespaces.extensions.boilers.ScriptHandlerFunction;
 import core.namespaces.DataFunctions;
 import core.records.Data;
-import selenium.enums.CoreConstants;
+import core.constants.CoreConstants;
 import selenium.records.scripter.ScriptParametersData;
 import validators.ScriptExecutions;
 
@@ -12,7 +13,7 @@ import java.util.function.BiFunction;
 
 public interface ScriptExecuteFunctions {
     static <T extends Data> Object[] handleDataParameter(ScriptParametersData<T> data) {
-        if (ScriptExecutions.isInvalidScriptParametersData(data)) {
+        if (!ScriptExecutions.isValidScriptParametersData(data)) {
             return CoreConstants.EMPTY_OBJECT_ARRAY;
         }
 
@@ -37,7 +38,7 @@ public interface ScriptExecuteFunctions {
     }
 
     static <T> ScriptParametersData<Data<T>> getScriptParametersDataWithDefaults(Data<T> data) {
-        return new ScriptParametersData<>(data, DataFunctions::isValidNonFalse, DataFunctions::unwrapToArray);
+        return new ScriptParametersData<>(data, DataValidators::isValidNonFalse, DataFunctions::unwrapToArray);
     }
 
     static <T, V extends Data<T>> Object[] handleDataParameterWithDefaults(V data) {

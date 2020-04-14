@@ -2,7 +2,7 @@ package core.namespaces;
 
 import core.exceptions.MethodInvokeException;
 import data.constants.Strings;
-import selenium.enums.CoreConstants;
+import core.constants.CoreConstants;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

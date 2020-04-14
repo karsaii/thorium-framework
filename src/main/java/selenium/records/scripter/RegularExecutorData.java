@@ -1,7 +1,7 @@
 package selenium.records.scripter;
 
-import core.extensions.interfaces.DriverFunction;
-import core.extensions.interfaces.functional.boilers.ScriptHandlerFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
+import selenium.namespaces.extensions.boilers.ScriptHandlerFunction;
 import core.records.ExecuteCommonData;
 import core.records.HandleResultData;
 import core.records.caster.WrappedCastData;

@@ -1,6 +1,6 @@
 package selenium.constants;
 
-import core.extensions.interfaces.functional.boilers.ScriptHandlerFunction;
+import selenium.namespaces.extensions.boilers.ScriptHandlerFunction;
 import selenium.records.ExecuteCoreData;
 import selenium.records.scripter.ExecutorParametersFieldData;
 

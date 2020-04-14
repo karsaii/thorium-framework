@@ -1,6 +1,6 @@
 package validators;
 
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.records.MethodGetCommonParametersData;
 import core.records.MethodParametersData;
 import core.records.WaitTimeData;
@@ -95,7 +95,7 @@ public interface ElementParameters {
         return isNotBlank(message) ? message : (
             Formatter.isNullMessage(data.methodMap, "Method map") +
             Formatter.isNullMessage(data.list, "Method List") +
-            Formatter.isNullOrFalseDataMessage(data.defaultValue, "Default Value")
+            Formatter.isInvalidOrFalseMessage(data.defaultValue, "Default Value")
         );
     }
 

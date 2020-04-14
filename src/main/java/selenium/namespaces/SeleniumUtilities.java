@@ -2,7 +2,6 @@ package selenium.namespaces;
 
 import core.extensions.DecoratedList;
 import core.extensions.interfaces.functional.TriFunction;
-import core.extensions.namespaces.NullableFunctions;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import data.constants.Strings;
@@ -33,10 +32,9 @@ import java.util.function.Predicate;
 import static core.extensions.namespaces.CoreUtilities.areAll;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.isEqual;
-import static core.extensions.namespaces.CoreUtilities.isNotEqual;
 import static core.extensions.namespaces.CoreUtilities.isNullOrEmptyList;
 import static core.extensions.namespaces.NullableFunctions.isNull;
-import static core.namespaces.DataFunctions.isInvalidOrFalse;
+import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static java.util.Map.entry;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 

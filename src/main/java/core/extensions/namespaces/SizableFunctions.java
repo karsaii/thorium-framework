@@ -3,13 +3,15 @@ package core.extensions.namespaces;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static core.extensions.namespaces.CoreUtilities.areAll;
+
 public interface SizableFunctions {
-    static boolean isSizeEqualTo(Supplier<Integer> sizeFunction, int size) {
-        return (
-            NullableFunctions.isNotNull(sizeFunction) &&
-            BasicPredicateFunctions.isNonNegative(size) &&
-            Objects.equals(sizeFunction.get(), size)
-        );
+    static boolean isSizeEqualTo(int size, int expected) {
+        return areAll(BasicPredicateFunctions::isNonNegative, size, expected) && Objects.equals(size, expected);
+    }
+
+    static boolean isSizeEqualTo(Supplier<Integer> sizeFunction, int expected) {
+        return NullableFunctions.isNotNull(sizeFunction) && isSizeEqualTo(sizeFunction.get(), expected);
     }
 
     static int size(Supplier<Integer> sizeFunction) {

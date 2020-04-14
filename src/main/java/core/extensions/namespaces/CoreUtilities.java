@@ -4,7 +4,7 @@ import core.constants.CardinalityDefaults;
 import core.records.ActionData;
 import core.records.CardinalityData;
 import org.apache.commons.lang3.StringUtils;
-import selenium.enums.CoreConstants;
+import core.constants.CoreConstants;
 
 import java.util.List;
 import java.util.Objects;
@@ -24,12 +24,12 @@ public interface CoreUtilities {
     }
 
     static boolean isException(Exception ex) {
-        final var exception = CoreConstants.NULL_EXCEPTION;
+        final var exception = CoreConstants.EXCEPTION;
         return NullableFunctions.isNotNull(ex) && isNotEqual(exception, ex) && isNotEqual(exception.getMessage(), ex.getMessage());
     }
 
     static boolean isNonException(Exception ex) {
-        final var exception = CoreConstants.NULL_EXCEPTION;
+        final var exception = CoreConstants.EXCEPTION;
         return NullableFunctions.isNotNull(ex) && (isEqual(exception, ex) || isEqual(exception.getMessage(), ex.getMessage()));
     }
 
@@ -160,9 +160,6 @@ public interface CoreUtilities {
     }
 
     static boolean isNullOrFalseActionData(ActionData actionData) {
-        return (
-            areAnyNull(actionData, actionData.data) ||
-            areAnyBlank(actionData.message, actionData.methodName)
-        );
+        return areAnyNull(actionData, actionData.data) || areAnyBlank(actionData.message, actionData.methodName);
     }
 }

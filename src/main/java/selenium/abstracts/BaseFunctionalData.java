@@ -1,6 +1,6 @@
 package selenium.abstracts;
 
-import core.extensions.interfaces.DriverFunction;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.records.HandleResultData;
 import core.records.caster.WrappedCastData;
 import selenium.records.scripter.ExecutorWrappedResultFunctionsData;

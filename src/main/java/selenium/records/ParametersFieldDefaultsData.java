@@ -1,6 +1,6 @@
 package selenium.records;
 
-import core.extensions.interfaces.functional.boilers.ScriptFunction;
+import selenium.namespaces.extensions.boilers.ScriptFunction;
 
 import java.util.Objects;
 import java.util.function.BiFunction;

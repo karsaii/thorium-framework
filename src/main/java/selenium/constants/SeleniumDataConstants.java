@@ -1,7 +1,7 @@
 package selenium.constants;
 
 import core.constants.CoreDataConstants;
-import core.extensions.boilers.WebElementList;
+import selenium.namespaces.extensions.boilers.WebElementList;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import data.constants.Strings;
