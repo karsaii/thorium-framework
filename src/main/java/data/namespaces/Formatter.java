@@ -170,7 +170,7 @@ public interface Formatter {
     }
 
     static String getExecutionEndMessage(int index, int length, String message) {
-        return "Execution End: " + (index == length ? ("All(" + length) : ("Some(" + (index + 1))) + ") steps were executed" + Strings.END_LINE + message;
+        return "Execution End: " + (index == length ? ("All(" + length) : ("Some(" + (index + 1))) + ") steps were executed" + Strings.END_LINE + "\t" + message.replaceAll("\n", "\n\t");
     }
 
     static String getMethodFromMapMessage(String methodName, boolean status) {
