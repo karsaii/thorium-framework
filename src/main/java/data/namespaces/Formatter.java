@@ -84,7 +84,7 @@ public interface Formatter {
     }
 
     static String isFalseMessage(boolean condition, String parameterName) {
-        return isParameterMessage(condition, parameterName, "false");
+        return isParameterMessage(CoreUtilities.isFalse(condition), parameterName, "false");
     }
 
     static Data<String> getIsValuesMessage(Map<String, String> map, Data<String> object, String expected, Boolean keyCondition, String descriptor, String conditionDescriptor) {

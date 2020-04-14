@@ -854,21 +854,22 @@ public interface Driver {
 
     private static Data<WebElementList> getElements(Data<SearchContext> contextData, LazyLocator locator) {
         final var nameof = "getElements";
+        final var negative = SeleniumCoreConstants.NULL_ELEMENT_LIST;
         var errorMessage = isNullLazyDataMessage(locator) + isInvalidOrFalseMessage(contextData);
         if (isNotBlank(errorMessage)) {
-            return DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.NULL_ELEMENT_LIST, false, nameof, errorMessage);
+            return DataFactoryFunctions.getInvalidWithNameAndMessage(negative, nameof, errorMessage);
         }
 
         final var context = contextData.object;
         errorMessage = isNullMessage(context, "Context");
         if (isNotBlank(errorMessage)) {
-            return DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.NULL_ELEMENT_LIST, false, nameof, errorMessage);
+            return DataFactoryFunctions.getInvalidWithNameAndMessage(negative, nameof, errorMessage);
         }
 
         final var lLocator = getLocator(locator);
         errorMessage = isInvalidOrFalseMessage(lLocator);
         if (isNotBlank(errorMessage)) {
-            return DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.NULL_ELEMENT_LIST, false, nameof, errorMessage);
+            return DataFactoryFunctions.getInvalidWithNameAndMessage(negative, nameof, errorMessage);
         }
 
         return getElements(context, lLocator.object);
