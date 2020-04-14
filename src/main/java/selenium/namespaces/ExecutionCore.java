@@ -1,6 +1,7 @@
 package selenium.namespaces;
 
 import core.namespaces.validators.DataValidators;
+import data.namespaces.Formatter;
 import org.openqa.selenium.WebElement;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.NullableFunctions;
@@ -42,8 +43,21 @@ public interface ExecutionCore {
         };
     }
 
+    static <T, U, V> Function<T, Data<V>> conditionalChain(Function<Data<U>, String> guard, Function<T, Data<U>> dependency, Function<Data<U>, Data<V>> positive, Data<V> negative) {
+        return t -> {
+            final var dep = dependency.apply(t);
+            final var guardMessage = guard.apply(dep);
+            return isBlank(guardMessage) ? positive.apply(dep) : prependMessage(negative, "conditionalChain", "Dependency failed the guard" + Strings.COLON_SPACE + guardMessage);
+        };
+    }
+
+
     private static <T, U> DriverFunction<T> conditionalDataChain(Predicate<Data<U>> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
         return DriverFunctionFactoryFunctions.getFunction(conditionalChain(guard, dependency, positive, replaceMessage(negative, "conditionalChain", "Dependency failed the guard" + Strings.END_LINE)));
+    }
+
+    private static <T, U> DriverFunction<T> conditionalDataChain(Function<Data<U>, String> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
+        return DriverFunctionFactoryFunctions.getFunction(conditionalChain(guard, dependency, positive, negative));
     }
 
     static <T, U> DriverFunction<T> conditionalChain(Predicate<Data<U>> guard, DriverFunction<U> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
@@ -55,7 +69,7 @@ public interface ExecutionCore {
     }
 
     static <ReturnType> DriverFunction<ReturnType> validElementChain(DriverFunction<WebElement> dependency, Function<Data<WebElement>, Data<ReturnType>> positive, Data<ReturnType> negative) {
-        return conditionalDataChain(SeleniumUtilities::isNotNullWebElement, dependency, positive, negative);
+        return conditionalDataChain(Formatter::isNullWebElementDataMessage, dependency, positive, negative);
     }
 
     private static <T> Data<T> ifDriverAnyWrappedCore(WebDriver driver, String nameof, DriverFunction<T> function) {
