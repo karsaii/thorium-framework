@@ -92,19 +92,26 @@ public interface ElementParameters {
 
     static String validateMethodGetCommonParametersData(MethodGetCommonParametersData data) {
         var message = Formatter.isNullMessage(data, "Method Get Parameters data");
-        return isNotBlank(message) ? message : (
-            Formatter.isNullMessage(data.methodMap, "Method map") +
-            Formatter.isNullMessage(data.list, "Method List") +
-            Formatter.isInvalidOrFalseMessage(data.defaultValue, "Default Value")
-        );
+        if (isBlank(message)) {
+            message +=  (
+                Formatter.isNullMessage(data.methodMap, "Method map") +
+                Formatter.isNullMessage(data.list, "Method List") +
+                Formatter.isInvalidOrFalseMessage(data.defaultValue, "Default Value")
+            );
+        }
+        return isNotBlank(message) ? "validateMethodGetCommonParametersData: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
     }
 
     static String validateMethodParametersData(MethodParametersData parameterData) {
         var message = Formatter.isNullMessage(parameterData, "Method parameters data");
-        return isNotBlank(message) ? message : (
-            Formatter.isNullMessage(parameterData.validator, "Condition method") +
-            Formatter.isBlankMessage(parameterData.methodName, "Method name")
-        );
+        if (isBlank(message)) {
+            message +=  (
+                Formatter.isNullMessage(parameterData.validator, "Condition method") +
+                Formatter.isBlankMessage(parameterData.methodName, "Method name")
+            );
+        }
+
+        return isNotBlank(message) ? "validateMethodParametersData: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
     }
 
 

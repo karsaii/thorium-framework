@@ -54,6 +54,10 @@ public interface DataFactoryFunctions {
         return new Data<>(object, status, new MethodMessageData(nameof, message), CoreConstants.EXCEPTION, Strings.NON_EXCEPTION_MESSAGE);
     }
 
+    static <T> Data<T> getInvalidWithNameAndMessage(T object, String nameof, String message) {
+        return getWithNameAndMessage(object, false, nameof, message);
+    }
+
     static <T> Data<T> getWithMessage(T object, boolean status, String nameof, String message, Exception exception, String exceptionMessage) {
         return new Data<>(object, status, new MethodMessageData(nameof, message), exception, exceptionMessage);
     }
