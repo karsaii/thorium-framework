@@ -1,6 +1,7 @@
 package validators;
 
 import core.constants.CastDataConstants;
+import core.constants.CoreConstants;
 import data.constants.Strings;
 import selenium.namespaces.extensions.boilers.ScriptHandlerFunction;
 import core.records.Data;
@@ -125,9 +126,13 @@ public interface ScriptExecutions {
         if (isBlank(message)) {
             message += (
                 isNullMessage(data.caster, baseName + " Caster") +
-                isNullMessage(data.parameter, baseName + " Parameter") +
-                isNullMessage(data.defaultValue, baseName + " Default Value")
+                isNullMessage(data.parameter, baseName + " Parameter")
             );
+
+            final var isNonVoid = !Objects.equals(data.caster, CoreConstants.VOID_CASTER_FUNCTION);
+            if (isNonVoid) {
+                message += isNullMessage(data.defaultValue, baseName + " Default Value");
+            }
         }
         return isNotBlank(message) ? "isInvalidHandlerResultDataMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
     }
