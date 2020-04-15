@@ -1,5 +1,6 @@
 package validators;
 
+import core.constants.CastDataConstants;
 import data.constants.Strings;
 import selenium.namespaces.extensions.boilers.ScriptHandlerFunction;
 import core.records.Data;
@@ -16,6 +17,7 @@ import selenium.records.scripter.ExecutorResultFunctionsData;
 import selenium.records.scripter.ScriptParametersData;
 
 import java.lang.reflect.Method;
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 import static core.extensions.namespaces.AmountPredicatesFunctions.isSingle;
@@ -67,6 +69,16 @@ public interface ScriptExecutions {
         return isNotBlank(message) ? "isInvalidCastDataMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
     }
 
+    static <T> String isInvalidVoidCastDataMessage(BasicCastData<T> data) {
+        final var baseName = "Basic Cast Data(Void)";
+        var message = isNullMessage(data, baseName);
+        if (isBlank(message)) {
+            message += isNullMessage(data.caster, baseName + "Caster");
+        }
+
+        return isNotBlank(message) ? "isInvalidCastDataMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+    }
+
     static <T, U, V, W> boolean isValidConstructorData(ExecutorData<T, U, V, W> data) {
         return (
             isNotNull(data) &&
@@ -84,9 +96,10 @@ public interface ScriptExecutions {
         final var baseName = "Invoker Defaults Data";
         var message = isNullMessage(data, baseName);
         if (isBlank(message)) {
+            final var castMessage = Objects.equals(CastDataConstants.VOID, data.castData) ? isInvalidVoidCastDataMessage(data.castData) : isInvalidCastDataMessage(data.castData);
             message += (
                 isNullMessage(data.constructor, baseName + " Constructor") +
-                isInvalidCastDataMessage(data.castData) +
+                castMessage +
                 isNullMessage(data.guard, baseName + " Guard")
             );
         }
