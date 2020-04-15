@@ -51,7 +51,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.SeleniumUtilities.getLocator;
 import static selenium.namespaces.SeleniumUtilities.isNullAbstractLazyElementParametersList;
-import static selenium.namespaces.validators.SeleniumDataValidators.isNullWebElement;
 
 public interface Formatter {
     static String getOptionMessage(boolean status) {
