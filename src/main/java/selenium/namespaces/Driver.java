@@ -219,8 +219,8 @@ public interface Driver {
         final var function = castData.caster.compose(defaults.constructor.apply(handler).apply(method));
         final var result = defaults.castHandler.apply(new HandleResultData<>(function, parameter, castData.defaultValue));
 
-        final var status = isInvalidOrFalse(result);
-        var message = (status) ? (
+        final var status = isValidNonFalse(result);
+        var message = (!status) ? (
             messageHandler
                 .apply(new InvokeCommonMessageParametersData(data.message.toString(), methodData.returnType, methodData.methodParameterTypes))
                 .apply(result.exception)
