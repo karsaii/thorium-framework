@@ -58,8 +58,8 @@ public interface DataFactoryFunctions {
         return getWithNameAndMessage(object, false, nameof, message);
     }
 
-    static Data<Boolean> getInvalidBooleanWithNameAndMessage(boolean object, String nameof, String message) {
-        return getWithNameAndMessage(object, false, nameof, message);
+    static Data<Boolean> getInvalidBooleanWithNameAndMessage(String nameof, String message) {
+        return getWithNameAndMessage(false, false, nameof, message);
     }
 
     static <T> Data<T> getWithMessage(T object, boolean status, String nameof, String message, Exception exception, String exceptionMessage) {
