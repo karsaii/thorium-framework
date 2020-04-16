@@ -532,7 +532,7 @@ public interface Driver {
         final var nameof = isNotBlank(name) ? name : "isElementCondition";
         final var errorMessage = isNullMessage(inverter, "Inverter");
         if (isNotBlank(errorMessage)) {
-            return DataFactoryFunctions.getInvalidBooleanWithNameAndMessage(false, nameof, errorMessage);
+            return DataFactoryFunctions.getInvalidBooleanWithNameAndMessage(nameof, errorMessage);
         }
 
         final var status = isNotNullWebElement(data);
@@ -578,11 +578,16 @@ public interface Driver {
     }
 
     static DriverFunction<Boolean> isElementAbsent(LazyElement element) {
-        return ifDriver(
-            "isElementAbsent",
-            isNotNullLazyElement(element),
-            isElementCondition(element.name, element.get(), CardinalitiesFunctions::invertBoolean, Strings.ABSENT, Strings.OPTION_NOT),
-            CoreDataConstants.NULL_BOOLEAN
+        final var nameof = "isElementAbsent";
+        final var errorMessage = isNullLazyElementMessage(element);
+        if (isNotBlank(errorMessage)) {
+            return driver -> DataFactoryFunctions.getInvalidBooleanWithNameAndMessage(nameof, errorMessage);
+        }
+
+        final var negative = CoreDataConstants.NULL_BOOLEAN;
+        return DriverFunctionFactoryFunctions.replaceName(
+            conditionalChain(NullableFunctions::isNotNull, element.get(), isElementCondition(element.name, CardinalitiesFunctions::invertBoolean, Strings.ABSENT, Strings.OPTION_NOT), negative),
+            nameof
         );
     }
 
