@@ -86,6 +86,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -564,7 +565,13 @@ public interface Driver {
         return ifDriver(
             "isElementConditionDataCore",
             isNotNullLazyElement(element) && areNotNull(condition, negator) && isNotBlank(descriptor),
-            isElementCondition(element.name, SeleniumExecutor.execute(condition.apply(element), element.get()), CardinalitiesFunctions::noopBoolean, descriptor, negator),
+            isElementCondition(
+                element.name,
+                SeleniumExecutor.execute(condition.apply(element), element.get()),
+                Objects.equals(negator, Strings.EMPTY) ? CardinalitiesFunctions::noopBoolean : CardinalitiesFunctions::invertBoolean,
+                descriptor,
+                negator
+            ),
             CoreDataConstants.DATA_PARAMETER_WAS_NULL
         );
     }
