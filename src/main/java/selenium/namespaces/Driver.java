@@ -2,6 +2,8 @@ package selenium.namespaces;
 
 import core.constants.CoreDataConstants;
 import core.constants.InvokeConstants;
+import core.extensions.namespaces.CollectionPredicateFunctions;
+import core.namespaces.StringUtilities;
 import core.namespaces.validators.MethodParametersDataValidators;
 import selenium.constants.SeleniumInvokeFunctionDefaults;
 import core.extensions.DecoratedList;
@@ -60,10 +62,13 @@ import selenium.javascriptCommands.Execute;
 import selenium.namespaces.repositories.ElementRepository;
 import selenium.namespaces.repositories.FunctionRepository;
 import selenium.namespaces.repositories.LocatorRepository;
+import selenium.namespaces.validators.ElementFilterParametersValidators;
+import selenium.namespaces.validators.ElementGetterValidators;
 import selenium.namespaces.validators.InvokeCoreValidator;
 import selenium.namespaces.validators.MessageFormatter;
 import selenium.namespaces.validators.SeleniumDataValidators;
 import selenium.records.ElementCondition;
+import selenium.records.ElementFilterParameters;
 import selenium.records.ExecuteCoreData;
 import selenium.records.ExecuteCoreFunctionData;
 import selenium.records.ExternalElementData;
@@ -71,7 +76,7 @@ import selenium.records.ExternalSelectorData;
 import selenium.records.GetWithData;
 import selenium.records.InternalSelectorData;
 import selenium.records.LazyElement;
-import selenium.records.LazyLocatorList;
+import selenium.namespaces.extensions.boilers.LazyLocatorList;
 import selenium.records.ParametersFieldDefaultsData;
 import selenium.records.ProbabilityData;
 import selenium.records.SwitchResultMessageData;
@@ -905,7 +910,8 @@ public interface Driver {
 
         final var size = object.size();
         final var status = (size > index);
-        return DataFactoryFunctions.getWithNameAndMessage(object.get(index), status, nameof, "Element " + (status ? "" : "not ") + "found by index: " + index + ", list size: " + size + Strings.END_LINE + data.message);
+        final var message = "Element was" + (status ? "" : "n't") + " found by index(\"" + index + "\"), list size: " + size + Strings.END_LINE + data.message;
+        return DataFactoryFunctions.getWithNameAndMessage(object.get(index), status, nameof, message);
     }
 
     private static Function<Data<WebElementList>, Data<WebElement>> getElementIndexWasNegative(int index) {
@@ -925,9 +931,59 @@ public interface Driver {
         );
     }
 
+    static Data<WebElement> getElementByContainedText(Data<WebElementList> data, String text) {
+        final var nameof = "getElementByContainedText";
+        final var errorMessage = ElementGetterValidators.isInvalidElementByTextParameters(data, text);
+        if (isNotBlank(errorMessage)) {
+            return prependMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, errorMessage);
+        }
+
+        final var object = data.object;
+        if (object.isNullOrEmpty()) {
+            return prependMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, "List " + Strings.WAS_NULL);
+        }
+
+        final var length = object.size();
+        WebElement current = SeleniumCoreConstants.STOCK_ELEMENT;
+        var index = 0;
+        for (; StringUtilities.uncontains(current.getText(), text) && (index < length); ++index) {
+            current = object.get(index);
+        }
+
+        final var status = isNotNullWebElement(current) && (index < length);
+        final var message = "Element was" + (status ? "" : "n't") + " found by text(\"" + text + "\"), list size: " + length + Strings.END_LINE + data.message;
+        return DataFactoryFunctions.getWithNameAndMessage(current, status, nameof, message);
+    }
+
+    private static Function<Data<WebElementList>, Data<WebElement>> getElementTextWasBlank(String message) {
+        return listData -> MessageFormatter.getInvalidTextMessageFunction(message);
+    }
+
+    static Function<Data<WebElementList>, Data<WebElement>> getElementByContainedText(String message) {
+        return isNotBlank(message) ? data -> getElementByContainedText(data, message) : getElementTextWasBlank(message);
+    }
+
+    static DriverFunction<WebElement> getElementByContainedText(DriverFunction<WebElementList> getter, String message) {
+        return ifDriver(
+            "getElementByContainedText",
+            isNotNull(getter) && isNotBlank(message),
+            validChain(getter, getElementByContainedText(message), SeleniumDataConstants.NULL_ELEMENT),
+            SeleniumDataConstants.NULL_ELEMENT
+        );
+    }
+
+    static DriverFunction<WebElement> getElementByContainedText(By locator, String message) {
+        return ifDriver(
+            "getElementByContainedText",
+            isNotNull(locator) && isNotBlank(message),
+            validChain(getElements(locator), getElementByContainedText(message), SeleniumDataConstants.NULL_ELEMENT),
+            SeleniumDataConstants.NULL_ELEMENT
+        );
+    }
+
     static Data<WebElement> getElementFromSingle(Data<WebElementList> data) {
         final var nameof = "getElementFromSingle";
-        return isValidNonFalse(data) ? getElementByIndex(data, 0) : prependMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, "Data or index was null." + data.toString());
+        return isValidNonFalse(data) ? getElementByIndex(data, 0) : prependMessage(SeleniumDataConstants.NULL_ELEMENT, nameof, "Data or index" + Strings.WAS_NULL + data.toString());
     }
 
     static DriverFunction<WebElement> getElementFromSingle(DriverFunction<WebElementList> getter) {
@@ -1248,7 +1304,7 @@ public interface Driver {
             }
             final var size = (
                 result.status &&
-                CoreUtilities.isNotNullSpecificTypeList(object, WebElement.class) &&
+                CollectionPredicateFunctions.isNonEmptyAndOfType(object, WebElement.class) &&
                 CoreUtilities.isNotEqual(SeleniumDataConstants.NULL_ELEMENT.object, object.first())
             ) ? object.size() : 0;
             final var status = size == count;
@@ -1722,14 +1778,6 @@ public interface Driver {
         );
     }
 
-    static DriverFunction<WebElement> getIndexedElement(LazyLocatorList locators, Map<ManyGetter, Function<LazyLocatorList, DriverFunction<WebElementList>>> getterMap, ManyGetter getter, int index) {
-        return ifDriver("getIndexedElement via LazyElement parameters", Formatter.getManyGetterErrorMessage(getterMap, getter), getterMap.get(getter).apply(locators), Driver.getElementByIndex(index), SeleniumDataConstants.NULL_ELEMENT);
-    }
-
-    static DriverFunction<WebElement> getElement(LazyLocatorList locators, Map<SingleGetter, Function<LazyLocatorList, DriverFunction<WebElement>>> getterMap, SingleGetter getter) {
-        return ifDriver("getElement via LazyElement parameters", Formatter.getSingleGetterErrorMessage(getterMap, getter), getterMap.get(getter).apply(locators), SeleniumDataConstants.NULL_ELEMENT);
-    }
-
     static <T> DriverFunction<ExternalElementData> getLazyElementByExternal(LazyElement element, ExternalSelectorData externalData, Map<String, DecoratedList<SelectorKeySpecificityData>> typeKeys) {
         //TODO: Validate all the parameters and provide overloads for defaults.
         final var nameof = "getLazyElementByExternal";
@@ -1749,7 +1797,7 @@ public interface Driver {
                 final var length = externalData.limit;
                 var index = 0;
                 var message = replaceMessage(CoreDataConstants.NULL_STRING, nameof, "");
-                var lep = new LazyIndexedElementParameters(false, 0, new LazyLocator(""));
+                var lep = LazyIndexedElementFactory.getWithFilterParametersAndLocator(false, 0, new LazyLocator(""));
                 var getSelector = externalData.getSelector;
                 for(; index < length; ++index) {
                     switchToDefaultContent().apply(driver);
@@ -1765,8 +1813,8 @@ public interface Driver {
 
                     locator = new LazyLocator(selector.object, selectorType);
                     parameterKey = Formatter.getUniqueGeneratedName(selectorType);
-                    lep = new LazyIndexedElementParameters(false, 0, locator);
-                    currentElement = getElement(lep.lazyLocators, ElementFinderConstants.singleGetterMap, SingleGetter.DEFAULT).apply(driver);
+                    lep = LazyIndexedElementFactory.getWithFilterParametersAndLocator(false, 0, locator);
+                    currentElement = ElementFilterFunctions.getElement(lep.lazyLocators, ElementFinderConstants.singleGetterMap, SingleGetter.DEFAULT).apply(driver);
                     if (isNullWebElement(currentElement)) {
                         break;
                     }
@@ -1831,7 +1879,7 @@ public interface Driver {
         ) : replaceMessage(CoreDataConstants.NULL_INTEGER, "getNextKey", "The parameter map didn't contain an indexed selector-type it should have" + Strings.END_LINE);
     }
 
-    static DriverFunction<WebElement> getLazyElement(LazyElementWithOptionsData data) {
+    static <T> DriverFunction<WebElement> getLazyElement(LazyElementWithOptionsData data) {
         final var nameof = "getLazyElement";
         return ifDriver(
             nameof,
@@ -1883,11 +1931,11 @@ public interface Driver {
 
 
                     var getter = parameters.getter;
-                    var indexData = parameters.indexData;
+                    var indexData = parameters.filterData;
                     currentElement = (
-                        indexData.isIndexed ? (
-                            getIndexedElement(locators, ElementFinderConstants.manyGetterMap, ManyGetter.getValueOf(getter), indexData.index)
-                        ) : getElement(locators, ElementFinderConstants.singleGetterMap, SingleGetter.getValueOf(getter))
+                        indexData.isFiltered ? (
+                            indexData.apply(new ElementFilterParameters(locators, ElementFinderConstants.manyGetterMap, ManyGetter.getValueOf(getter)))
+                        ) : ElementFilterFunctions.getElement(locators, ElementFinderConstants.singleGetterMap, SingleGetter.getValueOf(getter))
                     ).apply(driver);
                     message = appendMessage(message, currentElement.message.toString());
                     message = appendMessage(message, Adjuster.adjustProbability(parameters, typeKeys, key, isValidNonFalse(currentElement), data.probabilityData).message.toString());
@@ -1959,8 +2007,8 @@ public interface Driver {
                         continue;
                     }
 
-                    var indexData = parameters.indexData;
-                    isIndexed = indexData.isIndexed;
+                    var indexData = parameters.filterData;
+                    isIndexed = indexData.isFiltered;
 
                     var locatorList = parameters.lazyLocators;
                     if (locatorList.isNullOrEmpty()) {

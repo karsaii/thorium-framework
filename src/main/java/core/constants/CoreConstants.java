@@ -21,12 +21,13 @@ public abstract class CoreConstants {
 
     public static final HashMap<String, MethodData> METHODS = new HashMap<>();
 
-    public static final Function<Object, Object> STOCK_OBJECT_FUNCTION = object -> CoreConstants.STOCK_OBJECT;
+
 
     public static final Function<Object, Object> OBJECT_CASTER_FUNCTION = Object.class::cast;
     public static final Function<Object, String> STRING_CASTER_FUNCTION = String.class::cast;
     public static final Function<Object, Boolean> BOOLEAN_CASTER_FUNCTION = CoreUtilities::castToBoolean;
     public static final Function<Object, Void> VOID_CASTER_FUNCTION = object -> null;
+    public static final Function<Object, Object> OBJECT_DEFAULT_FUNCTION = object -> CoreConstants.STOCK_OBJECT;
 
     public static final Method STOCK_METHOD = Object.class.getDeclaredMethods()[0];
     public static final MethodData STOCK_METHOD_DATA = new MethodData(STOCK_METHOD, CoreConstants.STOCK_METHOD_PARAMETER_TYPES.toString(), Strings.VOID_CLASS_GENERIC);

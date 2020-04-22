@@ -1,6 +1,7 @@
 package selenium.element;
 
 import core.constants.CoreDataConstants;
+import selenium.javascriptCommands.Execute;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.records.Data;
 import data.constants.Strings;
@@ -29,5 +30,21 @@ public interface ElementAlternatives {
 
     static DriverFunction<Boolean> clearWithSelectAll(By locator) {
         return clearWithSelectAll(LocatorRepository.getIfContains(locator));
+    }
+
+    static DriverFunction<Boolean> clickWithEventDispatcher(LazyElement element) {
+        return ifDriver("clickWithEventDispatcher", isNotNullLazyElement(element), Execute.clickEventDispatcher(element), CoreDataConstants.NULL_BOOLEAN);
+    }
+
+    static DriverFunction<Boolean> clickWithEventDispatcher(Data<LazyElement> data) {
+        return ifDriver("clickWithEventDispatcher", isValidNonFalse(data), clickWithEventDispatcher(data.object), CoreDataConstants.NULL_BOOLEAN);
+    }
+
+    static DriverFunction<Boolean> clickWithEventDispatcher(By locator, SingleGetter getter) {
+        return clickWithEventDispatcher(LocatorRepository.getIfContains(locator, getter));
+    }
+
+    static DriverFunction<Boolean> clickWithEventDispatcher(By locator) {
+        return clickWithEventDispatcher(LocatorRepository.getIfContains(locator));
     }
 }

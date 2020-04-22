@@ -4,7 +4,7 @@ import core.constants.CoreDataConstants;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import core.records.MethodData;
-import core.records.MethodGetCommonParametersData;
+import core.records.MethodSourceData;
 import core.records.MethodParametersData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
@@ -45,7 +45,7 @@ public interface MethodRepository {
         return getMethodFromMap(methodMap, parameterData.methodName, CoreDataConstants.NULL_METHODDATA);
     }
 
-    private static Data<MethodData> getMethodFromList(MethodGetCommonParametersData data, MethodParametersData parameterData) {
+    private static Data<MethodData> getMethodFromList(MethodSourceData data, MethodParametersData parameterData) {
         final var nameof = "getMethodFromList";
         final var methodName = parameterData.methodName;
         final var validator = parameterData.validator;
@@ -66,7 +66,7 @@ public interface MethodRepository {
         return DataFactoryFunctions.getWithNameAndMessage(methodData.object, status, nameof, Formatter.getMethodFromListMessage(methodName, status));
     }
 
-    static Data<MethodData> getMethod(MethodGetCommonParametersData data, MethodParametersData parameterData) {
+    static Data<MethodData> getMethod(MethodSourceData data, MethodParametersData parameterData) {
         final var nameof = "getMethod";
         final var message = ElementParameters.validateGetMethodFromList(data, parameterData);
         final var defaultValue = data.defaultValue;

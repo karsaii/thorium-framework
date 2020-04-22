@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public interface ExtendedListFunctions<T> {
+public interface ExtendedListFunctions {
     private static <T> List<T> conditionalSublist(ExtensionListData<T> data, Predicate<Supplier<Integer>> condition, List<T> list) {
         return condition.test(list::size) ? list.subList(data.startIndex, data.endIndexFunction.apply(list)) : Collections.singletonList(data.getter.apply(list));
     }

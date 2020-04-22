@@ -29,6 +29,7 @@ public class Strings {
 
 
     public static final String ELEMENT = "Element";
+    public static final String ELEMENT_PARAMETERS = ELEMENT + " parameters";
 
     public static final String LAZY_ELEMENT = "Lazy " + ELEMENT;
     public static final String LOCATOR = "Locator ";

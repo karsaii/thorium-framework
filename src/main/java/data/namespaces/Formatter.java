@@ -1,12 +1,12 @@
 package data.namespaces;
 
 import core.extensions.DecoratedList;
+import core.extensions.namespaces.BasicPredicateFunctions;
 import selenium.constants.SeleniumDataConstants;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
 import core.namespaces.DataFactoryFunctions;
-import core.records.ActionData;
 import core.records.Data;
 import core.records.command.CommandRangeData;
 import core.records.reflection.message.InvokeCommonMessageParametersData;
@@ -26,19 +26,21 @@ import selenium.enums.SingleGetter;
 import selenium.records.ExternalSelectorData;
 import selenium.records.InternalSelectorData;
 import selenium.records.LazyElement;
-import selenium.records.LazyLocatorList;
+import selenium.namespaces.extensions.boilers.LazyLocatorList;
 import selenium.records.ProbabilityData;
 import selenium.records.SwitchResultMessageData;
 import selenium.records.lazy.LazyElementWithOptionsData;
 import selenium.records.lazy.LazyLocator;
 
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 import static core.extensions.namespaces.CoreUtilities.areAnyBlank;
@@ -50,7 +52,6 @@ import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.SeleniumUtilities.getLocator;
-import static selenium.namespaces.SeleniumUtilities.isNullAbstractLazyElementParametersList;
 
 public interface Formatter {
     static String getOptionMessage(boolean status) {
@@ -92,6 +93,10 @@ public interface Formatter {
 
     static String isFalseMessage(boolean condition, String parameterName) {
         return isParameterMessage(CoreUtilities.isFalse(condition), parameterName, "false");
+    }
+
+    static String isInvalidMessage(boolean condition, String parameterName) {
+        return isParameterMessage(CoreUtilities.isFalse(condition), parameterName, "invalid");
     }
 
     static Data<String> getIsValuesMessage(Map<String, String> map, Data<String> object, String expected, Boolean keyCondition, String descriptor, String conditionDescriptor) {
@@ -234,75 +239,80 @@ public interface Formatter {
         return getLocatorErrorMessage(locator) + isNullMessage(getter, "Getter");
     }
 
-    static String getSendKeysErrorMessage(String errorMessage) {
-        return "sendKeys: " + errorMessage + "Not sending" + Strings.END_LINE;
+    static String getSendKeysErrorMessage(String message) {
+        return isNotBlank(message) ? "getSendKeysErrorMessage: " + Strings.PARAMETER_ISSUES_LINE + message + "Not sending" + Strings.END_LINE : Strings.EMPTY;
     }
 
     static String getSendKeysNotSendingMessage(Function getter, String input) {
-        final var errorMessage = getGetterErrorMessage(getter) + getInputErrorMessage(input);
-        return isBlank(errorMessage) ? Strings.EMPTY : getSendKeysErrorMessage(errorMessage);
+        return getSendKeysErrorMessage(getGetterErrorMessage(getter) + getInputErrorMessage(input));
     }
 
     static String getSendKeysNotSendingMessage(By locator, String input, SingleGetter getter) {
-        final var errorMessage = getLocatorAndGetterErrorMessage(locator, getter) + getInputErrorMessage(input);
-        return isBlank(errorMessage) ? Strings.EMPTY : getSendKeysErrorMessage(errorMessage);
+        return getSendKeysErrorMessage(getLocatorAndGetterErrorMessage(locator, getter) + getInputErrorMessage(input));
     }
 
     static String getSendKeysNotSendingMessage(By locator, String input) {
-        final var errorMessage = getLocatorErrorMessage(locator) + getInputErrorMessage(input);
-        return isBlank(errorMessage) ? Strings.EMPTY : getSendKeysErrorMessage(errorMessage);
-    }
-
-    static <T> String getEmptyMessage(T object, String parameterName) {
-        var message = "";
-        final var isList = (object instanceof List);
-        if (isList && ((List)object).isEmpty()) {
-            message += parameterName + " List was empty.";
-        }
-
-        final var isMap = (object instanceof Map);
-        if (isMap && ((Map)object).isEmpty()) {
-            message += parameterName + " Map was empty.";
-        }
-
-        return message;
-    }
-
-    static <T> String isNullLazyElementMessage(AbstractLazyElement<T> object) {
-        var errorMessage = isNullMessage(object, "Lazy Element");
-        if (isNotBlank(errorMessage)) {
-            return errorMessage;
-        }
-
-        final var elementParameters = "Element parameters";
-        errorMessage += (
-            isBlankMessage(object.name, "Element name") +
-            isNullMessage(object.parameters, elementParameters) +
-            isNullMessage(object.validator, "Element parameter validator")
-        );
-        if (isNotBlank(errorMessage)) {
-            return errorMessage;
-        }
-
-        errorMessage += (
-            getEmptyMessage(object.parameters, elementParameters)
-        );
-
-        return isNotBlank(errorMessage) ? (
-            errorMessage
-        ) : (isNullAbstractLazyElementParametersList(object.parameters.values(), object.validator) ? elementParameters + "' values were invalid." : Strings.EMPTY);
+        return getSendKeysErrorMessage(getLocatorErrorMessage(locator) + getInputErrorMessage(input));
     }
 
     static String getSendKeysNotSendingMessage(LazyElement data, String input) {
-        var errorMessage = isNullLazyElementMessage(data);
-        if (isBlank(errorMessage)) {
-            errorMessage += Formatter.getInputErrorMessage(input);
-        }
-        return isBlank(errorMessage) ? Strings.EMPTY : getSendKeysErrorMessage(errorMessage);
+        return getSendKeysErrorMessage(isNullLazyElementMessage(data) + getInputErrorMessage(input));
     }
 
-    static String getNullOrFalseActionDataMessage(ActionData data) {
-        return CoreUtilities.isNullOrFalseActionData(data) ? "ActionData" + Strings.WAS_NULL : Strings.EMPTY;
+    static <T> String isEmptyMessage(T data, String parameterName) {
+        var message = isNullMessage(data, parameterName);
+        if (isBlank(message)) {
+            //TODO Java13-14 instanceof + switch expression.
+            var type = "(Other)";
+            if (data instanceof List && ((List)data).isEmpty()) {
+                type = "(List)";
+            }
+
+            if (data instanceof Map && ((Map)data).isEmpty()) {
+                type = "(Map)";
+            }
+            message += parameterName + type + " was empty" + Strings.END_LINE;
+        }
+
+        return isNotBlank(message) ? "isEmptyMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+    }
+
+    static <T> String isEmptyMessage(T data) {
+        return isEmptyMessage(data, "Emptiable data");
+    }
+
+    static <T> String areNullLazyElementParametersMessage(Collection<T> data, Predicate<T> validator) {
+        var message = isEmptyMessage(data) + isNullMessage(validator, "Validator");
+        var sb = new StringBuilder();
+        if (isBlank(message)) {
+            var index = 0;
+            for(T parameters : data) {
+                sb.append(isInvalidMessage(validator.test(parameters), index + ". element data"));
+            }
+        }
+
+        message += sb.toString();
+        return isNotBlank(message) ? "areNullLazyElementParametersMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+    }
+
+    static <T> String isNullLazyElementMessage(AbstractLazyElement<T> object) {
+        final var baseMessage = "isNullLazyElementMessage: " + Strings.PARAMETER_ISSUES_LINE;
+        var message = isNullMessage(object, "Lazy Element");
+        if (isNotBlank(message)) {
+            return baseMessage + message;
+        }
+        final var parameters = object.parameters;
+        if (isBlank(message)) {
+            message += (
+                isBlankMessage(object.name, Strings.ELEMENT + " name") +
+                isNullMessage(parameters, Strings.ELEMENT_PARAMETERS)
+            );
+        }
+        if (isBlank(message)) {
+            message += areNullLazyElementParametersMessage(parameters.values(), object.validator);
+        }
+
+        return isNotBlank(message) ? baseMessage + message : Strings.EMPTY;
     }
 
     static String getWhenCoreMessage(Data<Boolean> data) {
@@ -508,8 +518,6 @@ public interface Formatter {
     static Function<Exception, String> getInvokeMethodParameterizedMessageFunction(InvokeParameterizedMessageData data) {
         return exception -> areAnyNull(data, exception) ? getInvokeMethodParameterizedMessage(data, exception) : "Data or exception" + Strings.WAS_NULL;
     }
-
-
 
     static String getNullDriverMessage(WebDriver driver) {
         return NullableFunctions.isNull(driver) ? Strings.DRIVER_WAS_NULL : "Driver wasn't null" + Strings.END_LINE;
@@ -849,5 +857,20 @@ public interface Formatter {
         }
 
         return isNotBlank(message) ? "isNullWebElementMessage: " + Strings.PARAMETER_ISSUES_LINE + message + Strings.END_LINE : Strings.EMPTY;
+    }
+
+    static String isNegativeMessage(int value, String parameterName) {
+        final var name = isNotBlank(parameterName) ? parameterName : "Value parameter";
+        final var status = BasicPredicateFunctions.isNegative(value);
+        var message = "";
+        if (status) {
+            message += name + "(\"" + value +"\") is negative" + Strings.END_LINE;
+        }
+
+        return isNotBlank(message) ? "isNegativeMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+    }
+
+    static String isNegativeMessage(int value) {
+        return isNegativeMessage(value, "Value parameter");
     }
 }

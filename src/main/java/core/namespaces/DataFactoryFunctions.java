@@ -8,7 +8,6 @@ import core.constants.CoreConstants;
 
 import java.util.Objects;
 
-import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;

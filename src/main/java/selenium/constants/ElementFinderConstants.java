@@ -6,7 +6,7 @@ import org.openqa.selenium.WebElement;
 import selenium.enums.ManyGetter;
 import selenium.enums.SingleGetter;
 import selenium.namespaces.Driver;
-import selenium.records.LazyLocatorList;
+import selenium.namespaces.extensions.boilers.LazyLocatorList;
 
 import java.util.Collections;
 import java.util.EnumMap;

@@ -1,12 +1,10 @@
 package core.extensions.namespaces;
 
 import core.constants.CardinalityDefaults;
-import core.records.ActionData;
 import core.records.CardinalityData;
 import org.apache.commons.lang3.StringUtils;
 import core.constants.CoreConstants;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -59,8 +57,8 @@ public interface CoreUtilities {
             return false;
         }
 
-        final boolean guardValue = conditionData.guardValue,
-            finalValue = conditionData.finalValue;
+        final var guardValue = conditionData.guardValue;
+        final var finalValue = conditionData.finalValue;
         final Function<Predicate<T>, Predicate<T>> inverter = CardinalitiesFunctions.getPredicate(conditionData.invert);
         final var checker = inverter.apply(condition);
         final var length = objects.length;
@@ -116,18 +114,6 @@ public interface CoreUtilities {
         return areAny(StringUtils::isBlank, strings);
     }
 
-    static boolean isNullOrEmptyList(List<?> list) {
-        return NullableFunctions.isNull(list) || list.isEmpty();
-    }
-
-    static <T, U> Boolean isNullSpecficTypeList(List<T> list, Class<U> clazz) {
-        return isNullOrEmptyList(list) || !clazz.isInstance(list.get(0));
-    }
-
-    static <T, U> Boolean isNotNullSpecificTypeList(List<T> list, Class<U> clazz) {
-        return !isNullSpecficTypeList(list, clazz);
-    }
-
     static <T> Object[] toSingleElementArray(T object, Predicate<T> guard) {
         if (!guard.test(object)) {
             return CoreConstants.EMPTY_OBJECT_ARRAY;
@@ -151,15 +137,8 @@ public interface CoreUtilities {
         return Pattern.matches(regex, string);
     }
 
-    static Boolean Uncontains(String object, String expected) {
-        return !StringUtils.contains(object, expected);
-    }
 
     static String getIncrementalUUID(AtomicInteger counter) {
         return "" + counter.getAndIncrement() + UUID.randomUUID().toString();
-    }
-
-    static boolean isNullOrFalseActionData(ActionData actionData) {
-        return areAnyNull(actionData, actionData.data) || areAnyBlank(actionData.message, actionData.methodName);
     }
 }
