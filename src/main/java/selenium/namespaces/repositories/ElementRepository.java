@@ -17,8 +17,9 @@ import selenium.constants.ElementStrategyMapConstants;
 import selenium.constants.RepositoryConstants;
 import selenium.enums.SelectorStrategy;
 import selenium.namespaces.SeleniumUtilities;
+import selenium.namespaces.validators.ElementRepositoryValidators;
 import selenium.records.LazyElement;
-import selenium.records.LazyLocatorList;
+import selenium.namespaces.extensions.boilers.LazyLocatorList;
 import selenium.records.lazy.CachedLazyElementData;
 
 import java.util.Collections;
@@ -26,19 +27,19 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static core.namespaces.DataFactoryFunctions.prependMessage;
 import static core.namespaces.DataFactoryFunctions.replaceMessage;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static selenium.namespaces.SeleniumUtilities.isNullLazyElement;
+import static data.namespaces.Formatter.isNullLazyElementMessage;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface ElementRepository {
     static Data<Boolean> cacheElement(Map<String, CachedLazyElementData> elementRepository, LazyElement element, Map<String, DecoratedList<SelectorKeySpecificityData>> typeKeys, Data<Boolean> defaultValue) {
         final var nameof = "cacheElement";
-        if (isNullLazyElement(element)) {
+        final var errorMessage = isNullLazyElementMessage(element);
+        if (isNotBlank(errorMessage)) {
             return replaceMessage(defaultValue, nameof, Strings.LAZY_ELEMENT + " " + Strings.WAS_NULL);
         }
 
@@ -63,8 +64,9 @@ public interface ElementRepository {
 
     static Data<Boolean> containsElement(Map<String, CachedLazyElementData> elementRepository, String name, Data<Boolean> defaultValue) {
         final var nameof = "containsElement";
-        if (areAnyNull(elementRepository, defaultValue) || isBlank(name)) {
-            return replaceMessage(defaultValue, nameof, "Parameters " + Strings.WAS_NULL);
+        final var errorMessage = ElementRepositoryValidators.isInvalidContainsElementMessage(elementRepository, name, defaultValue);
+        if (isNotBlank(errorMessage)) {
+            return replaceMessage(defaultValue, nameof, errorMessage);
         }
 
         final var defaultObject = defaultValue.object;
@@ -84,8 +86,9 @@ public interface ElementRepository {
 
     static Data<CachedLazyElementData> getElement(Map<String, CachedLazyElementData> elementRepository, String name, Data<CachedLazyElementData> defaultValue) {
         final var nameof = "getElement";
-        if (areAnyNull(elementRepository, defaultValue) || isBlank(name)) {
-            return replaceMessage(defaultValue, nameof, "Passed name for lookup " + Strings.WAS_NULL);
+        final var errorMessage = ElementRepositoryValidators.isInvalidContainsElementMessage(elementRepository, name, defaultValue);
+        if (isNotBlank(errorMessage)) {
+            return replaceMessage(defaultValue, nameof, errorMessage);
         }
 
         final var defaultObject = defaultValue.object;

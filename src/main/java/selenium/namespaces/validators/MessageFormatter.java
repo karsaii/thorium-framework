@@ -10,4 +10,8 @@ public interface MessageFormatter {
     static Data<WebElement> getInvalidIndexMessageFunction(int index) {
         return DataFactoryFunctions.getWithMessage(SeleniumCoreConstants.STOCK_ELEMENT, false, "Index(\"" + index +"\") was negative" + Strings.END_LINE);
     }
+
+    static Data<WebElement> getInvalidTextMessageFunction(String message) {
+        return DataFactoryFunctions.getWithMessage(SeleniumCoreConstants.STOCK_ELEMENT, false, "Text(\"" + message + "\") was blank" + Strings.END_LINE);
+    }
 }

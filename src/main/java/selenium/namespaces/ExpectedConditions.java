@@ -1,6 +1,8 @@
 package selenium.namespaces;
 
 import core.constants.CoreDataConstants;
+import core.namespaces.StringUtilities;
+import selenium.constants.ExpectedConditionConstants;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.BasicPredicateFunctions;
 import core.extensions.namespaces.CoreUtilities;
@@ -28,9 +30,7 @@ import static core.namespaces.DataFactoryFunctions.replaceName;
 
 import static selenium.namespaces.ExecutionCore.ifDriver;
 
-public interface EC {
-    DriverFunction<String> GET_TITLE = Driver.getTitle();
-
+public interface ExpectedConditions {
     private static Data<Boolean> isValuesDataCore(Data<String> data, String expected, String descriptor, String conditionDescriptor) {
         final var status = data.status;
         final var messageData = Formatter.getIsValuesMessage(FormatterStrings.isMessageMap, data, expected, status, descriptor, conditionDescriptor);
@@ -90,72 +90,80 @@ public interface EC {
         );
     }
 
-    static Data<Boolean> isValuesEqualData(String descriptor, String expected, Data<String> data) {
+    static Data<Boolean> isValuesEqualData(Data<String> data, String expected, String descriptor) {
         return isValuesData(descriptor, expected, data, CoreUtilities::isEqual, "equal");
     }
 
-    static Data<Boolean> isStringContainsExpectedData(String descriptor, String expected, Data<String> data) {
+    static Data<Boolean> isStartsWith(Data<String> data, String expected, String descriptor) {
+        return isValuesData(descriptor, expected, data, StringUtilities::startsWithCaseSensitive, " starts with ");
+    }
+
+    static Data<Boolean> isContainsExpectedData(Data<String> data, String expected, String descriptor) {
         return isValuesData(descriptor, expected, data, StringUtils::contains, "contain");
     }
 
-    static Data<Boolean> isValuesNotEqualData(String descriptor, String expected, Data<String> data) {
+    static Data<Boolean> isValuesNotEqualData(Data<String> data, String expected, String descriptor) {
         return isValuesData(descriptor, expected, data, CoreUtilities::isNotEqual, "unequal");
     }
 
-    static Data<Boolean> isStringNotContainsExpectedData(String descriptor, String expected, Data<String> data) {
-        return isValuesData(descriptor, expected, data, CoreUtilities::Uncontains, "does not contain");
+    static Data<Boolean> isStringNotContainsExpectedData(Data<String> data, String expected, String descriptor) {
+        return isValuesData(descriptor, expected, data, StringUtilities::uncontains, "does not contain");
     }
 
-    static DriverFunction<Boolean> isValuesEqualData(String descriptor, String expected, DriverFunction<String> getter) {
+    static DriverFunction<Boolean> isValuesEqualData(DriverFunction<String> getter, String expected, String descriptor) {
         return isValuesData(descriptor, expected, getter, CoreUtilities::isEqual, "equal");
     }
 
-    static DriverFunction<Boolean> isValuesNotEqualData(String descriptor, String expected, DriverFunction<String> getter) {
+    static DriverFunction<Boolean> isStartsWith(DriverFunction<String> getter, String expected, String descriptor) {
+        return isValuesData(descriptor, expected, getter, StringUtilities::startsWithCaseSensitive, " starts with ");
+    }
+
+    static DriverFunction<Boolean> isValuesNotEqualData(DriverFunction<String> getter, String expected, String descriptor) {
         return isValuesData(descriptor, expected, getter, CoreUtilities::isNotEqual, "unequal");
     }
 
-    static DriverFunction<Boolean> isStringContainsExpectedData(String descriptor, String expected, DriverFunction<String> getter) {
+    static DriverFunction<Boolean> isContainsExpectedData(DriverFunction<String> getter, String expected, String descriptor) {
         return isValuesData(descriptor, expected, getter, StringUtils::contains, "contain");
     }
 
-    static DriverFunction<Boolean> isStringNotContainsExpectedData(String descriptor, String expected, DriverFunction<String> getter) {
-        return isValuesData(descriptor, expected, getter, CoreUtilities::Uncontains, "does not contain");
+    static DriverFunction<Boolean> isStringNotContainsExpectedData(DriverFunction<String> getter, String expected, String descriptor) {
+        return isValuesData(descriptor, expected, getter, StringUtilities::uncontains, "does not contain");
     }
 
-    static DriverFunction<Boolean> isTitleData(String expected, BiFunction<String, String, Boolean> checker, String conditionDescriptor) {
-        return isValuesData(Strings.TITLE_OF_WINDOW, expected, GET_TITLE, checker, conditionDescriptor);
+    static DriverFunction<Boolean> isTitleData(BiFunction<String, String, Boolean> checker, String expected, String conditionDescriptor) {
+        return isValuesData(Strings.TITLE_OF_WINDOW, expected, ExpectedConditionConstants.GET_TITLE, checker, conditionDescriptor);
     }
 
-    static DriverFunction<Boolean> isUrlData(String expected, BiFunction<String, String, Boolean> checker, String conditionDescriptor) {
+    static DriverFunction<Boolean> isUrlData(BiFunction<String, String, Boolean> checker, String expected, String conditionDescriptor) {
         return isValuesData("Current url ", expected, Driver.getUrl(), checker, conditionDescriptor);
     }
 
     static DriverFunction<Boolean> isTitleEqualsData(String expected) {
-        return isValuesEqualData(Strings.TITLE_OF_WINDOW, expected, GET_TITLE);
+        return isValuesEqualData(ExpectedConditionConstants.GET_TITLE, Strings.TITLE_OF_WINDOW, expected);
     }
 
     static DriverFunction<Boolean> isTitleContainsData(String expected) {
-        return isStringContainsExpectedData(Strings.TITLE_OF_WINDOW, expected, GET_TITLE);
+        return isContainsExpectedData(ExpectedConditionConstants.GET_TITLE, Strings.TITLE_OF_WINDOW, expected);
     }
 
     static DriverFunction<Boolean> isUrlEqualsData(String expected) {
-        return isUrlData(expected, StringUtils::equals, "equal");
+        return isUrlData(StringUtils::equals, expected, "equal");
     }
 
     static DriverFunction<Boolean> isUrlContainsData(String expected) {
-        return isUrlData(expected, StringUtils::contains, "contain");
+        return isUrlData(StringUtils::contains, expected, "contain");
     }
 
     static DriverFunction<Boolean> isUrlEqualsIgnoreCaseData(String expected) {
-        return isUrlData(expected, StringUtils::equalsIgnoreCase, "case insensitive equal");
+        return isUrlData(StringUtils::equalsIgnoreCase, expected, "case insensitive equal");
     }
 
     static DriverFunction<Boolean> isUrlContainsIgnoreCaseData(String expected) {
-        return isUrlData(expected, StringUtils::containsIgnoreCase, "case insensitive contain");
+        return isUrlData(StringUtils::containsIgnoreCase, expected, "case insensitive contain");
     }
 
     static DriverFunction<Boolean> isUrlMatchesData(String pattern) {
-        return isUrlData(pattern, CoreUtilities::isStringMatchesPattern, "match regex");
+        return isUrlData(CoreUtilities::isStringMatchesPattern, pattern, "match regex");
     }
 
     static DriverFunction<Boolean> isElementPresent(LazyElement data) {
@@ -280,30 +288,30 @@ public interface EC {
     }
 
     static DriverFunction<Boolean> isElementTextEqualData(LazyElement data, String expected) {
-        return isValuesEqualData("Element text", expected, Driver.getElementText(data));
+        return isValuesEqualData(Driver.getElementText(data), expected, "Element text");
     }
 
     static DriverFunction<Boolean> isElementTextContainsData(LazyElement data, String expected) {
-        return isStringContainsExpectedData("Element text", expected, Driver.getElementText(data));
+        return isContainsExpectedData(Driver.getElementText(data), expected, "Element text");
     }
 
     static DriverFunction<Boolean> isElementAttributeValueTextEqualData(LazyElement data, String expected) {
-        return isValuesEqualData("Element attribute value", expected, Driver.getElementAttributeValue(data));
+        return isValuesEqualData(Driver.getElementAttributeValue(data), expected, "Element attribute value");
     }
 
     static DriverFunction<Boolean> isElementAttributeValueContainsData(LazyElement data, String expected) {
-        return isStringContainsExpectedData("Element attribute value", expected, Driver.getElementAttributeValue(data));
+        return isContainsExpectedData(Driver.getElementAttributeValue(data), expected, "Element attribute value");
     }
 
     static DriverFunction<Boolean> isElementAttributeValueNotContainsData(LazyElement data, String expected) {
-        return isStringContainsExpectedData("Element text", expected, Driver.getElementAttributeValue(data));
+        return isContainsExpectedData(Driver.getElementAttributeValue(data), expected, "Element text");
     }
 
     static DriverFunction<Boolean> isNumberOfWindowsEqualTo(int expected) {
         return ifDriver(
             "isNumberOfWindowsEqualTo",
             BasicPredicateFunctions.isPositiveNonZero(expected),
-            ExecutionCore.validChain(Driver.getWindowHandleAmount(), EC.isNumberOfWindowsEqualToCore(expected), CoreDataConstants.NULL_BOOLEAN),
+            ExecutionCore.validChain(Driver.getWindowHandleAmount(), ExpectedConditions.isNumberOfWindowsEqualToCore(expected), CoreDataConstants.NULL_BOOLEAN),
             CoreDataConstants.NULL_BOOLEAN
         );
     }

@@ -1,12 +1,29 @@
 package core.namespaces.validators;
 
 import core.records.MethodMessageData;
+import data.constants.Strings;
 
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
+import static data.namespaces.Formatter.isBlankMessage;
+import static data.namespaces.Formatter.isNullMessage;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface MethodMessageDataValidators {
     static boolean isValid(MethodMessageData data) {
         return isNotNull(data) && isNotBlank(data.message) && isNotNull(data.nameof);
+    }
+
+    static String isInvalidMessage(MethodMessageData data) {
+        final var baseName = "Data";
+        var message = isNullMessage(data, baseName);
+        if (isBlank(message)) {
+            message += isBlankMessage(data.message, baseName + " Message");
+        }
+
+        final var nameParameterDescriptor = baseName + " Name of source";
+        message += isNotBlank(message) ? isBlankMessage(data.nameof, nameParameterDescriptor) : isNullMessage(data.nameof, nameParameterDescriptor);
+
+        return isNotBlank(message) ? "isInvalidMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
     }
 }

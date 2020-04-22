@@ -5,7 +5,6 @@ import core.records.Data;
 import org.apache.commons.lang3.ArrayUtils;
 import core.constants.CoreConstants;
 
-import static core.extensions.namespaces.CoreUtilities.Uncontains;
 import static core.extensions.namespaces.CoreUtilities.isException;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNull;
@@ -16,14 +15,13 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public interface DataFunctions {
     static String getNameIfAbsent(Data<?> data, String nameof) {
         var name = "";
-        final var nameNotBlank = isNotBlank(nameof);
         if (isNotNull(data)) {
             name = data.message.nameof;
-            if (nameNotBlank && Uncontains(data.message.nameof, nameof)) {
+            if (StringUtilities.uncontains(name, nameof)) {
                 name = nameof + ": " + name;
             }
         } else {
-            name = nameNotBlank ? nameof : "getNameIfAbsent";
+            name = isNotBlank(nameof) ? nameof : "getNameIfAbsent";
         }
 
         return name;

@@ -2,8 +2,9 @@ package selenium.constants;
 
 import core.constants.CoreDataConstants;
 import core.extensions.DecoratedList;
+import selenium.namespaces.LazyElementFactory;
 import selenium.namespaces.extensions.boilers.WebElementList;
-import core.records.MethodGetCommonParametersData;
+import core.records.MethodSourceData;
 import org.openqa.selenium.WebElement;
 import selector.records.SelectorKeySpecificityData;
 import core.constants.CoreConstants;
@@ -29,13 +30,13 @@ public abstract class SeleniumCoreConstants {
     public static final List<Method> WEB_ELEMENT_METHOD_LIST = Arrays.asList(WEBELEMENT_METHODS);
 
     public static AtomicInteger ATOMIC_COUNT = new AtomicInteger();
-    public static final LazyElement NULL_LAZY_ELEMENT = new LazyElement("Null Lazy Element " + getIncrementalUUID(ATOMIC_COUNT));
+    public static final LazyElement NULL_LAZY_ELEMENT = LazyElementFactory.getWithDefaultLocatorsAndValidator("Null Lazy Element " + getIncrementalUUID(ATOMIC_COUNT));
 
     public static final Map<String, DecoratedList<SelectorKeySpecificityData>> NULL_CACHED_KEYS = ElementRepository.getInitializedTypeKeysMap();
     public static final CachedLazyElementData NULL_CACHED_LAZY_ELEMENT_DATA = new CachedLazyElementData(NULL_LAZY_ELEMENT, NULL_CACHED_KEYS);
     public static final ExternalElementData NULL_EXTERNAL_ELEMENT_DATA = new ExternalElementData(NULL_CACHED_KEYS, SeleniumDataConstants.NULL_ELEMENT);
 
     public static final List<Class<?>> CLASSES_OF_GET_MECHANISMS = Arrays.asList(WebElementList.class, WebElement.class);
-    public static final MethodGetCommonParametersData DEFAULT_WEB_ELEMENT_METHOD_PARAMETERS = new MethodGetCommonParametersData(CoreConstants.METHODS, SeleniumCoreConstants.WEB_ELEMENT_METHOD_LIST, CoreDataConstants.NULL_METHODDATA);
+    public static final MethodSourceData DEFAULT_WEB_ELEMENT_METHOD_PARAMETERS = new MethodSourceData(CoreConstants.METHODS, SeleniumCoreConstants.WEB_ELEMENT_METHOD_LIST, CoreDataConstants.NULL_METHODDATA);
     public static final Function<Object, WebElement> WEB_ELEMENT_CASTER_FUNCTION = WebElement.class::cast;
 }

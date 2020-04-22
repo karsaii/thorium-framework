@@ -3,7 +3,9 @@ package selenium.javascriptCommands;
 import core.constants.CoreDataConstants;
 import core.namespaces.validators.DataValidators;
 import org.apache.commons.lang3.ArrayUtils;
+import selenium.javascriptCommands.scripts.ClickFunctions;
 import selenium.namespaces.SeleniumExecutor;
+import selenium.namespaces.SeleniumUtilities;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
@@ -35,6 +37,7 @@ import java.util.Objects;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
+import static core.extensions.namespaces.NullableFunctions.isNull;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static core.namespaces.DataFactoryFunctions.getArrayWithName;
@@ -274,5 +277,47 @@ public interface Execute {
 
     static DriverFunction<String> setId(LazyElement element, String value) {
         return setAttribute(element, Strings.PRIMARY_STRATEGY, value);
+    }
+
+    static DriverFunction<Boolean> clickEventDispatcher(Data<WebElement> element) {
+        final var nameof = "clickEventDispatcher";
+        return ifDriver(
+                nameof,
+                isNotNullWebElement(element),
+                driver -> {
+                    if (isInvalidOrFalse(element)) {
+                        return CoreDataConstants.NULL_BOOLEAN;
+                    }
+
+                    final var parametersData = DataFunctions.unwrapToArray(element);
+                    if (isNull(parametersData)) {
+                        return CoreDataConstants.NULL_BOOLEAN;
+                    }
+
+                    final var result = Driver.executeParameters(ClickFunctions.CLICK_DISPATCHER, parametersData).apply(driver);
+                    final var returnedValue = String.valueOf(result.object);
+                    final var status = isValidNonFalse(result);
+                    return DataFactoryFunctions.getWithMessage(CoreUtilities.castToBoolean(returnedValue), status, "Element was " + Formatter.getOptionMessage(status) + "clicked" + Strings.END_LINE);
+                },
+                CoreDataConstants.NULL_BOOLEAN
+        );
+    }
+
+    static DriverFunction<Boolean> clickEventDispatcher(DriverFunction<WebElement> getter) {
+        return ifDriver(
+                "clickEventDispatcher",
+                isNotNull(getter),
+                driver -> clickEventDispatcher(getter.apply(driver)).apply(driver),
+                CoreDataConstants.NULL_BOOLEAN
+        );
+    }
+
+    static DriverFunction<Boolean> clickEventDispatcher(LazyElement element) {
+        return ifDriver(
+                "clickEventDispatcher",
+                isNotNullLazyElement(element),
+                clickEventDispatcher(element.get()),
+                CoreDataConstants.NULL_BOOLEAN
+        );
     }
 }

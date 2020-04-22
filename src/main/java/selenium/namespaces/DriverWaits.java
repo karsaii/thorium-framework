@@ -3,7 +3,6 @@ package selenium.namespaces;
 import core.constants.CoreDataConstants;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.BasicPredicateFunctions;
-import core.namespaces.Executor;
 import core.namespaces.WaitTimeDataFactory;
 import core.records.WaitData;
 
@@ -16,7 +15,7 @@ public interface DriverWaits {
         return ifDriver(
             "waitNavigatedTo",
             isNotBlank(url) && areAll(BasicPredicateFunctions::isPositiveNonZero, interval, timeout) && (interval < timeout),
-            driver -> Wait.untilCore(new WaitData<>(EC.isUrlContainsData(url), WaitPredicateFunctions::isTruthyData, "Waiting for url", WaitTimeDataFactory.getWithDefaultClock(interval, timeout))).apply(driver),
+            driver -> Wait.untilCore(new WaitData<>(ExpectedConditions.isUrlContainsData(url), WaitPredicateFunctions::isTruthyData, "Waiting for url", WaitTimeDataFactory.getWithDefaultClock(interval, timeout))).apply(driver),
             CoreDataConstants.PARAMETERS_NULL_BOOLEAN
         );
     }

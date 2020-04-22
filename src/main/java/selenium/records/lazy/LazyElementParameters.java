@@ -1,7 +1,7 @@
 package selenium.records.lazy;
 
 import selenium.constants.LazyElementConstants;
-import selenium.records.LazyLocatorList;
+import selenium.namespaces.extensions.boilers.LazyLocatorList;
 
 import java.util.Objects;
 

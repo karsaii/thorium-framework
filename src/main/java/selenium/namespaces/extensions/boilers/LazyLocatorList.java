@@ -1,4 +1,4 @@
-package selenium.records;
+package selenium.namespaces.extensions.boilers;
 
 import core.extensions.DecoratedList;
 import selenium.records.lazy.LazyLocator;

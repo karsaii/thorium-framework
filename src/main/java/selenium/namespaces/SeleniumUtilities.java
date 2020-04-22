@@ -3,6 +3,7 @@ package selenium.namespaces;
 import core.extensions.DecoratedList;
 import core.extensions.interfaces.functional.TriFunction;
 import core.extensions.namespaces.BasicPredicateFunctions;
+import core.extensions.namespaces.EmptiableFunctions;
 import core.namespaces.DataFactoryFunctions;
 import core.records.Data;
 import data.constants.Strings;
@@ -15,8 +16,8 @@ import selenium.constants.SeleniumDataConstants;
 import selenium.constants.ElementStrategyMapConstants;
 import selenium.enums.SelectorStrategy;
 import selenium.records.ElementWaitParameters;
-import selenium.records.IndexedData;
-import selenium.records.LazyLocatorList;
+import selenium.records.FilterData;
+import selenium.namespaces.extensions.boilers.LazyLocatorList;
 import selenium.records.lazy.LazyElementWaitParameters;
 import selenium.records.lazy.LazyIndexedElementParameters;
 import selenium.records.lazy.LazyLocator;
@@ -34,7 +35,6 @@ import static core.extensions.namespaces.CoreUtilities.areAll;
 import static core.extensions.namespaces.CoreUtilities.areAny;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.isEqual;
-import static core.extensions.namespaces.CoreUtilities.isNullOrEmptyList;
 import static core.extensions.namespaces.NullableFunctions.isNull;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static java.util.Map.entry;
@@ -54,7 +54,7 @@ public interface SeleniumUtilities {
     }
 
     static boolean isNullLazyDataList(LazyLocatorList list) {
-        return isNullOrEmptyList(list) || areNullLazyData(list.list);
+        return EmptiableFunctions.isNullOrEmpty(list) || areNullLazyData(list.list);
     }
 
     static boolean isNotNullLazyData(LazyLocator data) {
@@ -69,10 +69,6 @@ public interface SeleniumUtilities {
         }
 
         return true;
-    }
-
-    static <T> boolean isNotNullAbstractLazyElementParametersList(Collection<T> data, Predicate<T> validator) {
-        return !isNullAbstractLazyElementParametersList(data, validator);
     }
 
     static <T> boolean isNullLazyElement(AbstractLazyElement<T> element) {
@@ -95,6 +91,10 @@ public interface SeleniumUtilities {
             Objects.equals(SeleniumDataConstants.NULL_ELEMENT.object, element) ||
             isEqual(element.getAttribute("id"), Strings.NULL_ELEMENT_ID)
         );
+    }
+
+    static boolean isNotNullWebElement(WebElement element) {
+        return !isNullWebElement(element);
     }
 
     static boolean isNullWebElement(Data<WebElement> element) {
@@ -161,9 +161,9 @@ public interface SeleniumUtilities {
         return entry(lazyLocator.strategy, constructor.apply(isIndexed, lazyLocator, getter));
     }
 
-    static <T> Map.Entry<String, T> getEntryIndexed(TriFunction<IndexedData, LazyLocator, String, T> constructor, IndexedData indexedData, By locator, String getter) {
+    static <T, V> Map.Entry<String, LazyIndexedElementParameters> getEntryIndexed(TriFunction<FilterData, LazyLocator, String, LazyIndexedElementParameters> constructor, FilterData<?> filterData, By locator, String getter) {
         final var lazyLocator = getLazyLocator(locator);
-        return entry(lazyLocator.strategy, constructor.apply(indexedData, lazyLocator, getter));
+        return entry(lazyLocator.strategy, constructor.apply(filterData, lazyLocator, getter));
     }
 
     static Data<By> getLocator(Map<SelectorStrategy, Function<String, By>> strategyMap, LazyLocator data) {
@@ -188,7 +188,7 @@ public interface SeleniumUtilities {
         LazyIndexedElementParameters lep;
         while(keys.hasNext() && values.hasNext()) {
             lep = values.next();
-            map.putIfAbsent(keys.next(), new LazyIndexedElementParameters(lep.indexData, lep.probability, lep.lazyLocators, lep.getter));
+            map.putIfAbsent(keys.next(), LazyIndexedElementFactory.getWithFilterDataAndLocatorList(lep.filterData, lep.probability, lep.lazyLocators, lep.getter));
         }
 
         return map;

@@ -1,7 +1,7 @@
 package validators;
 
 import selenium.namespaces.extensions.boilers.DriverFunction;
-import core.records.MethodGetCommonParametersData;
+import core.records.MethodSourceData;
 import core.records.MethodParametersData;
 import core.records.WaitTimeData;
 import core.records.caster.WrappedCastData;
@@ -52,16 +52,16 @@ public interface ElementParameters {
         return Objects.isNull(data) || StringUtils.isBlank(data.getter) || areNullLazyData(data.lazyLocators);
     }
 
-    static boolean isInvalidLazyIndexedElement(LazyIndexedElementParameters data) {
-        return isInvalidLazyElemenet(data) || (Objects.isNull(data.indexData)) || (data.indexData.index < 0);
-    }
-
     static boolean isValidLazyElement(LazyElementParameters data) {
         return !isInvalidLazyElemenet(data);
     }
 
     static boolean isValidLazyIndexedElement(LazyIndexedElementParameters data) {
-        return !isInvalidLazyIndexedElement(data);
+        return !(isInvalidLazyElemenet(data) || (Objects.isNull(data.filterData)) || (Objects.isNull(data.filterData.filterParameter)));
+    }
+
+    static boolean isValidLazyTextFilteredElement(LazyIndexedElementParameters data) {
+        return !(isInvalidLazyElemenet(data) || (Objects.isNull(data.filterData)) || (Objects.isNull(data.filterData.filterParameter)));
     }
 
     static <T> String validateCommonElementMethodParamaters(WrappedCastData<T> castData, BiPredicate<Method, String> condition, String methodName) {
@@ -90,7 +90,7 @@ public interface ElementParameters {
         );
     }
 
-    static String validateMethodGetCommonParametersData(MethodGetCommonParametersData data) {
+    static String validateMethodSourceData(MethodSourceData data) {
         var message = Formatter.isNullMessage(data, "Method Get Parameters data");
         if (isBlank(message)) {
             message +=  (
@@ -115,7 +115,7 @@ public interface ElementParameters {
     }
 
 
-    static String validateGetMethodFromList(MethodGetCommonParametersData data, MethodParametersData parameterData) {
-        return validateMethodGetCommonParametersData(data) + validateMethodParametersData(parameterData);
+    static String validateGetMethodFromList(MethodSourceData data, MethodParametersData parameterData) {
+        return validateMethodSourceData(data) + validateMethodParametersData(parameterData);
     }
 }

@@ -15,4 +15,12 @@ public class Alternatives {
             new SendKeysData(Element::sendKeys, Element::sendKeys, Element::sendKeys)
         )
     );
+
+    public static final ElementAlternative clickWithEventDispatcher = new ElementAlternative(
+        new ElementFunctionsData(
+            new ClickData(ElementAlternatives::clickWithEventDispatcher, ElementAlternatives::clickWithEventDispatcher, ElementAlternatives::clickWithEventDispatcher),
+            new ClearData(Element::clear, Element::clear, Element::clear),
+            new SendKeysData(Element::sendKeys, Element::sendKeys, Element::sendKeys)
+        )
+    );
 }
