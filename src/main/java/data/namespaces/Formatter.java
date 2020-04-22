@@ -263,7 +263,7 @@ public interface Formatter {
         var message = isNullMessage(data, parameterName);
         if (isBlank(message)) {
             //TODO Java13-14 instanceof + switch expression.
-            var type = "(Other)";
+            var type = "";
             if (data instanceof List && ((List)data).isEmpty()) {
                 type = "(List)";
             }
@@ -271,7 +271,10 @@ public interface Formatter {
             if (data instanceof Map && ((Map)data).isEmpty()) {
                 type = "(Map)";
             }
-            message += parameterName + type + " was empty" + Strings.END_LINE;
+
+            if (isNotBlank(type)) {
+                message += parameterName + type + " was empty" + Strings.END_LINE;
+            }
         }
 
         return isNotBlank(message) ? "isEmptyMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
