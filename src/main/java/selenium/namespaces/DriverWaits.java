@@ -1,6 +1,7 @@
 package selenium.namespaces;
 
 import core.constants.CoreDataConstants;
+import core.namespaces.Wait;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.BasicPredicateFunctions;
 import core.namespaces.WaitTimeDataFactory;

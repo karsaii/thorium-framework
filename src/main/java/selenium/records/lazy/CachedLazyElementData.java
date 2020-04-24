@@ -11,7 +11,6 @@ public class CachedLazyElementData {
     public final LazyElement element;
     public final Map<String, DecoratedList<SelectorKeySpecificityData>> typeKeys;
 
-
     public CachedLazyElementData(LazyElement element, Map<String, DecoratedList<SelectorKeySpecificityData>> typeKeys) {
         this.element = element;
         this.typeKeys = typeKeys;

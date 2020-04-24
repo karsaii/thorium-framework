@@ -21,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public interface LocatorRepository {
     static Data<LazyElement> getIfContains(Map<By, String> locatorRepository, Map<String, CachedLazyElementData> elementRepository, By locator, SingleGetter getter) {
         final var nameof = "getIfContains";
-        final var element = locatorRepository.containsKey(locator) ? ElementRepository.getElement(elementRepository, locatorRepository.get(locator)).object.element : LazyElementFactory.getWithIntegerFilterParameters(locator, getter);
+        final var element = locatorRepository.containsKey(locator) ? ElementRepository.getElement(elementRepository, locatorRepository.get(locator)).object.element : LazyElementFactory.getWithFilterParameters(locator, getter);
         final var result = cacheLocator(locatorRepository, locator, element.name, CoreDataConstants.NULL_BOOLEAN);
         final var status = result.object;
         return status ?

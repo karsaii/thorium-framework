@@ -19,7 +19,7 @@ import selenium.records.ElementWaitParameters;
 import selenium.records.FilterData;
 import selenium.namespaces.extensions.boilers.LazyLocatorList;
 import selenium.records.lazy.LazyElementWaitParameters;
-import selenium.records.lazy.LazyIndexedElementParameters;
+import selenium.records.lazy.LazyFilteredElementParameters;
 import selenium.records.lazy.LazyLocator;
 
 import java.util.Collection;
@@ -161,7 +161,7 @@ public interface SeleniumUtilities {
         return entry(lazyLocator.strategy, constructor.apply(isIndexed, lazyLocator, getter));
     }
 
-    static <T, V> Map.Entry<String, LazyIndexedElementParameters> getEntryIndexed(TriFunction<FilterData, LazyLocator, String, LazyIndexedElementParameters> constructor, FilterData<?> filterData, By locator, String getter) {
+    static <T, V> Map.Entry<String, LazyFilteredElementParameters> getEntryIndexed(TriFunction<FilterData, LazyLocator, String, LazyFilteredElementParameters> constructor, FilterData<?> filterData, By locator, String getter) {
         final var lazyLocator = getLazyLocator(locator);
         return entry(lazyLocator.strategy, constructor.apply(filterData, lazyLocator, getter));
     }
@@ -180,12 +180,12 @@ public interface SeleniumUtilities {
         return getLocator(ElementStrategyMapConstants.STRATEGY_MAP, data);
     }
 
-    static <T> Map<T, LazyIndexedElementParameters> getParametersCopy(Map<T, LazyIndexedElementParameters> source) {
+    static <T> Map<T, LazyFilteredElementParameters> getParametersCopy(Map<T, LazyFilteredElementParameters> source) {
         final var keys = source.keySet().iterator();
         final var values = source.values().iterator();
 
-        final var map = Collections.synchronizedMap(new LinkedHashMap<T, LazyIndexedElementParameters>());
-        LazyIndexedElementParameters lep;
+        final var map = Collections.synchronizedMap(new LinkedHashMap<T, LazyFilteredElementParameters>());
+        LazyFilteredElementParameters lep;
         while(keys.hasNext() && values.hasNext()) {
             lep = values.next();
             map.putIfAbsent(keys.next(), LazyIndexedElementFactory.getWithFilterDataAndLocatorList(lep.filterData, lep.probability, lep.lazyLocators, lep.getter));

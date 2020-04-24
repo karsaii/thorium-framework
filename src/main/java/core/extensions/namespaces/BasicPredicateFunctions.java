@@ -1,5 +1,7 @@
 package core.extensions.namespaces;
 
+import java.util.Objects;
+
 public interface BasicPredicateFunctions {
     static boolean isNonNegative(int value) {
         return isBiggerThan(value, -1);
@@ -15,5 +17,9 @@ public interface BasicPredicateFunctions {
 
     static boolean isBiggerThan(long value, long limit) {
         return value > limit;
+    }
+
+    static boolean isZero(int value) {
+        return Objects.equals(value, 0);
     }
 }

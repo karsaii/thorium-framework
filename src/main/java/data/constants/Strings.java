@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-public class Strings {
+public abstract class Strings {
     public static final String EMPTY = "";
     public static final String OPTION_NOT = "not";
     public static final String OPTION_EMPTY = "";
@@ -22,11 +22,9 @@ public class Strings {
     public static final String SELECTED = "selected";
     public static final String UNSELECTED = "unselected";
 
-
     public static final String FIND_ELEMENT = "findElement";
     public static final String DEFAULT_GETTER_ELEMENT = "getElement";
     public static final String DEFAULT_GETTER_ELEMENTS = "getElements";
-
 
     public static final String ELEMENT = "Element";
     public static final String ELEMENT_PARAMETERS = ELEMENT + " parameters";

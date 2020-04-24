@@ -4,14 +4,14 @@ import selenium.namespaces.extensions.boilers.DriverFunction;
 import org.openqa.selenium.WebElement;
 import selenium.abstracts.AbstractLazyElement;
 import selenium.namespaces.Driver;
-import selenium.records.lazy.LazyIndexedElementParameters;
+import selenium.records.lazy.LazyFilteredElementParameters;
 
 import java.util.Map;
 import java.util.function.Predicate;
 
 
-public class LazyElement extends AbstractLazyElement<LazyIndexedElementParameters> {
-    public LazyElement(String name, Map<String, LazyIndexedElementParameters> parameters, Predicate<LazyIndexedElementParameters> validator) {
+public class LazyElement extends AbstractLazyElement<LazyFilteredElementParameters> {
+    public LazyElement(String name, Map<String, LazyFilteredElementParameters> parameters, Predicate<LazyFilteredElementParameters> validator) {
         super(name, parameters, validator);
     }
 
