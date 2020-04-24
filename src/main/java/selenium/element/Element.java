@@ -2,6 +2,7 @@ package selenium.element;
 
 import core.constants.CoreDataConstants;
 import selenium.namespaces.SeleniumExecutor;
+import selenium.namespaces.WaitConditions;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;
 import core.namespaces.DataFactoryFunctions;
@@ -15,7 +16,6 @@ import selenium.constants.ElementWaitDefaults;
 import selenium.enums.SingleGetter;
 import selenium.namespaces.Driver;
 import selenium.namespaces.DriverFunctionFactoryFunctions;
-import selenium.namespaces.Wait;
 import selenium.namespaces.repositories.LocatorRepository;
 import selenium.records.ActionWhenData;
 import selenium.records.ElementWaitParameters;
@@ -32,6 +32,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.ExecutionCore.validChain;
 import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElementWaitParametersData;
+import static selenium.namespaces.WaitConditions.waitWith;
 
 public interface Element {
     private static Data<Boolean> actionCore(Data<Void> data, String message) {
@@ -152,83 +153,83 @@ public interface Element {
     }
 
     static DriverFunction<Boolean> waitPresent(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementPresent, Strings.OPTION_EMPTY, interval, timeout, Strings.PRESENT);
+        return waitWith(locator, Driver::isElementPresent, Strings.OPTION_EMPTY, interval, timeout, Strings.PRESENT);
     }
 
     static DriverFunction<Boolean> waitDisplayed(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementDisplayed, Strings.OPTION_EMPTY, interval, timeout, Strings.DISPLAYED);
+        return waitWith(locator, Driver::isElementDisplayed, Strings.OPTION_EMPTY, interval, timeout, Strings.DISPLAYED);
     }
 
     static DriverFunction<Boolean> waitEnabled(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementEnabled, Strings.OPTION_EMPTY, interval, timeout, Strings.ENABLED);
+        return waitWith(locator, Driver::isElementEnabled, Strings.OPTION_EMPTY, interval, timeout, Strings.ENABLED);
     }
 
     static DriverFunction<Boolean> waitSelected(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementSelected, Strings.OPTION_EMPTY, interval, timeout, Strings.SELECTED);
+        return waitWith(locator, Driver::isElementSelected, Strings.OPTION_EMPTY, interval, timeout, Strings.SELECTED);
     }
 
     static DriverFunction<Boolean> waitClickable(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementClickable, Strings.OPTION_EMPTY, interval, timeout, Strings.CLICKABLE);
+        return waitWith(locator, Driver::isElementClickable, Strings.OPTION_EMPTY, interval, timeout, Strings.CLICKABLE);
     }
 
     static DriverFunction<Boolean> waitAbsent(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementAbsent, Strings.OPTION_EMPTY, interval, timeout, Strings.ABSENT);
+        return waitWith(locator, Driver::isElementAbsent, Strings.OPTION_EMPTY, interval, timeout, Strings.ABSENT);
     }
 
     static DriverFunction<Boolean> waitHidden(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementHidden, Strings.OPTION_EMPTY, interval, timeout, Strings.HIDDEN);
+        return waitWith(locator, Driver::isElementHidden, Strings.OPTION_EMPTY, interval, timeout, Strings.HIDDEN);
     }
 
     static DriverFunction<Boolean> waitDisabled(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementDisabled, Strings.OPTION_EMPTY, interval, timeout, Strings.DISABLED);
+        return waitWith(locator, Driver::isElementDisabled, Strings.OPTION_EMPTY, interval, timeout, Strings.DISABLED);
     }
 
     static DriverFunction<Boolean> waitUnselected(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementUnselected, Strings.OPTION_EMPTY, interval, timeout, Strings.UNSELECTED);
+        return waitWith(locator, Driver::isElementUnselected, Strings.OPTION_EMPTY, interval, timeout, Strings.UNSELECTED);
     }
 
     static DriverFunction<Boolean> waitUnclickable(By locator, int interval, int timeout) {
-        return Wait.waitConditionCore(locator, Driver::isElementUnclickable, Strings.OPTION_EMPTY, interval, timeout, Strings.UNCLICKABLE);
+        return waitWith(locator, Driver::isElementUnclickable, Strings.OPTION_EMPTY, interval, timeout, Strings.UNCLICKABLE);
     }
 
     static DriverFunction<Boolean> waitPresent(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementPresent, Strings.OPTION_EMPTY, Strings.PRESENT);
+        return waitWith(data, Driver::isElementPresent, Strings.OPTION_EMPTY, Strings.PRESENT);
     }
 
     static DriverFunction<Boolean> waitDisplayed(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementDisplayed, Strings.OPTION_EMPTY, Strings.DISPLAYED);
+        return waitWith(data, Driver::isElementDisplayed, Strings.OPTION_EMPTY, Strings.DISPLAYED);
     }
 
     static DriverFunction<Boolean> waitEnabled(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementEnabled, Strings.OPTION_EMPTY, Strings.ENABLED);
+        return waitWith(data, Driver::isElementEnabled, Strings.OPTION_EMPTY, Strings.ENABLED);
     }
 
     static DriverFunction<Boolean> waitSelected(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementSelected, Strings.OPTION_EMPTY, Strings.SELECTED);
+        return waitWith(data, Driver::isElementSelected, Strings.OPTION_EMPTY, Strings.SELECTED);
     }
 
     static DriverFunction<Boolean> waitClickable(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementClickable, Strings.OPTION_EMPTY, Strings.CLICKABLE);
+        return waitWith(data, Driver::isElementClickable, Strings.OPTION_EMPTY, Strings.CLICKABLE);
     }
 
     static DriverFunction<Boolean> waitAbsent(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementAbsent, Strings.OPTION_EMPTY, Strings.ABSENT);
+        return waitWith(data, Driver::isElementAbsent, Strings.OPTION_EMPTY, Strings.ABSENT);
     }
 
     static DriverFunction<Boolean> waitHidden(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementHidden, Strings.OPTION_EMPTY, Strings.HIDDEN);
+        return waitWith(data, Driver::isElementHidden, Strings.OPTION_EMPTY, Strings.HIDDEN);
     }
 
     static DriverFunction<Boolean> waitDisabled(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementDisabled, Strings.OPTION_EMPTY, Strings.DISABLED);
+        return waitWith(data, Driver::isElementDisabled, Strings.OPTION_EMPTY, Strings.DISABLED);
     }
 
     static DriverFunction<Boolean> waitUnselected(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementUnselected, Strings.OPTION_EMPTY, Strings.UNSELECTED);
+        return waitWith(data, Driver::isElementUnselected, Strings.OPTION_EMPTY, Strings.UNSELECTED);
     }
 
     static DriverFunction<Boolean> waitUnclickable(ElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementUnclickable, Strings.OPTION_EMPTY, Strings.UNCLICKABLE);
+        return waitWith(data, Driver::isElementUnclickable, Strings.OPTION_EMPTY, Strings.UNCLICKABLE);
     }
 
     static DriverFunction<Boolean> waitPresent(By locator) {
@@ -272,43 +273,43 @@ public interface Element {
     }
 
     static DriverFunction<Boolean> waitPresent(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementPresent, Strings.OPTION_EMPTY, interval, timeout, Strings.PRESENT);
+        return waitWith(data, Driver::isElementPresent, Strings.OPTION_EMPTY, interval, timeout, Strings.PRESENT);
     }
 
     static DriverFunction<Boolean> waitDisplayed(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementDisplayed, Strings.OPTION_EMPTY, interval, timeout, Strings.DISPLAYED);
+        return waitWith(data, Driver::isElementDisplayed, Strings.OPTION_EMPTY, interval, timeout, Strings.DISPLAYED);
     }
 
     static DriverFunction<Boolean> waitEnabled(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementEnabled, Strings.OPTION_EMPTY, interval, timeout, Strings.ENABLED);
+        return waitWith(data, Driver::isElementEnabled, Strings.OPTION_EMPTY, interval, timeout, Strings.ENABLED);
     }
 
     static DriverFunction<Boolean> waitSelected(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementSelected, Strings.OPTION_EMPTY, interval, timeout, Strings.SELECTED);
+        return waitWith(data, Driver::isElementSelected, Strings.OPTION_EMPTY, interval, timeout, Strings.SELECTED);
     }
 
     static DriverFunction<Boolean> waitClickable(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementClickable, Strings.OPTION_EMPTY, interval, timeout, Strings.CLICKABLE);
+        return waitWith(data, Driver::isElementClickable, Strings.OPTION_EMPTY, interval, timeout, Strings.CLICKABLE);
     }
 
     static DriverFunction<Boolean> waitAbsent(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementAbsent, Strings.OPTION_EMPTY, interval, timeout, Strings.ABSENT);
+        return waitWith(data, Driver::isElementAbsent, Strings.OPTION_EMPTY, interval, timeout, Strings.ABSENT);
     }
 
     static DriverFunction<Boolean> waitHidden(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementHidden, Strings.OPTION_NOT, interval, timeout, Strings.HIDDEN);
+        return waitWith(data, Driver::isElementHidden, Strings.OPTION_NOT, interval, timeout, Strings.HIDDEN);
     }
 
     static DriverFunction<Boolean> waitDisabled(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementDisabled, Strings.OPTION_NOT, interval, timeout, Strings.DISABLED);
+        return waitWith(data, Driver::isElementDisabled, Strings.OPTION_NOT, interval, timeout, Strings.DISABLED);
     }
 
     static DriverFunction<Boolean> waitUnselected(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementUnselected, Strings.OPTION_NOT, interval, timeout, Strings.UNSELECTED);
+        return waitWith(data, Driver::isElementUnselected, Strings.OPTION_NOT, interval, timeout, Strings.UNSELECTED);
     }
 
     static DriverFunction<Boolean> waitUnclickable(LazyElement data, int interval, int timeout) {
-        return Wait.waitConditionCore(data, Driver::isElementUnclickable, Strings.OPTION_NOT, interval, timeout, Strings.UNCLICKABLE);
+        return waitWith(data, Driver::isElementUnclickable, Strings.OPTION_NOT, interval, timeout, Strings.UNCLICKABLE);
     }
 
     static DriverFunction<Boolean> waitPresentDefaults(LazyElement data) {
@@ -352,43 +353,43 @@ public interface Element {
     }
 
     static DriverFunction<Boolean> waitPresent(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementPresent, Strings.OPTION_EMPTY, Strings.PRESENT);
+        return waitWith(data, Driver::isElementPresent, Strings.OPTION_EMPTY, Strings.PRESENT);
     }
 
     static DriverFunction<Boolean> waitDisplayed(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementDisplayed, Strings.OPTION_EMPTY, Strings.DISPLAYED);
+        return waitWith(data, Driver::isElementDisplayed, Strings.OPTION_EMPTY, Strings.DISPLAYED);
     }
 
     static DriverFunction<Boolean> waitEnabled(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementEnabled, Strings.OPTION_EMPTY, Strings.ENABLED);
+        return waitWith(data, Driver::isElementEnabled, Strings.OPTION_EMPTY, Strings.ENABLED);
     }
 
     static DriverFunction<Boolean> waitSelected(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementSelected, Strings.OPTION_EMPTY, Strings.SELECTED);
+        return waitWith(data, Driver::isElementSelected, Strings.OPTION_EMPTY, Strings.SELECTED);
     }
 
     static DriverFunction<Boolean> waitClickable(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementClickable, Strings.OPTION_EMPTY, Strings.CLICKABLE);
+        return waitWith(data, Driver::isElementClickable, Strings.OPTION_EMPTY, Strings.CLICKABLE);
     }
 
     static DriverFunction<Boolean> waitAbsent(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementAbsent, Strings.OPTION_EMPTY, Strings.ABSENT);
+        return waitWith(data, Driver::isElementAbsent, Strings.OPTION_EMPTY, Strings.ABSENT);
     }
 
     static DriverFunction<Boolean> waitHidden(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementHidden, Strings.OPTION_EMPTY, Strings.HIDDEN);
+        return waitWith(data, Driver::isElementHidden, Strings.OPTION_EMPTY, Strings.HIDDEN);
     }
 
     static DriverFunction<Boolean> waitDisabled(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementDisabled, Strings.OPTION_EMPTY, Strings.DISABLED);
+        return waitWith(data, Driver::isElementDisabled, Strings.OPTION_EMPTY, Strings.DISABLED);
     }
 
     static DriverFunction<Boolean> waitUnselected(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementUnselected, Strings.OPTION_EMPTY, Strings.UNSELECTED);
+        return waitWith(data, Driver::isElementUnselected, Strings.OPTION_EMPTY, Strings.UNSELECTED);
     }
 
     static DriverFunction<Boolean> waitUnclickable(LazyElementWaitParameters data) {
-        return Wait.waitConditionCore(data, Driver::isElementUnclickable, Strings.OPTION_EMPTY, Strings.UNCLICKABLE);
+        return waitWith(data, Driver::isElementUnclickable, Strings.OPTION_EMPTY, Strings.UNCLICKABLE);
     }
 
     static DriverFunction<String> getText(LazyElement element) {

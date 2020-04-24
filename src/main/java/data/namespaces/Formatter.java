@@ -57,6 +57,7 @@ public interface Formatter {
     static String getOptionMessage(boolean status) {
         return status ? Strings.OPTION_EMPTY : Strings.OPTION_NOT;
     }
+
     static String isParameterMessage(boolean condition, String parameterName, String descriptor) {
         return condition ? parameterName + " parameter was " + descriptor + Strings.END_LINE : Strings.EMPTY;
     }
@@ -188,11 +189,11 @@ public interface Formatter {
     }
 
     static String getScrollIntoViewMessage(String message, boolean status) {
-        return Formatter.getExecuteFragment(status) + " Scroll into view: " + message + Strings.END_LINE;
+        return getExecuteFragment(status) + " Scroll into view: " + message + Strings.END_LINE;
     }
 
     static String getStringExecutionMessage(boolean status) {
-        return Formatter.getExecuteFragment(status) + " script" + Strings.END_LINE;
+        return getExecuteFragment(status) + " script" + Strings.END_LINE;
     }
 
     static String getScreenshotFileName(String path) {
@@ -224,7 +225,7 @@ public interface Formatter {
     }
 
     static String getActionMessage(String message, String dataMessage, String input, boolean status) {
-        return Formatter.getActionMessage(message, dataMessage, status) + "Input was: \"" + input + "\"" + Strings.END_LINE;
+        return getActionMessage(message, dataMessage, status) + "Input was: \"" + input + "\"" + Strings.END_LINE;
     }
 
     static String getInputErrorMessage(String input) {
@@ -318,34 +319,6 @@ public interface Formatter {
         return isNotBlank(message) ? baseMessage + message : Strings.EMPTY;
     }
 
-    static String getWhenCoreMessage(Data<Boolean> data) {
-        var message = isInvalidOrFalseMessage(data);
-        if (isNotBlank(message)) {
-            message += Strings.END_LINE + "Wait result was null or false" + Strings.END_LINE;
-        }
-
-        return message;
-    }
-
-    static String getNotNullOrFalseDataLambdaMessage(boolean status) {
-        return "isNotNullOrFalseDataLambda: Data is " + (status ? "okay." : "null or false data.");
-    }
-
-    static <T> String getDataNullnessStatusMessage(T object) {
-        var errorMessage = "";
-        if (object instanceof Data) {
-            errorMessage = isInvalidOrFalseMessage((Data)object);
-        }
-        if (object instanceof LazyElement) {
-            errorMessage = isNullLazyElementMessage((LazyElement)object);
-        }
-        if (CoreUtilities.isFalse(object)) {
-            errorMessage = "Object was false" + Strings.END_LINE;
-        }
-
-        return errorMessage;
-    }
-
     static String getShadowRootElementMessage(String message, boolean status) {
         return message + " Root selenium.element " + Formatter.getOptionMessage(status) + "found" + Strings.END_LINE;
     }
@@ -364,14 +337,6 @@ public interface Formatter {
 
     static String getFindElementsMessage(String locator, int size) {
         return (size > 0 ? size + " amount of" : "No") + " elements found by: " + locator + Strings.END_LINE;
-    }
-
-    static String getInvokeMethodMessage(String message) {
-        return isBlank(message) ? Strings.EMPTY : "invokeMethod: " + message;
-    }
-
-    static String getMessageIfErrorMessage(String nameof, String message) {
-        return isBlank(message) ? Strings.EMPTY : (nameof + ": " + message);
     }
 
     static String getNumberOfWindowsEqualToMessage(boolean status, int expected, int count) {
@@ -658,10 +623,6 @@ public interface Formatter {
         return isNotBlank(message) ? "isNotNullLazyDataMessage: " + message : Strings.EMPTY;
     }
 
-    static String getStringListAsString(List<String> items) {
-        return "['" + String.join("', '", items) + "']";
-    }
-
     static String isNullExternalSelectorData(ExternalSelectorData object) {
         final var nameof = "isNullExternalSelectorData";
         var message = isNullMessage(object, "External Selector Data");
@@ -675,10 +636,10 @@ public interface Formatter {
             message += getCommandAmountRangeErrorMessage(object.limit, range);
         }
         message += (
-                isNullMessage(object.getSelector, "Selector getter function") +
-                isNullMessage(object.preferredProperties, "Preferred properties ") +
-                isNullMessage(object.selectorType, "Selector type") +
-                isNullMessage(object.defaultSelector, "Default Selector value")
+            isNullMessage(object.getSelector, "Selector getter function") +
+            isNullMessage(object.preferredProperties, "Preferred properties ") +
+            isNullMessage(object.selectorType, "Selector type") +
+            isNullMessage(object.defaultSelector, "Default Selector value")
         );
         return isNotBlank(message) ? nameof + message : Strings.EMPTY;
     }
@@ -709,18 +670,6 @@ public interface Formatter {
         }
 
         return message;
-    }
-
-    static String getNotNullOrFalseDataOrDataObjectMessage(Data<?> data) {
-        var message = isNullMessage(data, "Data");
-        if (isBlank(message)) {
-            message += (
-                isNullMessage(data.object, "Data object") +
-                isBlankMessage(data.message.toString(), "Data message string")
-            );
-        }
-
-        return isNotBlank(message) ? "getNotNullOrFalseDataOrDataObjectMessage: " + message + ("Status was " + data.status) : Strings.EMPTY;
     }
 
     static <T> String getListEmptyMessage(DecoratedList<T> list, String parameterName) {

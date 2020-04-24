@@ -1,7 +1,7 @@
 package core.records.command;
 
 import core.extensions.interfaces.functional.TriFunction;
-import validators.Range;
+import core.namespaces.validators.Range;
 
 public class CommandRangeData {
     public final TriFunction<Integer, Integer, Integer, Boolean> rangeInvalidator;

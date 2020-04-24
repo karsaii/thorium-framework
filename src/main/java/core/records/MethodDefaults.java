@@ -3,7 +3,7 @@ package core.records;
 import selenium.constants.ElementMethodNameConstants;
 import selenium.constants.SeleniumCoreConstants;
 import selenium.namespaces.validators.SeleniumTypeMethods;
-import validators.TypeMethod;
+import core.namespaces.validators.TypeMethod;
 
 public abstract class MethodDefaults {
     public static final MethodParametersData IS_DISPLAYED = new MethodParametersData(ElementMethodNameConstants.IS_DISPLAYED, TypeMethod::isBooleanMethod, SeleniumCoreConstants.DEFAULT_WEB_ELEMENT_METHOD_PARAMETERS);

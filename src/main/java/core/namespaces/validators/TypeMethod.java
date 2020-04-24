@@ -1,4 +1,4 @@
-package validators;
+package core.namespaces.validators;
 
 import org.openqa.selenium.WebElement;
 
@@ -26,14 +26,6 @@ public interface TypeMethod {
 
     static boolean isStringMethod(Method method, String methodName) {
         return isTypeMethod(method, methodName, String.class);
-    }
-
-    static boolean isWebElementMethod(Method method, String methodName) {
-        return isTypeMethod(method, methodName, WebElement.class);
-    }
-
-    static boolean isListMethod(Method method, String methodName) {
-        return isTypeMethod(method, methodName, List.class);
     }
 
     static boolean isVoidMethod(Method method, String methodName) {

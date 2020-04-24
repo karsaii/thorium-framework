@@ -7,11 +7,11 @@ import selenium.namespaces.extensions.boilers.LazyLocatorList;
 
 import java.util.Objects;
 
-public class LazyIndexedElementParameters extends LazyElementParameters {
+public class LazyFilteredElementParameters extends LazyElementParameters {
     public final FilterData<?> filterData;
     public final Class clazz;
 
-    public LazyIndexedElementParameters(FilterData<?> data, double probability, LazyLocatorList lazyLocators, String getter) {
+    public LazyFilteredElementParameters(FilterData<?> data, double probability, LazyLocatorList lazyLocators, String getter) {
         super(probability, lazyLocators, getter);
         this.filterData = data;
         this.clazz = data.isFiltered ? WebElement.class : WebElementList.class;
@@ -22,9 +22,8 @@ public class LazyIndexedElementParameters extends LazyElementParameters {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        var that = (LazyIndexedElementParameters) o;
-        return Objects.equals(filterData, that.filterData) &&
-                Objects.equals(clazz, that.clazz);
+        var that = (LazyFilteredElementParameters) o;
+        return Objects.equals(filterData, that.filterData) && Objects.equals(clazz, that.clazz);
     }
 
     @Override

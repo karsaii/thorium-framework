@@ -1,4 +1,4 @@
-package validators;
+package selenium.namespaces.validators;
 
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.records.MethodSourceData;
@@ -12,7 +12,7 @@ import org.openqa.selenium.WebElement;
 import selenium.abstracts.AbstractLazyElement;
 import selenium.records.LazyElement;
 import selenium.records.lazy.LazyElementParameters;
-import selenium.records.lazy.LazyIndexedElementParameters;
+import selenium.records.lazy.LazyFilteredElementParameters;
 
 import java.lang.reflect.Method;
 import java.util.Objects;
@@ -56,11 +56,11 @@ public interface ElementParameters {
         return !isInvalidLazyElemenet(data);
     }
 
-    static boolean isValidLazyIndexedElement(LazyIndexedElementParameters data) {
+    static boolean isValidLazyIndexedElement(LazyFilteredElementParameters data) {
         return !(isInvalidLazyElemenet(data) || (Objects.isNull(data.filterData)) || (Objects.isNull(data.filterData.filterParameter)));
     }
 
-    static boolean isValidLazyTextFilteredElement(LazyIndexedElementParameters data) {
+    static boolean isValidLazyTextFilteredElement(LazyFilteredElementParameters data) {
         return !(isInvalidLazyElemenet(data) || (Objects.isNull(data.filterData)) || (Objects.isNull(data.filterData.filterParameter)));
     }
 

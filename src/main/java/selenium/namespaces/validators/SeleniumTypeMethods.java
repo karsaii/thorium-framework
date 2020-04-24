@@ -4,7 +4,7 @@ import org.openqa.selenium.WebElement;
 
 import java.lang.reflect.Method;
 
-import static validators.TypeMethod.isTypeMethod;
+import static core.namespaces.validators.TypeMethod.isTypeMethod;
 
 public interface SeleniumTypeMethods {
     static boolean isWebElementMethod(Method method, String methodName) {

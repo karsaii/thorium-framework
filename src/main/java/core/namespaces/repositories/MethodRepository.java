@@ -8,7 +8,7 @@ import core.records.MethodSourceData;
 import core.records.MethodParametersData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
-import validators.ElementParameters;
+import selenium.namespaces.validators.ElementParameters;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
