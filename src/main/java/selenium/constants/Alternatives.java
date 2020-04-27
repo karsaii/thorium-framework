@@ -1,12 +1,14 @@
-package selenium.element;
+package selenium.constants;
 
+import selenium.element.Element;
+import selenium.element.ElementAlternatives;
 import selenium.element.functions.ClearData;
 import selenium.element.functions.ClickData;
 import selenium.element.functions.ElementFunctionsData;
 import selenium.element.functions.SendKeysData;
 import selenium.records.ElementAlternative;
 
-public class Alternatives {
+public abstract class Alternatives {
     public static final ElementAlternative regular = new ElementAlternative();
     public static final ElementAlternative keyboardClear = new ElementAlternative(
         new ElementFunctionsData(

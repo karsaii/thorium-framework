@@ -1,6 +1,7 @@
 package selenium.element;
 
 import core.constants.CoreDataConstants;
+import selenium.constants.Alternatives;
 import selenium.namespaces.SeleniumExecutor;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;

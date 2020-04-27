@@ -20,12 +20,12 @@ public abstract class ElementFinderConstants {
     public static final Map<SingleGetter, Function<LazyLocatorList, DriverFunction<WebElement>>> singleGetterMap = Collections.unmodifiableMap(
         new EnumMap<>(
             Map.ofEntries(
-                    entry(SingleGetter.GET_ELEMENT, Driver::getElementFromSingle),
-                    entry(SingleGetter.GET_ROOT_ELEMENT, Driver::getRootElementFromSingle),
-                    entry(SingleGetter.GET_NESTED_ELEMENT, Driver::getNestedElement),
-                    entry(SingleGetter.GET_FRAME_NESTED_ELEMENT, Driver::getFrameNestedElement),
-                    entry(SingleGetter.GET_SHADOW_ROOT_ELEMENT, Driver::getShadowRootElement),
-                    entry(SingleGetter.GET_SHADOW_ROOT_NESTED_ELEMENT, Driver::getShadowNestedElement)
+                entry(SingleGetter.GET_ELEMENT, Driver::getElementFromSingle),
+                entry(SingleGetter.GET_ROOT_ELEMENT, Driver::getRootElementFromSingle),
+                entry(SingleGetter.GET_NESTED_ELEMENT, Driver::getNestedElement),
+                entry(SingleGetter.GET_FRAME_NESTED_ELEMENT, Driver::getFrameNestedElement),
+                entry(SingleGetter.GET_SHADOW_ROOT_ELEMENT, Driver::getShadowRootElement),
+                entry(SingleGetter.GET_SHADOW_ROOT_NESTED_ELEMENT, Driver::getShadowNestedElement)
             )
         )
     );
