@@ -18,6 +18,7 @@ import java.util.function.Predicate;
 
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
+import static core.extensions.namespaces.NullableFunctions.isNull;
 import static core.namespaces.DataFactoryFunctions.prependMessage;
 import static core.namespaces.DataFactoryFunctions.replaceMessage;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
@@ -26,6 +27,10 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public interface ExecutionCore {
     static <T, U> Function<WebDriver, U> conditionalChain(Predicate<T> guard, DriverFunction<T> dependency, Function<T, U> positive, U negative) {
         return t -> {
+            if (isNull(t)) {
+                return negative;
+            }
+
             final var dep = dependency.apply(t);
             if (isInvalidOrFalse(dep)) {
                 return negative;
@@ -38,6 +43,10 @@ public interface ExecutionCore {
 
     static <T, U, V> Function<T, V> conditionalChain(Predicate<U> guard, Function<T, U> dependency, Function<U, V> positive, V negative) {
         return t -> {
+            if (isNull(t)) {
+                return negative;
+            }
+
             final var dep = dependency.apply(t);
             return guard.test(dep) ? positive.apply(dep) : negative;
         };
@@ -45,18 +54,22 @@ public interface ExecutionCore {
 
     static <T, U, V> Function<T, Data<V>> conditionalChain(Function<Data<U>, String> guard, Function<T, Data<U>> dependency, Function<Data<U>, Data<V>> positive, Data<V> negative) {
         return t -> {
+            if (isNull(t)) {
+                return replaceMessage(negative, "conditionalChain", "Base dependency" + Strings.WAS_NULL);
+            }
+
             final var dep = dependency.apply(t);
             final var guardMessage = guard.apply(dep);
-            return isBlank(guardMessage) ? positive.apply(dep) : prependMessage(negative, "conditionalChain", "Dependency failed the guard" + Strings.COLON_SPACE + guardMessage);
+            return isBlank(guardMessage) ? positive.apply(dep) : prependMessage(negative, "conditionalChain", "Dependency parameter failed the guard" + Strings.COLON_SPACE + guardMessage);
         };
     }
 
     private static <T, U> DriverFunction<T> conditionalDataChain(Predicate<Data<U>> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
-        return DriverFunctionFactoryFunctions.getFunction(conditionalChain(guard, dependency, positive, replaceMessage(negative, "conditionalChain", "Dependency failed the guard" + Strings.END_LINE)));
+        return DriverFunctionFactory.getFunction(conditionalChain(guard, dependency, positive, replaceMessage(negative, "conditionalChain", "Dependency parameter  failed the guard" + Strings.END_LINE)));
     }
 
     private static <T, U> DriverFunction<T> conditionalDataChain(Function<Data<U>, String> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
-        return DriverFunctionFactoryFunctions.getFunction(conditionalChain(guard, dependency, positive, negative));
+        return DriverFunctionFactory.getFunction(conditionalChain(guard, dependency, positive, negative));
     }
 
     static <T, U> DriverFunction<T> conditionalChain(Predicate<Data<U>> guard, DriverFunction<U> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
@@ -84,8 +97,8 @@ public interface ExecutionCore {
     static <T> DriverFunction<T> ifDriver(String nameof, boolean condition, DriverFunction<T> positive, Data<T> negative) {
         final var lNameof = isBlank(nameof) ? "ifDriver" : nameof;
         return condition && isNotNull(positive) ? (
-            DriverFunctionFactoryFunctions.getFunction(ifDriverAnyWrappedCore(lNameof, positive))
-        ) : DriverFunctionFactoryFunctions.get(DependencyExecutionFunctions.ifDependencyAnyCore(lNameof, negative));
+            DriverFunctionFactory.getFunction(ifDriverAnyWrappedCore(lNameof, positive))
+        ) : DriverFunctionFactory.get(DependencyExecutionFunctions.ifDependencyAnyCore(lNameof, negative));
     }
 
     static <T> DriverFunction<T> ifDriver(String nameof, DriverFunction<T> positive, Data<T> negative) {
@@ -95,7 +108,7 @@ public interface ExecutionCore {
     static <T> DriverFunction<T> ifDriver(String nameof, boolean condition, DriverFunction<T> positive, DriverFunction<T> negative) {
         final var lNameof = isBlank(nameof) ? "ifDriver" : nameof;
         final var function = condition && isNotNull(positive) ? positive : negative;
-        return DriverFunctionFactoryFunctions.getFunction(ifDriverAnyWrappedCore(lNameof, function));
+        return DriverFunctionFactory.getFunction(ifDriverAnyWrappedCore(lNameof, function));
     }
 
     static <T> DriverFunction<T> ifDriver(String nameof, String errorMessage, DriverFunction<T> positive, Data<T> negative) {
@@ -103,7 +116,7 @@ public interface ExecutionCore {
     }
 
     static <T, U> DriverFunction<U> ifDriver(String nameof, String errorMessage, DriverFunction<T> dependency, Function<Data<T>, Data<U>> positive, Data<U> negative) {
-        return ifDriver(nameof, isBlank(errorMessage) && areNotNull(dependency, positive, negative), DriverFunctionFactoryFunctions.getFunction(dependency.andThen(positive)), replaceMessage(negative, nameof, errorMessage));
+        return ifDriver(nameof, isBlank(errorMessage) && areNotNull(dependency, positive, negative), DriverFunctionFactory.getFunction(dependency.andThen(positive)), replaceMessage(negative, nameof, errorMessage));
     }
 
     static <T, U> DriverFunction<T> ifDriverGuardData(String nameof, Predicate<Data<U>> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
@@ -126,7 +139,7 @@ public interface ExecutionCore {
         return ifDriver(
             nameof,
             areNotNull(guard, dependency, positive, negative),
-            DriverFunctionFactoryFunctions.getFunction((WebDriver driver) -> {
+            DriverFunctionFactory.getFunction(driver -> {
                 final var dep = dependency.apply(driver);
                 return guard.test(dep) ? positive.apply(dep).apply(driver) : negative;
             }),

@@ -37,7 +37,7 @@ public interface SeleniumExecutor {
 
 
     static <Any> DriverFunction<Any> execute(IGetMessage stepMessage, DriverFunction<?>... steps) {
-        return DriverFunctionFactoryFunctions.getFunction(Executor.execute(
+        return DriverFunctionFactory.getFunction(Executor.execute(
             new ExecutionParametersData<>(
                 ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(stepMessage, ExecutorConstants.DEFAULT_EXECUTION_DATA),
                 Executor::executeCoreStepMessages,
@@ -48,7 +48,7 @@ public interface SeleniumExecutor {
     }
 
     static <Any> DriverFunction<Any> execute(String message, DriverFunction<?>... steps) {
-        return DriverFunctionFactoryFunctions.getFunction(Executor.execute(
+        return DriverFunctionFactory.getFunction(Executor.execute(
             ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(new SimpleMessageData(message), ExecutorConstants.DEFAULT_EXECUTION_DATA),
                 Executor::executeCoreStepMessages
@@ -58,7 +58,7 @@ public interface SeleniumExecutor {
     }
 
     static <Any> DriverFunction<Any> execute(BiFunction<String, String, String> messageHandler, DriverFunction<?>... steps) {
-        return DriverFunctionFactoryFunctions.getFunction(Executor.execute(
+        return DriverFunctionFactory.getFunction(Executor.execute(
             ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithDefaultExitCondition(new SimpleMessageData(), Executor::returnStatus, messageHandler),
                 Executor::executeCoreStepMessages
@@ -68,7 +68,7 @@ public interface SeleniumExecutor {
     }
 
     static <Any> DriverFunction<Any> execute(DriverFunction<?>... steps) {
-        return DriverFunctionFactoryFunctions.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultRange(ExecutorConstants.DEFAULT_EXECUTION_ENDED, Executor::executeCoreStepMessages), steps));
+        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultRange(ExecutorConstants.DEFAULT_EXECUTION_ENDED, Executor::executeCoreStepMessages), steps));
     }
 
 

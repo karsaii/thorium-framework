@@ -13,7 +13,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface DependencyExecutionFunctions {
     static <T> Data<T> ifDependencyAnyCore(String nameof, Data<T> data) {
-        final var name = isNotBlank(nameof) ? nameof : "ifDriverAnyCore";
+        final var name = isNotBlank(nameof) ? nameof : "ifDependencyAnyCore";
         return isNotNull(data) ? (
             DataFactoryFunctions.getWithNameAndMessage(data.object, data.status, DataFunctions.getNameIfAbsent(data, name), data.message.message, data.exception)
         ) : DataFactoryFunctions.getWithNameAndMessage(null, false, name, "Data " + Strings.WAS_NULL, CoreConstants.EXCEPTION);

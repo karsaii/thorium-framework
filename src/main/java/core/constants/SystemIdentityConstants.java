@@ -2,7 +2,7 @@ package core.constants;
 
 import core.namespaces.SystemIdentityFunctions;
 
-public class SystemIdentityConstants {
+public abstract class SystemIdentityConstants {
     public static final String HOST_NAME = SystemIdentityFunctions.getHostName();
     public static final String HOST_ADDRESS = SystemIdentityFunctions.isOSX() ? SystemIdentityFunctions.getOSXHostAddress() : SystemIdentityFunctions.getHostAddress();
     public static final String OS_NAME = System.getProperty("os.name");

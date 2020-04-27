@@ -11,9 +11,12 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface DataValidators {
+    static boolean isInitialized(Data<?> data) {
+        return isNotNull(data);
+    }
     static boolean isValid(Data<?> data) {
         return (
-            isNotNull(data) &&
+            isInitialized(data) &&
             isNotNull(data.exception) &&
             isNotBlank(data.exceptionMessage) &&
             MethodMessageDataValidators.isValid(data.message)

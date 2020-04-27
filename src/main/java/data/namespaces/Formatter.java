@@ -23,6 +23,7 @@ import selenium.constants.ExecutorConstants;
 import selenium.constants.SeleniumCoreConstants;
 import selenium.enums.ManyGetter;
 import selenium.enums.SingleGetter;
+import selenium.records.ElementConditionParameters;
 import selenium.records.ExternalSelectorData;
 import selenium.records.InternalSelectorData;
 import selenium.records.LazyElement;
@@ -47,6 +48,7 @@ import static core.extensions.namespaces.CoreUtilities.areAnyBlank;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
+import static core.extensions.namespaces.NullableFunctions.isNotNull;
 import static core.namespaces.DataFunctions.isFalse;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -54,6 +56,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.SeleniumUtilities.getLocator;
 
 public interface Formatter {
+    static String getNamedErrorMessageOrEmpty(String name, String message) {
+        final var nameof = isNotBlank(name) ? name : "getNamedErrorMessageOrEmpty: (Name was empty.) ";
+        return isNotBlank(message) ? nameof + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+    }
+
     static String getOptionMessage(boolean status) {
         return status ? Strings.OPTION_EMPTY : Strings.OPTION_NOT;
     }
@@ -71,8 +78,11 @@ public interface Formatter {
     }
 
     static String isInvalidOrFalseMessage(Data data, String parameterName) {
-        final var result = isParameterMessage(isInvalidOrFalse(data), parameterName, "false data");
-        return isNotBlank(result) ? result + data.message : Strings.EMPTY;
+        return getNamedErrorMessageOrEmpty(
+            "isInvalidOrFalseMessage: ",
+            isParameterMessage(isInvalidOrFalse(data), parameterName, "false data") +
+            (isNotNull(data) ? data.message : Strings.EMPTY)
+        );
     }
 
     static String isInvalidOrFalseMessage(Data data) {
@@ -80,16 +90,23 @@ public interface Formatter {
     }
 
     static String isFalseMessage(Data data, String parameterName) {
-        final var result = isParameterMessage(isFalse(data), parameterName, "false data");
-        return isNotBlank(result) ? result + data.message : Strings.EMPTY;
+        return getNamedErrorMessageOrEmpty(
+            "isFalseMessage: ",
+            isParameterMessage(isFalse(data), parameterName, "false data") +
+            (isNotNull(data) ? data.message : Strings.EMPTY)
+        );
     }
 
     static String isFalseMessage(Data data) {
         return isFalseMessage(data, "data");
     }
 
-    static String isBlankMessage(String object, String parameterName) {
-        return isParameterMessage(isBlank(object), parameterName, "blank, empty or null");
+    static String isBlankMessageWithName(String value, String parameterName) {
+        return isParameterMessage(isBlank(value), parameterName, "blank, empty or null");
+    }
+
+    static String isBlankMessage(String value) {
+        return isBlankMessageWithName(value, "String value");
     }
 
     static String isFalseMessage(boolean condition, String parameterName) {
@@ -104,7 +121,7 @@ public interface Formatter {
         final var valuesMessage = "Values ";
         final var defaultMessage = "getIsValuesMessage: ";
         final var errorMessage = (
-            isBlankMessage(conditionDescriptor, valuesMessage + "conditionDescriptor") +
+            isBlankMessageWithName(conditionDescriptor, valuesMessage + "conditionDescriptor") +
             isNullMessage(descriptor, valuesMessage + "descriptor") +
             isNullMessage(keyCondition, valuesMessage + "boolean") +
             isNullMessage(map, valuesMessage + " map") +
@@ -123,23 +140,33 @@ public interface Formatter {
         return DataFactoryFunctions.getWithMessage(message, status, message);
     }
 
-    static Data<String> getConditionMessage(String name, Map<String, String> map, boolean keyCondition, String descriptor, String negator) {
-        final var nameof = isNotBlank(name) ? name : "getConditionMessage: ";
-        final var conditionMessage = "Condition descriptor";
-        final var errorMessage = (
-            isBlankMessage(descriptor, conditionMessage) +
-            isNullMessage(negator, conditionMessage + " negator") +
-            isNullMessage(map, conditionMessage + " map")
-        );
-        if (isNotBlank(errorMessage)) {
-            return DataFactoryFunctions.getWithNameAndMessage(Strings.EMPTY, false, nameof, Strings.PARAMETER_ISSUES + Strings.DEFAULT_ERROR_MESSAGE_STRING + errorMessage);
+    static String isValidElementConditionParametersMessage(ElementConditionParameters parameters) {
+        final var baseName = "Element Condition Parameters";
+        var message = isNullMessage(parameters, baseName);
+        if (isBlank(message)) {
+            message += (
+                isNullMessage(parameters.condition, baseName + " Condition") +
+                isNullMessage(parameters.inverter, baseName + " Inverter") +
+                isBlankMessageWithName(parameters.conditionName, baseName + " Name") +
+                isBlankMessageWithName(parameters.descriptor, baseName + " Descriptor")
+            );
         }
 
-        final var key = negator + keyCondition;
-        final var object = map.getOrDefault(key, Strings.EMPTY);
-        final var status = isNotBlank(object);
-        final var message = (status ? FormatterStrings.ELEMENT + object + " " + descriptor : ("Value \"" + object + "\" wasn't found by key \"" + key + "\"")) + Strings.END_LINE;
-        return DataFactoryFunctions.getWithNameAndMessage(message, status, nameof, message);
+        return getNamedErrorMessageOrEmpty("isValidElementConditionParametersMessage: ", message);
+    }
+
+    static String getConditionStatusMessage(boolean key) {
+        return key ? "is" : "isn't";
+    }
+
+    static String getConditionMessage(String elementName, String descriptor, String option) {
+        final var name = "getConditionMessage: ";
+        final var errorMessage = (
+            isBlankMessageWithName(elementName, "Element name") +
+            isBlankMessageWithName(descriptor, "Descriptor") +
+            isBlankMessageWithName(option, "Option (is/isn't)")
+        );
+        return name + (isNotBlank(errorMessage) ? Strings.PARAMETER_ISSUES_LINE + errorMessage : (FormatterStrings.ELEMENT + option + " " + descriptor + Strings.END_LINE));
     }
 
     static Data<String> getValueMessage(Data<String> data, String descriptor) {
@@ -151,7 +178,7 @@ public interface Formatter {
             message += isNullMessage(data.object, "Value");
         }
 
-        message += isBlankMessage(descriptor, "Value descriptor");
+        message += isBlankMessageWithName(descriptor, "Value descriptor");
         final var status = isBlank(message);
         return DataFactoryFunctions.getWithMessage(
             object,
@@ -229,7 +256,7 @@ public interface Formatter {
     }
 
     static String getInputErrorMessage(String input) {
-        return isBlankMessage(input, "Input");
+        return isBlankMessageWithName(input, "Input");
     }
 
     static String getGetterErrorMessage(Function getter) {
@@ -278,7 +305,7 @@ public interface Formatter {
             }
         }
 
-        return isNotBlank(message) ? "isEmptyMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+        return getNamedErrorMessageOrEmpty("isEmptyMessage: ", message);
     }
 
     static <T> String isEmptyMessage(T data) {
@@ -296,7 +323,7 @@ public interface Formatter {
         }
 
         message += sb.toString();
-        return isNotBlank(message) ? "areNullLazyElementParametersMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
+        return getNamedErrorMessageOrEmpty("areNullLazyElementParametersMessage: ", message);
     }
 
     static <T> String isNullLazyElementMessage(AbstractLazyElement<T> object) {
@@ -308,7 +335,7 @@ public interface Formatter {
         final var parameters = object.parameters;
         if (isBlank(message)) {
             message += (
-                isBlankMessage(object.name, Strings.ELEMENT + " name") +
+                isBlankMessageWithName(object.name, Strings.ELEMENT + " name") +
                 isNullMessage(parameters, Strings.ELEMENT_PARAMETERS)
             );
         }
@@ -358,8 +385,8 @@ public interface Formatter {
     static Data<String> isNumberConditionCore(boolean status, int number, int expected, String parameterName, String conditionDescriptor, String nameof) {
         var message = (
             isNullMessage(nameof, "Caller function's name") +
-            isBlankMessage(parameterName, "Name of the parameter") +
-            isBlankMessage(conditionDescriptor, "Condition Descriptor")
+            isBlankMessageWithName(parameterName, "Name of the parameter") +
+            isBlankMessageWithName(conditionDescriptor, "Condition Descriptor")
         );
 
         final var lNameof = isBlank(nameof) ? "isNumberConditionCore" : nameof;
@@ -400,7 +427,7 @@ public interface Formatter {
             );
         }
 
-        return isNotBlank(message) ? "getCommandRangeParameterMessage: " + message : Strings.EMPTY;
+        return getNamedErrorMessageOrEmpty("getCommandRangeParameterMessage: ", message);
     }
 
     static String getCommandAmountRangeErrorMessage(int length, CommandRangeData range) {
@@ -534,13 +561,13 @@ public interface Formatter {
             message += list.isEmpty() ? name + " was empty" + Strings.END_LINE : Strings.EMPTY;
         }
 
-        return isNotBlank(message) ? message : Strings.EMPTY;
+        return getNamedErrorMessageOrEmpty("isNullOrEmptyListMessage: ", message);
     }
 
     static <T> String getLazyParameterErrorMessage(LazyElement element, List<Class<?>> classes, Class<T> clazz, String nameof, Data<T> defaultValue) {
         var message = (
             isNullLazyElementMessage(element) +
-            isBlankMessage(nameof, "Name of the function") +
+            isBlankMessageWithName(nameof, "Name of the function") +
             isNullOrEmptyListMessage(classes, "Allowed classes list") +
             isNullMessage(defaultValue, "T type defaultValue") +
             isNullMessage(clazz, "Class reference parameter")
@@ -555,17 +582,23 @@ public interface Formatter {
             );
         }
 
-        return isNotBlank(message) ? "getLazyParameterErrorMessage: " + message : Strings.EMPTY;
+        return getNamedErrorMessageOrEmpty("getLazyParameterErrorMessage: ", message);
     }
 
     static <T> String getLazyParameterErrorMessage(LazyElement element, String nameof) {
-        var message = isNullLazyElementMessage(element) + isBlankMessage(nameof, "Name of the function");
-        return isNotBlank(message) ? "getLazyParameterErrorMessage: " + message : Strings.EMPTY;
+        var message = isNullLazyElementMessage(element) + isBlankMessageWithName(nameof, "Name of the function");
+        return getNamedErrorMessageOrEmpty("getLazyParameterErrorMessage: ", message);
     }
 
     static String getElementConditionMessage(DriverFunction<WebElement> getter, UnaryOperator<Boolean> inverter) {
         var message = isNullMessage(getter, "Getter") + isNullMessage(inverter, "Boolean inverter");
-        return isNotBlank(message) ? "getElementConditionMessage: " + Strings.PARAMETER_ISSUES_LINE + message + Strings.NEW_LINE : Strings.EMPTY;
+        return getNamedErrorMessageOrEmpty("getElementConditionMessage: ", message);
+    }
+
+    static String isElementConditionMessage(LazyElement element, ElementConditionParameters parameters) {
+        final var message = isNullLazyElementMessage(element) + isValidElementConditionParametersMessage(parameters);
+        return getNamedErrorMessageOrEmpty("isElementConditionMessage: ", message);
+
     }
 
     static <T> String getManyGetterErrorMessage(Map<ManyGetter, Function<LazyLocatorList, DriverFunction<T>>> getterMap, ManyGetter key) {
@@ -645,7 +678,7 @@ public interface Formatter {
     }
 
     static String getExternalSelectorDataErrorMessage(LazyElement element, ExternalSelectorData externalData, String nameof) {
-        var message = isBlankMessage(nameof, "Name of the function") + getLazyParameterErrorMessage(element, nameof) + isNullExternalSelectorData(externalData);
+        var message = isBlankMessageWithName(nameof, "Name of the function") + getLazyParameterErrorMessage(element, nameof) + isNullExternalSelectorData(externalData);
         return isNotBlank(message) ? "getExternalSelectorDataErrorMessage: " + message : Strings.EMPTY;
     }
 
@@ -691,8 +724,8 @@ public interface Formatter {
         if (isBlank(message)) {
             message += (
                 isNullMessage(data.getSelector, "Selector Driver provider function") +
-                isBlankMessage(data.preferredProperties, "Preferred Properties") +
-                isBlankMessage(data.selectorType, "Selector type") +
+                isBlankMessageWithName(data.preferredProperties, "Preferred Properties") +
+                isBlankMessageWithName(data.selectorType, "Selector type") +
                 getCommandAmountRangeErrorMessage(data.limit, data.range) +
                 isNullMessage(data.defaultSelector, "Default Selector Data")
             );
@@ -748,7 +781,7 @@ public interface Formatter {
         final var name = isBlank(parameterName) ? "Value" : parameterName;
         var message = isInvalidOrFalseMessage(data, "Element data");
         if (isBlank(message)) {
-            message += isBlankMessage(value, name);
+            message += isBlankMessageWithName(value, name);
         }
 
         return isNotBlank(message) ? "getElementAttributeMessage: " + message : Strings.EMPTY;
@@ -811,7 +844,7 @@ public interface Formatter {
         return isNotBlank(message) ? "isNullWebElementMessage: " + Strings.PARAMETER_ISSUES_LINE + message + Strings.END_LINE : Strings.EMPTY;
     }
 
-    static String isNegativeMessage(int value, String parameterName) {
+    static String isNegativeMessageWithName(int value, String parameterName) {
         final var name = isNotBlank(parameterName) ? parameterName : "Value parameter";
         final var status = BasicPredicateFunctions.isNegative(value);
         var message = "";
@@ -823,6 +856,6 @@ public interface Formatter {
     }
 
     static String isNegativeMessage(int value) {
-        return isNegativeMessage(value, "Value parameter");
+        return isNegativeMessageWithName(value, "Value parameter");
     }
 }

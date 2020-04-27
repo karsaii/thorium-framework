@@ -68,7 +68,7 @@ public interface ElementParameters {
         return (
             Formatter.isNullMessage(castData, "Generic cast type instance") +
             Formatter.isNullMessage(condition, "Condition method") +
-            Formatter.isBlankMessage(methodName, "Method name")
+            Formatter.isBlankMessageWithName(methodName, "Method name")
         );
     }
 
@@ -107,7 +107,7 @@ public interface ElementParameters {
         if (isBlank(message)) {
             message +=  (
                 Formatter.isNullMessage(parameterData.validator, "Condition method") +
-                Formatter.isBlankMessage(parameterData.methodName, "Method name")
+                Formatter.isBlankMessageWithName(parameterData.methodName, "Method name")
             );
         }
 

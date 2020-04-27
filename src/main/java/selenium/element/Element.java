@@ -2,7 +2,6 @@ package selenium.element;
 
 import core.constants.CoreDataConstants;
 import selenium.namespaces.SeleniumExecutor;
-import selenium.namespaces.WaitConditions;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;
 import core.namespaces.DataFactoryFunctions;
@@ -15,7 +14,7 @@ import org.openqa.selenium.WebElement;
 import selenium.constants.ElementWaitDefaults;
 import selenium.enums.SingleGetter;
 import selenium.namespaces.Driver;
-import selenium.namespaces.DriverFunctionFactoryFunctions;
+import selenium.namespaces.DriverFunctionFactory;
 import selenium.namespaces.repositories.LocatorRepository;
 import selenium.records.ActionWhenData;
 import selenium.records.ElementWaitParameters;
@@ -60,7 +59,7 @@ public interface Element {
     ) {
         return isNotNullLazyElementWaitParametersData(data) && areNotNull(waiter, getter) && isNotBlank(input) ? (
             getWhenCore(waiter.apply(data), getter.apply(data.object, input))
-        ) : DriverFunctionFactoryFunctions.get(CoreDataConstants.DATA_WAS_NULL_OR_FALSE_STRING);
+        ) : DriverFunctionFactory.get(CoreDataConstants.DATA_WAS_NULL_OR_FALSE_STRING);
     }
 
     static DriverFunction<String> getWhenCore(
@@ -70,7 +69,7 @@ public interface Element {
     ) {
         return (isNotNullLazyElementWaitParametersData(data) && areNotNull(waiter, getter)) ? (
             getWhenCore(waiter.apply(data), getter.apply(data.object))
-        ) : DriverFunctionFactoryFunctions.get(CoreDataConstants.DATA_WAS_NULL_OR_FALSE_STRING);
+        ) : DriverFunctionFactory.get(CoreDataConstants.DATA_WAS_NULL_OR_FALSE_STRING);
     }
 
     static DriverFunction<Boolean> sendKeys(LazyElement element, String input) {
