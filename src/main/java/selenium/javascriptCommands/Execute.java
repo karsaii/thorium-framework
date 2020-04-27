@@ -5,7 +5,6 @@ import core.namespaces.validators.DataValidators;
 import org.apache.commons.lang3.ArrayUtils;
 import selenium.javascriptCommands.scripts.ClickFunctions;
 import selenium.namespaces.SeleniumExecutor;
-import selenium.namespaces.SeleniumUtilities;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
@@ -26,7 +25,7 @@ import selenium.javascriptCommands.scripts.ReadyState;
 import selenium.javascriptCommands.scripts.ScrollIntoView;
 import selenium.javascriptCommands.scripts.ShadowRoot;
 import selenium.namespaces.Driver;
-import selenium.namespaces.DriverFunctionFactoryFunctions;
+import selenium.namespaces.DriverFunctionFactory;
 import selenium.namespaces.ScriptExecuteFunctions;
 import selenium.namespaces.repositories.LocatorRepository;
 import selenium.records.LazyElement;
@@ -206,7 +205,7 @@ public interface Execute {
     static DriverFunction<WebElement> getShadowRoot(LazyElement element) {
         return isNotNullLazyElement(element) ? (
             getShadowRoot(element.get())
-        ) : DriverFunctionFactoryFunctions.get(replaceMessage(SeleniumDataConstants.NULL_ELEMENT, "getShadowRoot", "LazyElement element" + Strings.WAS_NULL));
+        ) : DriverFunctionFactory.get(replaceMessage(SeleniumDataConstants.NULL_ELEMENT, "getShadowRoot", "LazyElement element" + Strings.WAS_NULL));
     }
 
     static DriverFunction<WebElement> getShadowRoot(Data<LazyElement> data) {

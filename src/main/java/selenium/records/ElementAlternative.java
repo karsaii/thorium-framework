@@ -12,7 +12,7 @@ import selenium.constants.ElementFinderConstants;
 import selenium.element.Element;
 import selenium.element.functions.ElementFunctionsData;
 import selenium.enums.SingleGetter;
-import selenium.namespaces.DriverFunctionFactoryFunctions;
+import selenium.namespaces.DriverFunctionFactory;
 import selenium.namespaces.SeleniumUtilities;
 import selenium.namespaces.repositories.LocatorRepository;
 import selenium.records.lazy.LazyElementWaitParameters;
@@ -128,7 +128,7 @@ public class ElementAlternative {
         Function<LazyElement, DriverFunction<Boolean>> condition,
         BiFunction<LazyElement, String, DriverFunction<Boolean>> sender
     ) {
-        return DriverFunctionFactoryFunctions.prependMessage(inputWhenCore(new ActionWhenData<>(condition.apply(data), sender.apply(data, input))), Strings.ELEMENT + data.name);
+        return DriverFunctionFactory.prependMessage(inputWhenCore(new ActionWhenData<>(condition.apply(data), sender.apply(data, input))), Strings.ELEMENT + data.name);
     }
 
     public DriverFunction<Boolean> clickWhenCore(LazyElementWaitParameters data, Function<LazyElementWaitParameters, DriverFunction<Boolean>> condition) {
@@ -150,7 +150,7 @@ public class ElementAlternative {
         }
 
         final var object = data.object;
-        return DriverFunctionFactoryFunctions.prependMessage(Element.actionWhenCore(new ActionWhenData<>(action.apply(data), sender.apply(object, input))), Strings.ELEMENT + object.name);
+        return DriverFunctionFactory.prependMessage(Element.actionWhenCore(new ActionWhenData<>(action.apply(data), sender.apply(object, input))), Strings.ELEMENT + object.name);
     }
 
 

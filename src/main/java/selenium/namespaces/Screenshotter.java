@@ -47,7 +47,7 @@ public interface Screenshotter {
     static DriverFunction<Boolean> takeScreenShot(String path) {
         return ifDriver(
             "takeScreenShot",
-            Formatter.isBlankMessage(path, "Path"),
+            Formatter.isBlankMessageWithName(path, "Path"),
             validChain(Driver.getScreenshotter(), Screenshotter.takeScreenshot(path), CoreDataConstants.NULL_BOOLEAN),
             CoreDataConstants.NULL_BOOLEAN
         );

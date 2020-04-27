@@ -22,7 +22,7 @@ public interface Switcher {
     }
 
     static DriverFunction<Boolean> switchToFrame(Data<WebElement> element) {
-        return Driver.switchToFrame(DriverFunctionFactoryFunctions.get(element));
+        return Driver.switchToFrame(DriverFunctionFactory.get(element));
     }
 
     static DriverFunction<Boolean> switchToFrame(int frameLocator) {

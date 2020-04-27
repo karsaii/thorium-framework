@@ -9,7 +9,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.util.function.Function;
 
-public interface DriverFunctionFactoryFunctions {
+public interface DriverFunctionFactory {
     static <T> DriverFunction<T> getErrorFunction(String message, T value) {
         return driver -> DataFactoryFunctions.getErrorFunction(value, Strings.DRIVER_WAS_NULL + message);
     }
@@ -60,6 +60,10 @@ public interface DriverFunctionFactoryFunctions {
 
     static <T> DriverFunction<T> prependMessage(DriverFunction<T> function, String message) {
         return driver -> DataFactoryFunctions.prependMessage(function.apply(driver), message);
+    }
+
+    static <T> DriverFunction<T> replaceMessage(DriverFunction<T> function, String message) {
+        return driver -> DataFactoryFunctions.replaceMessage(function.apply(driver), message);
     }
 
     static <T> DriverFunction<T> appendMessage(DriverFunction<T> function, String message) {
