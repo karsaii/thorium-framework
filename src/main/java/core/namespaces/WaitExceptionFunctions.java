@@ -1,10 +1,12 @@
 package core.namespaces;
 
 import core.constants.SystemIdentityConstants;
+import data.constants.Strings;
 
 public interface WaitExceptionFunctions {
     static String getSystemInformationMessage() {
         return (
+            Strings.NEW_LINE +
             "System info: host: \"" +
             SystemIdentityConstants.HOST_NAME +
             "\", ip: \"" +

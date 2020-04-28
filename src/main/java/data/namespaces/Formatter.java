@@ -2,7 +2,6 @@ package data.namespaces;
 
 import core.extensions.DecoratedList;
 import core.extensions.interfaces.IEmptiable;
-import core.extensions.interfaces.IEmptiableCollection;
 import core.extensions.namespaces.BasicPredicateFunctions;
 import selenium.abstracts.AbstractElementFunctionParameters;
 import selenium.constants.SeleniumDataConstants;
@@ -82,7 +81,7 @@ public interface Formatter {
         return isNullMessage(object, "Object");
     }
 
-    static String isInvalidOrFalseMessage(Data data, String parameterName) {
+    static String isInvalidOrFalseMessageWithName(Data data, String parameterName) {
         return getNamedErrorMessageOrEmpty(
             "isInvalidOrFalseMessage: ",
             isParameterMessage(isInvalidOrFalse(data), parameterName, "false data") +
@@ -91,7 +90,7 @@ public interface Formatter {
     }
 
     static String isInvalidOrFalseMessage(Data data) {
-        return isInvalidOrFalseMessage(data, "data");
+        return isInvalidOrFalseMessageWithName(data, "data");
     }
 
     static String isFalseMessage(Data data, String parameterName) {
@@ -131,7 +130,7 @@ public interface Formatter {
             isNullMessage(keyCondition, valuesMessage + "boolean") +
             isNullMessage(map, valuesMessage + " map") +
             isNullMessage(expected, valuesMessage + "expected value") +
-            isInvalidOrFalseMessage(object, valuesMessage + "object")
+            isInvalidOrFalseMessageWithName(object, valuesMessage + "object")
         );
 
         if (isNotBlank(errorMessage)) {
@@ -300,7 +299,7 @@ public interface Formatter {
     }
 
     static String getNestedElementsErrorMessage(By locator, Data<SearchContext> context) {
-        return getLocatorErrorMessage(locator) + isInvalidOrFalseMessage(context, "Search Context");
+        return getLocatorErrorMessage(locator) + isInvalidOrFalseMessageWithName(context, "Search Context");
     }
 
     static String getElementClickableMessage(boolean status, String message) {
@@ -842,7 +841,7 @@ public interface Formatter {
 
     static String getElementAttributeMessage(Data<LazyElement> data, String value, String parameterName) {
         final var name = isBlank(parameterName) ? "Value" : parameterName;
-        var message = isInvalidOrFalseMessage(data, "Element data");
+        var message = isInvalidOrFalseMessageWithName(data, "Element data");
         if (isBlank(message)) {
             message += (
                 isNullLazyElementMessage(data.object) +
