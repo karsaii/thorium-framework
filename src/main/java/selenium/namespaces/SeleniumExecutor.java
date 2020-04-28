@@ -8,6 +8,7 @@ import core.namespaces.ExecutionDataFactory;
 import core.namespaces.ExecutionParametersDataFactory;
 import core.namespaces.Executor;
 import core.records.Data;
+import core.records.executor.ExecutionData;
 import core.records.executor.ExecutionParametersData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
@@ -17,21 +18,29 @@ import selenium.element.functions.SimpleMessageData;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static selenium.namespaces.ExecutionCore.ifDriver;
+import static selenium.namespaces.ExecutionCore.validChain;
 
 public interface SeleniumExecutor {
+    private static <Any> Data<Any> executeDriverCore(Data<Any> data, ExecutionData executionData) {
+        final var status = data.status;
+        return DataFactoryFunctions.getWithMessage(data.object, status, executionData.messageData.get().apply(status) + data.message);
+    }
+
+    private static <Any> Function<Data<Any>, Data<Any>> executeDriverCore(ExecutionData executionData) {
+        return data -> executeDriverCore(data, executionData);
+    }
+
     static <Any> DriverFunction<Any> executeDriver(ExecutionParametersData<WebDriver, Any> execution, DriverFunction<?>... steps) {
         final var data = execution.data;
+        final var negative = DataFactoryFunctions.getWithMessage((Any) CoreConstants.STOCK_OBJECT, false, Strings.EMPTY);
         return ifDriver(
             "executeDriver",
             Formatter.getCommandAmountRangeErrorMessage(steps.length, execution.range),
-            driver -> {
-                final var result = execution.executor.apply(data, steps).apply(driver);
-                final var status = result.status;
-                return DataFactoryFunctions.getWithMessage(result.object, status, data.messageData.get().apply(status) + result.message);
-            },
-            DataFactoryFunctions.getWithMessage((Any) CoreConstants.STOCK_OBJECT, false, Strings.EMPTY)
+            validChain(DriverFunctionFactory.getFunction(execution.executor.apply(data, steps)), executeDriverCore(data), negative),
+            negative
         );
     }
 

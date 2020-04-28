@@ -21,6 +21,13 @@ public abstract class Strings {
     public static final String ABSENT = "absent";
     public static final String SELECTED = "selected";
     public static final String UNSELECTED = "unselected";
+    public static final String TEXT = "Text";
+    public static final String TAGNAME = "TagName";
+    public static final String ATTRIBUTE = "Attribute";
+    public static final String VALUE_ATTRIBUTE = "Attribute(Value)";
+    public static final String CSS_VALUE = "CSS Value";
+
+
 
     public static final String FIND_ELEMENT = "findElement";
     public static final String DEFAULT_GETTER_ELEMENT = "getElement";

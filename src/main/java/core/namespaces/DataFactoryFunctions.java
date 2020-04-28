@@ -21,7 +21,7 @@ public interface DataFactoryFunctions {
         final var isExceptionNull = Objects.isNull(exception);
         final var message = (isExceptionNull ? Strings.EXCEPTION_WAS_NULL : Strings.EMPTY) + messageData.message;
         final var exMessage = isNotBlank(exceptionMessage) ? exceptionMessage : ((isExceptionNull ? Strings.EXCEPTION_WAS_NULL : exception.getMessage()));
-        return getWithNameAndMessage(object, status, messageData.nameof, message, exception, exMessage);
+        return new Data<T>(object, status, new MethodMessageData(messageData.nameof, message), exception, exMessage);
     }
 
     static <T> Data<T> getWithMethodMessage(T object, boolean status, MethodMessageData messageData, Exception exception) {

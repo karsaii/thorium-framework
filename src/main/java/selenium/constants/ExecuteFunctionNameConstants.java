@@ -1,6 +1,6 @@
 package selenium.constants;
 
-public class ExecuteFunctionNameConstants {
+public abstract class ExecuteFunctionNameConstants {
     public static final String EXECUTE = "execute",
         EXECUTE_ASYNC = "executeAsync",
         EXECUTE_PARAMATERS = "executeParameters",

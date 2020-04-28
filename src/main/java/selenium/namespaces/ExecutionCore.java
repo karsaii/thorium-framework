@@ -68,20 +68,12 @@ public interface ExecutionCore {
         return DriverFunctionFactory.getFunction(conditionalChain(guard, dependency, positive, replaceMessage(negative, "conditionalChain", "Dependency parameter  failed the guard" + Strings.END_LINE)));
     }
 
-    private static <T, U> DriverFunction<T> conditionalDataChain(Function<Data<U>, String> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
-        return DriverFunctionFactory.getFunction(conditionalChain(guard, dependency, positive, negative));
-    }
-
     static <T, U> DriverFunction<T> conditionalChain(Predicate<Data<U>> guard, DriverFunction<U> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
         return conditionalDataChain(guard, dependency, positive, negative);
     }
 
     static <ParameterType, ReturnType> DriverFunction<ReturnType> validChain(DriverFunction<ParameterType> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
         return conditionalDataChain(DataValidators::isValidNonFalse, dependency, positive, negative);
-    }
-
-    static <ReturnType> DriverFunction<ReturnType> validElementChain(DriverFunction<WebElement> dependency, Function<Data<WebElement>, Data<ReturnType>> positive, Data<ReturnType> negative) {
-        return conditionalDataChain(Formatter::isNullWebElementDataMessage, dependency, positive, negative);
     }
 
     private static <T> Data<T> ifDriverAnyWrappedCore(WebDriver driver, String nameof, DriverFunction<T> function) {
