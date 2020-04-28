@@ -571,7 +571,7 @@ public interface Driver {
     }
 
     private static DriverFunction<Boolean> isElementPositive(LazyElement element, ElementConditionParameters<Boolean> parameters, Data<Boolean> guard) {
-        return validChain(parameters.function.apply(element), isElementCore(element.name, parameters), guard);
+        return validChain(parameters.function.apply(element), isElementCore(element.name, parameters), replaceName(guard, parameters.conditionName));
     }
 
     private static DriverFunction<String> getElementValuePositive(String name, DriverFunction<String> function, AbstractElementFunctionParameters<String> parameters, Data<String> guard) {
