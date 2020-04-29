@@ -1,7 +1,7 @@
 package selenium.records;
 
 import core.records.command.CommandRangeData;
-import selenium.constants.ExecutorConstants;
+import core.constants.ExecutorConstants;
 
 public class InternalSelectorData {
     public final CommandRangeData range;

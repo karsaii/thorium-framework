@@ -3,13 +3,19 @@ package core.namespaces;
 import core.records.Data;
 import core.records.executor.ExecutionData;
 import core.records.executor.ExecutionParametersData;
-import selenium.constants.ExecutorConstants;
+import core.constants.ExecutorConstants;
+import core.records.executor.ExecutionStepData;
+import core.records.executor.StepExecutionParametersData;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface ExecutionParametersDataFactory {
-    static <T, Any> ExecutionParametersData<T, Any> getWithDefaultRange(ExecutionData data, BiFunction<ExecutionData, Function<T, Data<?>>[], Function<T, Data<Any>>> executor) {
+    static <DependencyType, ReturnType> ExecutionParametersData<DependencyType, ReturnType> getWithDefaultRange(
+        ExecutionData data,
+        BiFunction<ExecutionData, Function<DependencyType, Data<?>>[], Function<DependencyType, Data<ReturnType>>> executor
+    ) {
         return new ExecutionParametersData<>(data, executor, ExecutorConstants.DEFAULT_RANGE);
     }
 }

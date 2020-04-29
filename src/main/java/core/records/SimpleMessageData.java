@@ -1,10 +1,8 @@
-package selenium.element.functions;
+package core.records;
 
 import core.extensions.interfaces.functional.boilers.IGetMessage;
-import data.constants.Strings;
 import data.namespaces.Formatter;
 
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -40,6 +38,10 @@ public class SimpleMessageData implements IGetMessage {
             return Formatter.isFormatterNull(message);
         }
 
-        return isMessageBlank ? Formatter.isMessageBlank(formatter) : Formatter.isFormatterAndMessageValid(formatter, message);
+        if (isMessageBlank) {
+            return Formatter.isMessageBlank(formatter);
+        }
+
+        return Formatter.isFormatterAndMessageValid(formatter, message);
     }
 }
