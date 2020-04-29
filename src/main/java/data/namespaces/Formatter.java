@@ -21,7 +21,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import selectorSpecificity.tuples.SelectorSpecificsData;
 import selenium.abstracts.AbstractLazyElement;
-import selenium.constants.ExecutorConstants;
+import core.constants.ExecutorConstants;
 import selenium.constants.SeleniumCoreConstants;
 import selenium.enums.ManyGetter;
 import selenium.enums.SingleGetter;
@@ -52,7 +52,6 @@ import static core.extensions.namespaces.CoreUtilities.areAnyBlank;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
-import static core.extensions.namespaces.NullableFunctions.isNotNull;
 import static core.namespaces.DataFunctions.isFalse;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -82,11 +81,12 @@ public interface Formatter {
     }
 
     static String isInvalidOrFalseMessageWithName(Data data, String parameterName) {
-        return getNamedErrorMessageOrEmpty(
-            "isInvalidOrFalseMessage: ",
-            isParameterMessage(isInvalidOrFalse(data), parameterName, "false data") +
-            (isNotNull(data) ? data.message : Strings.EMPTY)
-        );
+        var message = isParameterMessage(isInvalidOrFalse(data), parameterName, "false data");
+        if (isNotBlank(message)) {
+            message += data.message;
+        }
+
+        return getNamedErrorMessageOrEmpty("isInvalidOrFalseMessage: ", message);
     }
 
     static String isInvalidOrFalseMessage(Data data) {
@@ -94,11 +94,12 @@ public interface Formatter {
     }
 
     static String isFalseMessage(Data data, String parameterName) {
-        return getNamedErrorMessageOrEmpty(
-            "isFalseMessage: ",
-            isParameterMessage(isFalse(data), parameterName, "false data") +
-            (isNotNull(data) ? data.message : Strings.EMPTY)
-        );
+        var message = isParameterMessage(isFalse(data), parameterName, "false data");
+        if (isNotBlank(message)) {
+            message += data.message;
+        }
+
+        return getNamedErrorMessageOrEmpty("isFalseMessage: ", message);
     }
 
     static String isFalseMessage(Data data) {
@@ -219,12 +220,13 @@ public interface Formatter {
         final var name = "getValueMessage: ";
         final var errorMessage = (
                 isBlankMessageWithName(elementName, "Element name") +
-                isBlankMessageWithName(descriptor, "Descriptor")
+                isBlankMessageWithName(descriptor, "Descriptor") +
+                isNullMessage(value, "Value")
         );
         return name + (
             isNotBlank(errorMessage) ? (
                 Strings.PARAMETER_ISSUES_LINE + errorMessage
-            ) : (FormatterStrings.ELEMENT + " " + descriptor + " was (\"" + value +"\")"  + Strings.END_LINE)
+            ) : (FormatterStrings.ELEMENT + " " + elementName + " " + descriptor + " was (\"" + value +"\")"  + Strings.END_LINE)
         );
     }
 

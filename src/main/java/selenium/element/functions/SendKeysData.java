@@ -7,6 +7,7 @@ import selenium.element.Element;
 import selenium.enums.SingleGetter;
 import selenium.records.LazyElement;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 
 public class SendKeysData {
@@ -28,5 +29,20 @@ public class SendKeysData {
         this.sendKeysLazy = Element::sendKeys;
         this.sendKeysByWithGetter = Element::sendKeys;
         this.sendKeysBy = Element::sendKeys;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        var that = (SendKeysData) o;
+        return Objects.equals(sendKeysLazy, that.sendKeysLazy) &&
+                Objects.equals(sendKeysByWithGetter, that.sendKeysByWithGetter) &&
+                Objects.equals(sendKeysBy, that.sendKeysBy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sendKeysLazy, sendKeysByWithGetter, sendKeysBy);
     }
 }

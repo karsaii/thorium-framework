@@ -3,6 +3,8 @@ package core.records.command;
 import core.extensions.interfaces.functional.TriFunction;
 import core.namespaces.validators.Range;
 
+import java.util.Objects;
+
 public class CommandRangeData {
     public final TriFunction<Integer, Integer, Integer, Boolean> rangeInvalidator;
     public final int min;
@@ -18,5 +20,18 @@ public class CommandRangeData {
         this.rangeInvalidator = Range::isOutOfRange;
         this.min = min;
         this.max = max;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        var that = (CommandRangeData) o;
+        return min == that.min && max == that.max && Objects.equals(rangeInvalidator, that.rangeInvalidator);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rangeInvalidator, min, max);
     }
 }

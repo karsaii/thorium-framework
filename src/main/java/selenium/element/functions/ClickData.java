@@ -6,6 +6,7 @@ import selenium.element.Element;
 import selenium.enums.SingleGetter;
 import selenium.records.LazyElement;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -28,5 +29,18 @@ public class ClickData {
         this.clickLazy = Element::click;
         this.clickByWithGetter = Element::click;
         this.clickBy = Element::click;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        var clickData = (ClickData) o;
+        return Objects.equals(clickLazy, clickData.clickLazy) && Objects.equals(clickByWithGetter, clickData.clickByWithGetter) && Objects.equals(clickBy, clickData.clickBy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clickLazy, clickByWithGetter, clickBy);
     }
 }

@@ -76,6 +76,8 @@ public interface ExecutionCore {
         return DriverFunctionFactory.getFunction(conditionalChain(Formatter::isInvalidOrFalseMessage, dependency, positive, negative));
     }
 
+
+
     private static <T> Data<T> ifDriverAnyWrappedCore(WebDriver driver, String nameof, DriverFunction<T> function) {
         return isNotNull(driver) ? (
             DependencyExecutionFunctions.ifDependencyAnyCore(nameof, function.apply(driver))

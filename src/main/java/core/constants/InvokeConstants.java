@@ -1,6 +1,5 @@
 package core.constants;
 
-import core.records.MethodDefaults;
 import core.records.reflection.InvokeMethodData;
 
 public abstract class InvokeConstants {

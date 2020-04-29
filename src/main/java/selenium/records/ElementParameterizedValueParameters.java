@@ -10,7 +10,12 @@ import java.util.function.BiFunction;
 public class ElementParameterizedValueParameters<T> extends AbstractElementFunctionParameters<T> {
     public final BiFunction<LazyElement, String, DriverFunction<T>> function;
 
-    public ElementParameterizedValueParameters(BiFunction<LazyElement, String, DriverFunction<T>> function, TriFunction<String, String, T, String> formatter, String conditionName, String descriptor) {
+    public ElementParameterizedValueParameters(
+        BiFunction<LazyElement, String, DriverFunction<T>> function,
+        TriFunction<String, String, T, String> formatter,
+        String conditionName,
+        String descriptor
+    ) {
         super(formatter, conditionName, descriptor);
         this.function = function;
     }

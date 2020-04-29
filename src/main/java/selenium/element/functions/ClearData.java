@@ -6,6 +6,7 @@ import selenium.element.Element;
 import selenium.enums.SingleGetter;
 import selenium.records.LazyElement;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -28,5 +29,18 @@ public class ClearData {
         this.clearLazy = Element::clear;
         this.clearByWithGetter = Element::clear;
         this.clearBy = Element::clear;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        var clearData = (ClearData) o;
+        return Objects.equals(clearLazy, clearData.clearLazy) && Objects.equals(clearByWithGetter, clearData.clearByWithGetter) && Objects.equals(clearBy, clearData.clearBy);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clearLazy, clearByWithGetter, clearBy);
     }
 }

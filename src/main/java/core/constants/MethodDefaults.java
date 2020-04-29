@@ -1,5 +1,6 @@
-package core.records;
+package core.constants;
 
+import core.records.MethodParametersData;
 import selenium.constants.ElementMethodNameConstants;
 import selenium.constants.SeleniumCoreConstants;
 import selenium.namespaces.validators.SeleniumTypeMethods;

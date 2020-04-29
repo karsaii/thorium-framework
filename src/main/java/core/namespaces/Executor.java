@@ -9,7 +9,7 @@ import core.records.executor.ExecutionData;
 import core.records.executor.ExecutionParametersData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
-import selenium.constants.ExecutorConstants;
+import core.constants.ExecutorConstants;
 import core.constants.CoreConstants;
 
 import java.util.function.Function;
@@ -56,7 +56,7 @@ public interface Executor {
             status = executionData.endStatus.test(data.status);
         }
 
-        return DataFactoryFunctions.getWithMessage((ReturnType)data.object, status, Formatter.getExecutionEndMessage(index, length, message));
+        return DataFactoryFunctions.getWithNameAndMessage((ReturnType)data.object, status, "executeCoreStepMessagesCore", Formatter.getExecutionEndMessage(index, length, message));
     }
 
     @SafeVarargs
@@ -71,7 +71,7 @@ public interface Executor {
             status = executionData.endStatus.test(data.status);
         }
 
-        return DataFactoryFunctions.getWithMessage((ReturnType)data.object, status, index < length ? "Execution ended early:\n" + "\t" + data.message.toString().replaceAll("\n", "\n\t") : "");
+        return DataFactoryFunctions.getWithNameAndMessage((ReturnType)data.object, status, "executeCoreNoMessagesCore", index < length ? "Execution ended early:\n" + "\t" + data.message.toString().replaceAll("\n", "\n\t") : "");
     }
 
     @SafeVarargs
@@ -92,14 +92,14 @@ public interface Executor {
     static <DependencyType, Any> Function<DependencyType, Data<Any>> execute(ExecutionParametersData<DependencyType, Any> execution, Function<DependencyType, Data<?>>... steps) {
         final var data = execution.data;
         return ifDependency(
-            "executeCoreCommon",
+            "execute",
             Formatter.getCommandAmountRangeErrorMessage(steps.length, execution.range),
             driver -> {
                 final var result = execution.executor.apply(data, steps).apply(driver);
                 final var status = result.status;
                 return DataFactoryFunctions.getWithMessage(result.object, status, data.messageData.get().apply(status) + result.message);
             },
-            DataFactoryFunctions.getWithMessage((Any)CoreConstants.STOCK_OBJECT, false, Strings.EMPTY)
+            DataFactoryFunctions.getWithNameAndMessage((Any)CoreConstants.STOCK_OBJECT, false, "execute", Strings.EMPTY)
         );
     }
 }
