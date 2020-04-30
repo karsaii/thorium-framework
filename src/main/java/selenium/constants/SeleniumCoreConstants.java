@@ -2,7 +2,7 @@ package selenium.constants;
 
 import core.constants.CoreDataConstants;
 import core.extensions.DecoratedList;
-import selenium.namespaces.LazyElementFactory;
+import selenium.namespaces.lazy.LazyElementFactory;
 import selenium.namespaces.extensions.boilers.WebElementList;
 import core.records.MethodSourceData;
 import org.openqa.selenium.WebElement;
@@ -11,7 +11,7 @@ import core.constants.CoreConstants;
 import selenium.namespaces.repositories.ElementRepository;
 import selenium.namespaces.utilities.BasicTypeUtilities;
 import selenium.records.ExternalElementData;
-import selenium.records.LazyElement;
+import selenium.records.lazy.LazyElement;
 import selenium.records.lazy.CachedLazyElementData;
 
 import java.lang.reflect.Method;

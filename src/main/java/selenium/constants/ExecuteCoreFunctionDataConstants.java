@@ -2,8 +2,8 @@ package selenium.constants;
 
 import selenium.namespaces.extensions.boilers.ScriptHandlerFunction;
 import selenium.namespaces.ScriptExecuteFunctions;
-import selenium.records.ExecuteCoreFunctionData;
-import selenium.records.ParametersFieldDefaultsData;
+import selenium.records.scripter.ExecuteCoreFunctionData;
+import selenium.records.scripter.ParametersFieldDefaultsData;
 
 public abstract class ExecuteCoreFunctionDataConstants {
     public static final ExecuteCoreFunctionData<ScriptHandlerFunction> EXECUTE = new ExecuteCoreFunctionData<>(ExecuteFunctionNameConstants.EXECUTE, ScriptExecuteFunctions.executeScript()),

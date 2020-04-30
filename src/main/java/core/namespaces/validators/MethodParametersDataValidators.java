@@ -2,18 +2,18 @@ package core.namespaces.validators;
 
 import core.records.MethodParametersData;
 import data.constants.Strings;
+import data.namespaces.Formatter;
 
-import static data.namespaces.Formatter.isNullMessage;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface MethodParametersDataValidators {
     static String isValid(MethodParametersData data) {
-        var message = isNullMessage(data, "Method Parameter data");
+        var message = Formatter.isNullMessageWithName(data, "Method Parameter data");
         if (isBlank(message)) {
             message += (
-                isNullMessage(data.methodName, "Method name") +
-                isNullMessage(data.validator, "Validator")
+                Formatter.isNullMessageWithName(data.methodName, "Method name") +
+                Formatter.isNullMessageWithName(data.validator, "Validator")
             );
         }
 

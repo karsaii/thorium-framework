@@ -4,13 +4,12 @@ import core.abstracts.reflection.BaseInvokerDefaultsData;
 import core.records.Data;
 import core.records.MethodData;
 import core.records.reflection.message.InvokeCommonMessageParametersData;
+import data.namespaces.Formatter;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 
 import java.util.function.Function;
 
-import static data.namespaces.Formatter.isFalseMessage;
 import static data.namespaces.Formatter.isInvalidOrFalseMessage;
-import static data.namespaces.Formatter.isNullMessage;
 import static validators.ScriptExecutions.isInvalidInvokerDefaultsMessage;
 
 public interface InvokeCoreValidator {
@@ -22,10 +21,10 @@ public interface InvokeCoreValidator {
     ) {
         return (
             isInvalidOrFalseMessage(data) +
-            isNullMessage(handler, "Handler") +
-            isNullMessage(messageHandler, "Message Handler") +
+            Formatter.isNullMessageWithName(handler, "Handler") +
+            Formatter.isNullMessageWithName(messageHandler, "Message Handler") +
             isInvalidInvokerDefaultsMessage(defaults) +
-            isFalseMessage(defaults.guard.test(handler), "Guard tested handler")
+            Formatter.isFalseMessageWithName(defaults.guard.test(handler), "Guard tested handler")
         );
     }
     static <ParameterType, HandlerType, ReturnType> String isInvalidInvokeCoreParametersMessage(
@@ -35,7 +34,7 @@ public interface InvokeCoreValidator {
         HandlerType handler,
         DriverFunction<ParameterType> getter
     ) {
-        return isInvalidInvokeCoreParametersCommonMessage(data, defaults, messageHandler, handler) + isNullMessage(getter, "Parameter Getter");
+        return isInvalidInvokeCoreParametersCommonMessage(data, defaults, messageHandler, handler) + Formatter.isNullMessageWithName(getter, "Parameter Getter");
     }
 
     static <ParameterType, HandlerType, ReturnType> String isInvalidInvokeCoreParametersMessage(
@@ -45,6 +44,6 @@ public interface InvokeCoreValidator {
         HandlerType handler,
         ParameterType parameter
     ) {
-        return isInvalidInvokeCoreParametersCommonMessage(data, defaults, messageHandler, handler) + isNullMessage(parameter, "Parameter");
+        return isInvalidInvokeCoreParametersCommonMessage(data, defaults, messageHandler, handler) + Formatter.isNullMessageWithName(parameter, "Parameter");
     }
 }

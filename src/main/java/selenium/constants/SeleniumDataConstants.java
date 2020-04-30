@@ -9,14 +9,14 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import selenium.records.ExternalElementData;
-import selenium.records.LazyElement;
+import selenium.records.lazy.LazyElement;
 import selenium.records.lazy.CachedLazyElementData;
 
 import java.util.function.Function;
 
 public abstract class SeleniumDataConstants {
     public static final Data<By> NULL_BY = DataFactoryFunctions.getWithMessage(By.cssSelector(Strings.EMPTY), false, "Null By Data.");
-    public static final Data<WebElement> NULL_ELEMENT = DataFactoryFunctions.getWithMessage(SeleniumCoreConstants.STOCK_ELEMENT, false, "nullElement data.");
+    public static final Data<WebElement> NULL_ELEMENT = DataFactoryFunctions.getWithNameAndMessage(SeleniumCoreConstants.STOCK_ELEMENT, false, "defaultNullWebElementData", "Internal null element" + Strings.END_LINE);
     public static final Data<WebElement> NULL_ELEMENT_NULL_DRIVER = DataFactoryFunctions.getWithMessage(SeleniumCoreConstants.STOCK_ELEMENT, false, Strings.DRIVER_WAS_NULL);
     public static final Data<WebElementList> NULL_LIST = DataFactoryFunctions.getWithMessage(SeleniumCoreConstants.NULL_ELEMENT_LIST, false, "nullList data" + Strings.END_LINE);
     public static final Data<WebElementList> DRIVER_WAS_NULL_LIST = DataFactoryFunctions.getWithMessage(SeleniumCoreConstants.NULL_ELEMENT_LIST, false, Strings.DRIVER_WAS_NULL);

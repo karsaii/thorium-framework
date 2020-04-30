@@ -7,7 +7,7 @@ import data.namespaces.Formatter;
 import selector.records.SelectorKeySpecificityData;
 import selenium.constants.AdjusterConstants;
 import selenium.records.ProbabilityData;
-import selenium.records.lazy.LazyFilteredElementParameters;
+import selenium.records.lazy.filtered.LazyFilteredElementParameters;
 
 import java.util.Map;
 

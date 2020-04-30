@@ -1,7 +1,7 @@
 package selenium.constants;
 
 import selenium.namespaces.extensions.boilers.ScriptHandlerFunction;
-import selenium.records.ExecuteCoreData;
+import selenium.records.scripter.ExecuteCoreData;
 import selenium.records.scripter.ExecutorParametersFieldData;
 
 public abstract class ExecuteCoreDataConstants {

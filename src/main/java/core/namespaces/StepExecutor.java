@@ -80,7 +80,7 @@ public interface StepExecutor {
     static <ReturnType> DataSupplier<ReturnType> execute(IGetMessage stepMessage, DataSupplier<?>... steps) {
         return execute(
             new StepExecutionParametersData<>(
-                ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(stepMessage, ExecutorConstants.DEFAULT_EXECUTION_DATA),
+                ExecutionDataFactory.getWithSpecificMessageData(stepMessage),
                 StepExecutor::executeCoreStepMessages,
                 ExecutorConstants.DEFAULT_RANGE
             ),
@@ -91,7 +91,7 @@ public interface StepExecutor {
     static <ReturnType> DataSupplier<ReturnType> execute(String message, DataSupplier<?>... steps) {
         return execute(
             StepExecutionParametersDataFactory.getWithDefaultRange(
-                ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(new SimpleMessageData(message), ExecutorConstants.DEFAULT_EXECUTION_DATA),
+                ExecutionDataFactory.getWithSpecificMessageData(new SimpleMessageData(message)),
                 StepExecutor::executeCoreStepMessages
             ),
             steps
@@ -101,7 +101,7 @@ public interface StepExecutor {
     static <ReturnType> DataSupplier<ReturnType> execute(BiFunction<String, String, String> messageHandler, DataSupplier<?>... steps) {
         return execute(
             StepExecutionParametersDataFactory.getWithDefaultRange(
-                ExecutionDataFactory.getWithDefaultExitCondition(new SimpleMessageData(), Executor::returnStatus, messageHandler),
+                ExecutionDataFactory.getWithSpecificMessageHandler(messageHandler),
                 StepExecutor::executeCoreStepMessages
             ),
             steps
@@ -115,7 +115,7 @@ public interface StepExecutor {
     static <T, U, ReturnType> DataSupplier<ReturnType> conditionalSequence(TriPredicate<Data<?>, Integer, Integer> guard, DataSupplier<T> before, DataSupplier<U> after) {
         return execute(
             new StepExecutionParametersData<>(
-                ExecutionDataFactory.getWithExecuteParametersData(new SimpleMessageData(Strings.EXECUTION_ENDED), guard, ExecutorConstants.DEFAULT_EXECUTION_DATA),
+                ExecutionDataFactory.getWithDefaultExecuteParametersData(new SimpleMessageData(Strings.EXECUTION_ENDED), guard),
                 StepExecutor::executeCoreStepMessages,
                 ExecutorConstants.TWO_COMMANDS_RANGE
             ),

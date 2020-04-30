@@ -1,7 +1,6 @@
 package selenium.records.scripter;
 
 import selenium.namespaces.extensions.boilers.ScriptFunction;
-import selenium.records.ParametersFieldDefaultsData;
 
 import java.util.Arrays;
 import java.util.Objects;

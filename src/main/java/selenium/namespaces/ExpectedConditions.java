@@ -14,7 +14,7 @@ import data.namespaces.Formatter;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import selenium.records.LazyElement;
+import selenium.records.lazy.LazyElement;
 
 import java.util.Objects;
 import java.util.function.BiFunction;

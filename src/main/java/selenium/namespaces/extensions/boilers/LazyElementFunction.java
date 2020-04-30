@@ -1,6 +1,6 @@
 package selenium.namespaces.extensions.boilers;
 
-import selenium.records.LazyElement;
+import selenium.records.lazy.LazyElement;
 
 import java.util.function.Function;
 

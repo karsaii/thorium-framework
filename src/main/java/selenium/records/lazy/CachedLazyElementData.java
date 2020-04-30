@@ -2,7 +2,6 @@ package selenium.records.lazy;
 
 import core.extensions.DecoratedList;
 import selector.records.SelectorKeySpecificityData;
-import selenium.records.LazyElement;
 
 import java.util.Map;
 import java.util.Objects;

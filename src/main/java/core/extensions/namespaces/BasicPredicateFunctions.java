@@ -19,6 +19,10 @@ public interface BasicPredicateFunctions {
         return value > limit;
     }
 
+    static boolean isSmallerThan(long value, long limit) {
+        return value < limit;
+    }
+
     static boolean isZero(int value) {
         return Objects.equals(value, 0);
     }

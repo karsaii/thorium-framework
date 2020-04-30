@@ -1,16 +1,15 @@
 package core.namespaces;
 
 import core.constants.CoreDataConstants;
+import core.constants.CoreConstants;
+import core.extensions.namespaces.BasicPredicateFunctions;
 import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
 import core.records.Data;
-import core.records.executor.ExecuteParametersData;
 import core.records.executor.ExecutionData;
 import core.records.executor.ExecutionParametersData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
-import core.constants.ExecutorConstants;
-import core.constants.CoreConstants;
 
 import java.util.function.Function;
 
@@ -19,11 +18,15 @@ import static core.namespaces.DependencyExecutionFunctions.ifDependency;
 
 public interface Executor {
     static boolean isFalse(Data<?> data, int index, int length) {
-        return NullableFunctions.isNotNull(data) && CoreUtilities.isFalse(data.status) && (index < length);
+        return (
+            NullableFunctions.isNotNull(data) &&
+            CoreUtilities.isFalse(data.status) &&
+            BasicPredicateFunctions.isSmallerThan(index, length)
+        );
     }
 
     static boolean isExecuting(Data<?> data, int index, int length) {
-        return isValidNonFalse(data) && (index < length);
+        return isValidNonFalse(data) && BasicPredicateFunctions.isSmallerThan(index, length);
     }
 
     static String aggregateMessage(String message, String newMessage) {
@@ -42,7 +45,6 @@ public interface Executor {
         return true;
     }
 
-    @SafeVarargs
     private static <DependencyType, ReturnType> Data<ReturnType> executeCoreStepMessagesCore(DependencyType dependency, ExecutionData executionData, Function<DependencyType, Data<?>>... steps) {
         Data<?> data = CoreDataConstants.NO_STEPS;
         var message = "";
@@ -56,7 +58,8 @@ public interface Executor {
             status = executionData.endStatus.test(data.status);
         }
 
-        return DataFactoryFunctions.getWithNameAndMessage((ReturnType)data.object, status, "executeCoreStepMessagesCore", Formatter.getExecutionEndMessage(index, length, message));
+        message = Formatter.getExecutionEndMessage(index, length, message);
+        return DataFactoryFunctions.getWithNameAndMessage((ReturnType)data.object, status, "executeCoreStepMessagesCore", message);
     }
 
     @SafeVarargs
@@ -71,7 +74,8 @@ public interface Executor {
             status = executionData.endStatus.test(data.status);
         }
 
-        return DataFactoryFunctions.getWithNameAndMessage((ReturnType)data.object, status, "executeCoreNoMessagesCore", index < length ? "Execution ended early:\n" + "\t" + data.message.toString().replaceAll("\n", "\n\t") : "");
+        final var message = Formatter.getExecutionEndNoMessagesMessage(index, length, data.message.toString());
+        return DataFactoryFunctions.getWithNameAndMessage((ReturnType)data.object, status, "executeCoreNoMessagesCore", message);
     }
 
     @SafeVarargs
@@ -82,10 +86,6 @@ public interface Executor {
     @SafeVarargs
     static <DependencyType, Any> Function<DependencyType, Data<Any>> executeCoreNoMessages(ExecutionData executionData, Function<DependencyType, Data<?>>... steps) {
         return driver -> executeCoreNoMessagesCore(driver, executionData, steps);
-    }
-
-    static ExecuteParametersData getDefaultExecuteParametersData() {
-        return new ExecuteParametersData(ExecutorConstants.DEFAULT_RANGE, Executor::returnStatus, Executor::reduceMessage);
     }
 
     @SafeVarargs

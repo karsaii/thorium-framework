@@ -11,12 +11,12 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public interface WaitValidators {
     static String validateWaitTimeData(WaitTimeData timeData) {
-        var message = Formatter.isNullMessage(timeData, "TimeData");
+        var message = Formatter.isNullMessageWithName(timeData, "TimeData");
         if (isBlank(message)) {
             message += (
-                Formatter.isNullMessage(timeData.clock, "TimeData clock") +
-                Formatter.isNullMessage(timeData.interval, "TimeData interval") +
-                Formatter.isNullMessage(timeData.duration, "TimeData duration")
+                Formatter.isNullMessageWithName(timeData.clock, "TimeData clock") +
+                Formatter.isNullMessageWithName(timeData.interval, "TimeData interval") +
+                Formatter.isNullMessageWithName(timeData.duration, "TimeData duration")
             );
         }
 
@@ -24,8 +24,8 @@ public interface WaitValidators {
     }
     static <T, V> String validateUntilParameters(Function<T, V> condition, Predicate<V> continueCondition, WaitTimeData timeData) {
         final var message = (
-            Formatter.isNullMessage(condition, "Condition") +
-            Formatter.isNullMessage(continueCondition, "ContinueCondition") +
+            Formatter.isNullMessageWithName(condition, "Condition") +
+            Formatter.isNullMessageWithName(continueCondition, "ContinueCondition") +
             validateWaitTimeData(timeData)
         );
 
