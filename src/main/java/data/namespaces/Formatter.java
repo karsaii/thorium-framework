@@ -52,6 +52,7 @@ import static core.extensions.namespaces.CoreUtilities.areAnyBlank;
 import static core.extensions.namespaces.CoreUtilities.areAnyNull;
 import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
+import static core.namespaces.DataFunctions.isTrue;
 import static core.namespaces.DataFunctions.isFalse;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -99,11 +100,24 @@ public interface Formatter {
             message += data.message;
         }
 
-        return getNamedErrorMessageOrEmpty("isFalseMessage: ", message);
+        return getNamedErrorMessageOrEmpty("isFalseMessageWithName: ", message);
     }
 
     static String isFalseMessage(Data data) {
         return isFalseMessageWithName(data, "data");
+    }
+
+    static String isTrueMessageWithName(Data data, String parameterName) {
+        var message = isParameterMessage(isTrue(data), parameterName, "true data");
+        if (isNotBlank(message)) {
+            message += data.message;
+        }
+
+        return getNamedErrorMessageOrEmpty("isTrueMessageWithName: ", message);
+    }
+
+    static String isTrueMessage(Data data) {
+        return isTrueMessageWithName(data, "data");
     }
 
     static String isBlankMessageWithName(String value, String parameterName) {

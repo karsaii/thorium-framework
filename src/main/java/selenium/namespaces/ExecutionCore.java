@@ -73,7 +73,7 @@ public interface ExecutionCore {
     }
 
     static <ParameterType, ReturnType> DriverFunction<ReturnType> nonNullChain(DriverFunction<ParameterType> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
-        return DriverFunctionFactory.getFunction(conditionalChain(Formatter::isFalseMessage, dependency, positive, negative));
+        return DriverFunctionFactory.getFunction(conditionalChain(Formatter::isTrueMessage, dependency, positive, negative));
     }
 
 
