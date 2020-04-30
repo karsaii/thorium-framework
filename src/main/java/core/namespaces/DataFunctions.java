@@ -1,5 +1,6 @@
 package core.namespaces;
 
+import core.extensions.namespaces.BasicPredicateFunctions;
 import core.extensions.namespaces.CoreUtilities;
 import core.records.Data;
 import org.apache.commons.lang3.ArrayUtils;
@@ -27,16 +28,24 @@ public interface DataFunctions {
         return name;
     }
 
-    static boolean isFalse(Data<?> data, int index, int length) {
-        return isFalse(data) && (index < length);
-    }
-
     static boolean isFalse(Data<?> data) {
         return isValid(data) && CoreUtilities.isFalse(data.object);
     }
 
+    static boolean isTrue(Data<?> data) {
+        return isValid(data) && CoreUtilities.isTrue(data.object);
+    }
+
+    static boolean isFalse(Data<?> data, int index, int length) {
+        return isFalse(data) && BasicPredicateFunctions.isSmallerThan(index, length);
+    }
+
+    static boolean isTrue(Data<?> data, int index, int length) {
+        return isTrue(data) && BasicPredicateFunctions.isSmallerThan(index, length);
+    }
+
     static boolean isExecuting(Data<?> data, int index, int length) {
-        return isValidNonFalse(data) && (index < length);
+        return isValidNonFalse(data) && BasicPredicateFunctions.isSmallerThan(index, length);
     }
 
     static Object[] unwrapToArray(Data<?> data) {
