@@ -2,7 +2,8 @@ package selenium.namespaces;
 
 import core.extensions.namespaces.CoreUtilities;
 import core.records.Data;
-import selenium.records.LazyElement;
+import selenium.namespaces.utilities.SeleniumUtilities;
+import selenium.records.lazy.LazyElement;
 
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static core.namespaces.validators.DataValidators.isValidNonFalse;

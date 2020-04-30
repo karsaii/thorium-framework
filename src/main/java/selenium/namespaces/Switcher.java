@@ -6,7 +6,7 @@ import core.records.Data;
 import data.constants.Strings;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import selenium.records.LazyElement;
+import selenium.records.lazy.LazyElement;
 
 public interface Switcher {
     static DriverFunction<Boolean> switchToFrame(WebElement element) {

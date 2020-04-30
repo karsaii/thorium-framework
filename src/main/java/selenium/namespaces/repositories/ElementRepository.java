@@ -16,9 +16,9 @@ import selenium.constants.SeleniumDataConstants;
 import selenium.constants.ElementStrategyMapConstants;
 import selenium.constants.RepositoryConstants;
 import selenium.enums.SelectorStrategy;
-import selenium.namespaces.SeleniumUtilities;
-import selenium.namespaces.validators.ElementRepositoryValidators;
-import selenium.records.LazyElement;
+import selenium.namespaces.utilities.SeleniumUtilities;
+import selenium.namespaces.element.validators.ElementRepositoryValidators;
+import selenium.records.lazy.LazyElement;
 import selenium.namespaces.extensions.boilers.LazyLocatorList;
 import selenium.records.lazy.CachedLazyElementData;
 

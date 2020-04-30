@@ -1,19 +1,19 @@
 package selenium.element;
 
 import core.constants.CoreDataConstants;
-import selenium.javascriptCommands.Execute;
+import selenium.namespaces.scripter.Execute;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.records.Data;
 import data.constants.Strings;
 import org.openqa.selenium.By;
 import selenium.enums.SingleGetter;
 import selenium.namespaces.repositories.LocatorRepository;
-import selenium.records.LazyElement;
+import selenium.records.lazy.LazyElement;
 
 
 import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static selenium.namespaces.ExecutionCore.ifDriver;
-import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElement;
+import static selenium.namespaces.utilities.SeleniumUtilities.isNotNullLazyElement;
 
 public interface ElementAlternatives {
     static DriverFunction<Boolean> clearWithSelectAll(LazyElement element) {

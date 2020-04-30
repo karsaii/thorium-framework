@@ -5,7 +5,6 @@ import data.constants.Strings;
 import data.namespaces.Formatter;
 
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
-import static data.namespaces.Formatter.isNullMessage;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -16,13 +15,13 @@ public interface MethodMessageDataValidators {
 
     static String isInvalidMessage(MethodMessageData data) {
         final var baseName = "Data";
-        var message = isNullMessage(data, baseName);
+        var message = Formatter.isNullMessageWithName(data, baseName);
         if (isBlank(message)) {
             message += Formatter.isBlankMessageWithName(data.message, baseName + " Message");
         }
 
         final var nameParameterDescriptor = baseName + " Name of source";
-        message += isNotBlank(message) ? Formatter.isBlankMessageWithName(data.nameof, nameParameterDescriptor) : isNullMessage(data.nameof, nameParameterDescriptor);
+        message += isNotBlank(message) ? Formatter.isBlankMessageWithName(data.nameof, nameParameterDescriptor) : Formatter.isNullMessageWithName(data.nameof, nameParameterDescriptor);
 
         return isNotBlank(message) ? "isInvalidMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
     }

@@ -7,7 +7,7 @@ import data.constants.Strings;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.StaleElementReferenceException;
 import core.constants.CoreConstants;
-import validators.ScriptExecutions;
+import selenium.namespaces.validators.HandlerResultDataValidator;
 
 import static core.extensions.namespaces.CoreUtilities.isNonException;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public interface ExceptionHandlers {
     static <CastParameterType, ReturnType> Data<ReturnType> classCastHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        final var errorMessage = ScriptExecutions.isInvalidHandlerResultDataMessage(data);
+        final var errorMessage = HandlerResultDataValidator.isInvalidHandlerResultDataMessage(data);
         if (isNotBlank(errorMessage)) {
             return DataFactoryFunctions.getInvalidWithNameAndMessage(defaultValue, "classCastHandler", errorMessage);
         }
@@ -34,7 +34,7 @@ public interface ExceptionHandlers {
 
     static <CastParameterType, ReturnType> Data<ReturnType> invokeHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        final var errorMessage = ScriptExecutions.isInvalidHandlerResultDataMessage(data);
+        final var errorMessage = HandlerResultDataValidator.isInvalidHandlerResultDataMessage(data);
         if (isNotBlank(errorMessage)) {
             return DataFactoryFunctions.getInvalidWithNameAndMessage(defaultValue, "invokeHandler", errorMessage);
         }
@@ -58,7 +58,7 @@ public interface ExceptionHandlers {
 
     static <CastParameterType, ReturnType> Data<ReturnType> findElementsHandler(HandleResultData<CastParameterType, ReturnType> data) {
         final var defaultValue = data.defaultValue;
-        final var errorMessage = ScriptExecutions.isInvalidHandlerResultDataMessage(data);
+        final var errorMessage = HandlerResultDataValidator.isInvalidHandlerResultDataMessage(data);
         if (isNotBlank(errorMessage)) {
             return DataFactoryFunctions.getInvalidWithNameAndMessage(defaultValue, "findElementsHandler", errorMessage);
         }

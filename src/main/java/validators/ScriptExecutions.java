@@ -1,8 +1,8 @@
 package validators;
 
 import core.constants.CastDataConstants;
-import core.constants.CoreConstants;
 import data.constants.Strings;
+import data.namespaces.Formatter;
 import selenium.namespaces.extensions.boilers.ScriptHandlerFunction;
 import core.records.Data;
 import core.records.HandleResultData;
@@ -24,7 +24,6 @@ import java.util.function.BiFunction;
 import static core.extensions.namespaces.AmountPredicatesFunctions.isSingle;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
-import static data.namespaces.Formatter.isNullMessage;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -35,10 +34,6 @@ public interface ScriptExecutions {
 
     static <T> boolean isValidInvokerParameterizedData(InvokerParameterizedParametersFieldData<T> data) {
         return isNotNull(data) && areNotNull(data.handler, data.parameters, data.validator);
-    }
-
-    static <T, U> boolean isValidInvokerRegularData(BiFunction<Method, T, U> handler) {
-        return isNotNull(handler);
     }
 
     static <T> boolean isValidExecutorRegularData(ScriptHandlerFunction handler) {
@@ -53,17 +48,14 @@ public interface ScriptExecutions {
         return isNotNull(data) && areNotNull(data.caster, data.defaultValue);
     }
 
-    static <T> boolean isValidCastData(BasicCastData<T> data) {
-        return isNotNull(data) && areNotNull(data.caster, data.defaultValue);
-    }
 
     static <T> String isInvalidCastDataMessage(BasicCastData<T> data) {
         final var baseName = "Basic Cast Data";
-        var message = isNullMessage(data, baseName);
+        var message = Formatter.isNullMessageWithName(data, baseName);
         if (isBlank(message)) {
             message += (
-                isNullMessage(data.caster, baseName + "Caster") +
-                isNullMessage(data.defaultValue, baseName + "Default value")
+                Formatter.isNullMessageWithName(data.caster, baseName + "Caster") +
+                Formatter.isNullMessageWithName(data.defaultValue, baseName + "Default value")
             );
         }
 
@@ -72,9 +64,9 @@ public interface ScriptExecutions {
 
     static <T> String isInvalidVoidCastDataMessage(BasicCastData<T> data) {
         final var baseName = "Basic Cast Data(Void)";
-        var message = isNullMessage(data, baseName);
+        var message = Formatter.isNullMessageWithName(data, baseName);
         if (isBlank(message)) {
-            message += isNullMessage(data.caster, baseName + "Caster");
+            message += Formatter.isNullMessageWithName(data.caster, baseName + "Caster");
         }
 
         return isNotBlank(message) ? "isInvalidCastDataMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
@@ -89,48 +81,20 @@ public interface ScriptExecutions {
         );
     }
 
-    static <T, U, V> boolean isValidInvokerDefaults(BaseInvokerDefaultsData<T, U, V> data) {
-        return isNotNull(data) && areNotNull(data.constructor, data.castData, data.guard) && isValidCastData(data.castData);
-    }
 
     static <T, U, V> String isInvalidInvokerDefaultsMessage(BaseInvokerDefaultsData<T, U, V> data) {
         final var baseName = "Invoker Defaults Data";
-        var message = isNullMessage(data, baseName);
+        var message = Formatter.isNullMessageWithName(data, baseName);
         if (isBlank(message)) {
             final var castMessage = Objects.equals(CastDataConstants.VOID, data.castData) ? isInvalidVoidCastDataMessage(data.castData) : isInvalidCastDataMessage(data.castData);
             message += (
-                isNullMessage(data.constructor, baseName + " Constructor") +
+                Formatter.isNullMessageWithName(data.constructor, baseName + " Constructor") +
                 castMessage +
-                isNullMessage(data.guard, baseName + " Guard")
+                Formatter.isNullMessageWithName(data.guard, baseName + " Guard")
             );
         }
 
         return isNotBlank(message) ? "isInvalidInvokerDefaultsMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
-    }
-
-    static <T, U> boolean isValidInvokerConstructorData(InvokerBaseFunctionalData<T, U> data) {
-        return isNotNull(data) && areNotNull(data.constructor, data.guard);
-    }
-
-    static <U, Y> boolean isValidInvokerResultFunctionsData(InvokeResultDefaultsBaseData<U, Data<Y>> data) {
-        return isNotNull(data) && areNotNull(data.castHandler, data.messageHandler);
-    }
-
-    static <T, U> boolean isValidHandlerResultData(HandleResultData<T, U> data) {
-        return isNotNull(data) && areNotNull(data.caster, data.parameter, data.defaultValue);
-    }
-
-    static <T, U> String isInvalidHandlerResultDataMessage(HandleResultData<T, U> data) {
-        final var baseName = "Handle Result Data";
-        var message = isNullMessage(data, baseName);
-        if (isBlank(message)) {
-            message += (
-                isNullMessage(data.caster, baseName + " Caster") +
-                isNullMessage(data.parameter, baseName + " Parameter")
-            );
-        }
-
-        return isNotBlank(message) ? "isInvalidHandlerResultDataMessage: " + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
     }
 
 

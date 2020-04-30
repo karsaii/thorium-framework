@@ -18,8 +18,8 @@ import selenium.namespaces.Driver;
 import selenium.namespaces.DriverFunctionFactory;
 import selenium.namespaces.repositories.LocatorRepository;
 import selenium.records.ActionWhenData;
-import selenium.records.ElementWaitParameters;
-import selenium.records.LazyElement;
+import selenium.records.element.ElementWaitParameters;
+import selenium.records.lazy.LazyElement;
 import selenium.records.lazy.LazyElementWaitParameters;
 
 import java.util.function.BiFunction;
@@ -31,7 +31,7 @@ import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.ExecutionCore.validChain;
-import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElementWaitParametersData;
+import static selenium.namespaces.utilities.SeleniumUtilities.isNotNullLazyElementWaitParametersData;
 import static selenium.namespaces.WaitConditions.waitWith;
 
 public interface Element {

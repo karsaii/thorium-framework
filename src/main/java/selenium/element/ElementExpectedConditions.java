@@ -3,7 +3,7 @@ package selenium.element;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import data.constants.Strings;
 import selenium.namespaces.ExpectedConditions;
-import selenium.records.LazyElement;
+import selenium.records.lazy.LazyElement;
 
 public interface ElementExpectedConditions {
     static DriverFunction<Boolean> isTextEquals(LazyElement element, String expected) {

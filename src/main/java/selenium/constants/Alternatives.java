@@ -2,11 +2,11 @@ package selenium.constants;
 
 import selenium.element.Element;
 import selenium.element.ElementAlternatives;
-import selenium.element.functions.ClearData;
-import selenium.element.functions.ClickData;
-import selenium.element.functions.ElementFunctionsData;
-import selenium.element.functions.SendKeysData;
-import selenium.records.ElementAlternative;
+import selenium.records.element.ClearData;
+import selenium.records.element.ClickData;
+import selenium.records.element.ElementFunctionsData;
+import selenium.records.element.SendKeysData;
+import selenium.records.expectedcondition.ElementAlternative;
 
 public abstract class Alternatives {
     public static final ElementAlternative regular = new ElementAlternative();

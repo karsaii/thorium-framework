@@ -1,35 +1,35 @@
 package selenium.abstracts;
 
 import core.extensions.interfaces.functional.TriFunction;
-import selenium.records.ElementValueParameters;
+import core.records.Data;
+import selenium.namespaces.extensions.boilers.DriverFunction;
+import selenium.records.element.is.ElementFormatData;
 
 import java.util.Objects;
+import java.util.function.Function;
 
-public class AbstractElementFunctionParameters<T> {
-    public final TriFunction<String, String, T, String> formatter;
-    public final String conditionName;
-    public final String descriptor;
+public abstract class AbstractElementFunctionParameters<ParameterType, ReturnType> {
+    public final TriFunction<DriverFunction<ParameterType>, Function<Data<ParameterType>, Data<ReturnType>>, Data<ReturnType>, DriverFunction<ReturnType>> handler;
+    public final ElementFormatData<ReturnType> formatData;
 
-    public AbstractElementFunctionParameters(TriFunction<String, String, T, String> formatter, String conditionName, String descriptor) {
-        this.formatter = formatter;
-        this.conditionName = conditionName;
-        this.descriptor = descriptor;
+    public AbstractElementFunctionParameters(
+        TriFunction<DriverFunction<ParameterType>, Function<Data<ParameterType>, Data<ReturnType>>, Data<ReturnType>, DriverFunction<ReturnType>> handler,
+        ElementFormatData<ReturnType> formatData
+    ) {
+        this.handler = handler;
+        this.formatData = formatData;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        var that = (ElementValueParameters<?>) o;
-        return (
-            Objects.equals(conditionName, that.conditionName) &&
-            Objects.equals(descriptor, that.descriptor) &&
-            Objects.equals(formatter, that.formatter)
-        );
+        final var that = (AbstractElementFunctionParameters<?, ?>) o;
+        return Objects.equals(handler, that.handler) && Objects.equals(formatData, that.formatData);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(formatter, conditionName, descriptor);
+        return Objects.hash(handler, formatData);
     }
 }

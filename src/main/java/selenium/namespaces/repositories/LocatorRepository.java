@@ -9,8 +9,8 @@ import org.openqa.selenium.By;
 import selenium.constants.SeleniumDataConstants;
 import selenium.constants.RepositoryConstants;
 import selenium.enums.SingleGetter;
-import selenium.namespaces.LazyElementFactory;
-import selenium.records.LazyElement;
+import selenium.namespaces.lazy.LazyElementFactory;
+import selenium.records.lazy.LazyElement;
 import selenium.records.lazy.CachedLazyElementData;
 
 import java.util.Map;

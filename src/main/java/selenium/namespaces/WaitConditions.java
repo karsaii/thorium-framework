@@ -8,8 +8,8 @@ import data.constants.Strings;
 import org.openqa.selenium.By;
 import selenium.constants.DriverFunctionConstants;
 import selenium.namespaces.extensions.boilers.DriverFunction;
-import selenium.records.ElementWaitParameters;
-import selenium.records.LazyElement;
+import selenium.records.element.ElementWaitParameters;
+import selenium.records.lazy.LazyElement;
 import selenium.records.lazy.LazyElementWaitParameters;
 
 import java.util.function.Function;
@@ -19,8 +19,8 @@ import static core.namespaces.DataFactoryFunctions.appendMessage;
 import static core.namespaces.DataFactoryFunctions.prependMessage;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static selenium.namespaces.ExecutionCore.ifDriver;
-import static selenium.namespaces.SeleniumUtilities.isNotNullElementWaitParametersData;
-import static selenium.namespaces.SeleniumUtilities.isNotNullLazyElementWaitParametersData;
+import static selenium.namespaces.utilities.SeleniumUtilities.isNotNullElementWaitParametersData;
+import static selenium.namespaces.utilities.SeleniumUtilities.isNotNullLazyElementWaitParametersData;
 
 public interface WaitConditions {
     static DriverFunction<Boolean> waitWith(By locator, Function<By, DriverFunction<Boolean>> conditionGetter, String option, int interval, int timeout, String message) {

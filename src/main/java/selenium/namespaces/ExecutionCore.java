@@ -68,12 +68,12 @@ public interface ExecutionCore {
         return DriverFunctionFactory.getFunction(conditionalChain(guard, dependency, positive, replaceMessage(negative, "conditionalChain", "Dependency parameter failed the guard" + Strings.END_LINE)));
     }
 
-    static <T, U> DriverFunction<T> conditionalChain(Predicate<Data<U>> guard, DriverFunction<U> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
-        return conditionalDataChain(guard, dependency, positive, negative);
-    }
-
     static <ParameterType, ReturnType> DriverFunction<ReturnType> validChain(DriverFunction<ParameterType> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
         return DriverFunctionFactory.getFunction(conditionalChain(Formatter::isInvalidOrFalseMessage, dependency, positive, negative));
+    }
+
+    static <ParameterType, ReturnType> DriverFunction<ReturnType> nonNullChain(DriverFunction<ParameterType> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
+        return DriverFunctionFactory.getFunction(conditionalChain(Formatter::isFalseMessage, dependency, positive, negative));
     }
 
 
@@ -146,11 +146,11 @@ public interface ExecutionCore {
     }
 
     static <T, U> DriverFunction<T> ifDriver(String nameof, boolean status, Predicate<Data<U>> guard, DriverFunction<U> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
-        return ifDriver(nameof, status && areNotNull(guard, dependency, positive), conditionalChain(guard, dependency, positive, negative), negative);
+        return ifDriver(nameof, status && areNotNull(guard, dependency, positive), conditionalDataChain(guard, dependency, positive, negative), negative);
     }
 
     static <T, U> DriverFunction<T> ifDriver(String nameof, String errorMessage, Predicate<Data<U>> guard, DriverFunction<U> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
-        return ifDriver(nameof, isBlank(errorMessage) && areNotNull(guard, dependency, positive), conditionalChain(guard, dependency, positive, negative), replaceMessage(negative, errorMessage));
+        return ifDriver(nameof, isBlank(errorMessage) && areNotNull(guard, dependency, positive), conditionalDataChain(guard, dependency, positive, negative), replaceMessage(negative, errorMessage));
     }
 
     static <T> DriverFunction<T> ifDriver(String nameof, String errorMessage, DriverFunction<Boolean> dependency, DriverFunction<T> positive, Data<T> negative) {

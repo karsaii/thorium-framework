@@ -2,7 +2,6 @@ package selenium.records.lazy;
 
 import selenium.abstracts.AbstractWaitParameters;
 import selenium.constants.ElementWaitDefaults;
-import selenium.records.LazyElement;
 
 public class LazyElementWaitParameters extends AbstractWaitParameters<LazyElement> {
     public LazyElementWaitParameters(LazyElement object, int interval, int duration) {

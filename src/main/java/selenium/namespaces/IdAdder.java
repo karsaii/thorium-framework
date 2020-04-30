@@ -1,6 +1,6 @@
 package selenium.namespaces;
 
-import selenium.records.LazyElement;
+import selenium.records.lazy.LazyElement;
 
 public interface IdAdder {
     static void addTemporary(LazyElement element) {

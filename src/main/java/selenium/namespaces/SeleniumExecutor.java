@@ -46,45 +46,41 @@ public interface SeleniumExecutor {
 
 
     static <Any> DriverFunction<Any> execute(IGetMessage stepMessage, DriverFunction<?>... steps) {
-        return DriverFunctionFactory.getFunction(Executor.execute(
-            new ExecutionParametersData<>(
-                ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(stepMessage, ExecutorConstants.DEFAULT_EXECUTION_DATA),
-                Executor::executeCoreStepMessages,
-                ExecutorConstants.DEFAULT_RANGE
+        return execute(
+            ExecutionParametersDataFactory.getWithDefaultRangeAndMessagesExecutor(
+                ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(stepMessage, ExecutorConstants.DEFAULT_EXECUTION_DATA)
             ),
             steps
-        ));
+        );
     }
 
     static <Any> DriverFunction<Any> execute(String message, DriverFunction<?>... steps) {
-        return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRange(
-                ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(new SimpleMessageData(message), ExecutorConstants.DEFAULT_EXECUTION_DATA),
-                Executor::executeCoreStepMessages
+        return execute(
+            ExecutionParametersDataFactory.getWithDefaultRangeAndMessagesExecutor(
+                ExecutionDataFactory.getWithSpecificMessageData(new SimpleMessageData(message))
             ),
             steps
-        ));
+        );
     }
 
     static <Any> DriverFunction<Any> execute(BiFunction<String, String, String> messageHandler, DriverFunction<?>... steps) {
-        return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRange(
-                ExecutionDataFactory.getWithDefaultExitCondition(new SimpleMessageData(), Executor::returnStatus, messageHandler),
-                Executor::executeCoreStepMessages
+        return execute(
+            ExecutionParametersDataFactory.getWithDefaultRangeAndMessagesExecutor(
+                ExecutionDataFactory.getWithSpecificMessageHandler(messageHandler)
             ),
             steps
-        ));
+        );
     }
 
     static <Any> DriverFunction<Any> execute(DriverFunction<?>... steps) {
-        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultRange(ExecutorConstants.DEFAULT_EXECUTION_ENDED, Executor::executeCoreStepMessages), steps));
+        return execute(ExecutionParametersDataFactory.getWithDefaultDataRangeAndMessagesExecutor(), steps);
     }
 
 
     static <T, U, Any> DriverFunction<Any> conditionalSequence(TriPredicate<Data<?>, Integer, Integer> guard, DriverFunction<T> before, DriverFunction<U> after) {
         return execute(
             new ExecutionParametersData<>(
-                ExecutionDataFactory.getWithExecuteParametersData(new SimpleMessageData(Strings.EXECUTION_ENDED), guard, ExecutorConstants.DEFAULT_EXECUTION_DATA),
+                ExecutionDataFactory.getWithDefaultExecuteParametersData(new SimpleMessageData(Strings.EXECUTION_ENDED), guard),
                 Executor::executeCoreStepMessages,
                 ExecutorConstants.TWO_COMMANDS_RANGE
             ),
@@ -95,7 +91,7 @@ public interface SeleniumExecutor {
 
     static <T, U, Any> DriverFunction<Any> conditionalSequence(DriverFunction<T> before, DriverFunction<U> after, Class<Any> clazz) {
         return execute(
-            new ExecutionParametersData<>(ExecutorConstants.DEFAULT_EXECUTION_ENDED, Executor::executeCoreStepMessages, ExecutorConstants.TWO_COMMANDS_RANGE),
+            ExecutionParametersDataFactory.getWithMessagesAndSpecificRange(ExecutorConstants.TWO_COMMANDS_RANGE),
             before,
             after
         );
