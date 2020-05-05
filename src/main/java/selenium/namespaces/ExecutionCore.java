@@ -1,8 +1,8 @@
 package selenium.namespaces;
 
-import core.namespaces.validators.DataValidators;
+import core.namespaces.ExecutionResultDataFactory;
+import core.records.executor.ExecutionResultData;
 import data.namespaces.Formatter;
-import org.openqa.selenium.WebElement;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.NullableFunctions;
 import core.namespaces.DataFactoryFunctions;
@@ -64,19 +64,38 @@ public interface ExecutionCore {
         };
     }
 
+    static <T, U, V> Function<T, ExecutionResultData<V>> conditionalChain(Function<ExecutionResultData<U>, String> guard, Function<T, ExecutionResultData<U>> dependency, Function<ExecutionResultData<U>, ExecutionResultData<V>> positive, ExecutionResultData<V> negative) {
+        return t -> {
+            if (isNull(t)) {
+                return ExecutionResultDataFactory.replaceMessage(negative, "conditionalChain", "Base dependency" + Strings.WAS_NULL);
+            }
+
+            final var dep = dependency.apply(t);
+            final var guardMessage = guard.apply(dep);
+            return isBlank(guardMessage) ? positive.apply(dep) : ExecutionResultDataFactory.prependMessage(negative, "conditionalChain", "Dependency parameter failed the guard" + Strings.COLON_SPACE + guardMessage);
+        };
+    }
+
+
     private static <T, U> DriverFunction<T> conditionalDataChain(Predicate<Data<U>> guard, Function<WebDriver, Data<U>> dependency, Function<Data<U>, Data<T>> positive, Data<T> negative) {
         return DriverFunctionFactory.getFunction(conditionalChain(guard, dependency, positive, replaceMessage(negative, "conditionalChain", "Dependency parameter failed the guard" + Strings.END_LINE)));
     }
 
+    static <DependencyType, ParameterType, ReturnType> Function<DependencyType, Data<ReturnType>> validChain(Function<DependencyType, Data<ParameterType>> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
+        return conditionalChain(Formatter::isInvalidOrFalseMessage, dependency, positive, negative);
+    }
+
+    static <DependencyType, ParameterType, ReturnType> Function<DependencyType, ExecutionResultData<ReturnType>> validChain(Function<DependencyType, ExecutionResultData<ParameterType>> dependency, Function<ExecutionResultData<ParameterType>, ExecutionResultData<ReturnType>> positive, ExecutionResultData<ReturnType> negative) {
+        return conditionalChain(Formatter::isInvalidOrFalseMessageE, dependency, positive, negative);
+    }
+
     static <ParameterType, ReturnType> DriverFunction<ReturnType> validChain(DriverFunction<ParameterType> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
-        return DriverFunctionFactory.getFunction(conditionalChain(Formatter::isInvalidOrFalseMessage, dependency, positive, negative));
+        return DriverFunctionFactory.getFunction(validChain(dependency.get(), positive, negative));
     }
 
     static <ParameterType, ReturnType> DriverFunction<ReturnType> nonNullChain(DriverFunction<ParameterType> dependency, Function<Data<ParameterType>, Data<ReturnType>> positive, Data<ReturnType> negative) {
         return DriverFunctionFactory.getFunction(conditionalChain(Formatter::isTrueMessage, dependency, positive, negative));
     }
-
-
 
     private static <T> Data<T> ifDriverAnyWrappedCore(WebDriver driver, String nameof, DriverFunction<T> function) {
         return isNotNull(driver) ? (

@@ -16,7 +16,7 @@ public interface DriverWaits {
         return ifDriver(
             "waitNavigatedTo",
             isNotBlank(url) && areAll(BasicPredicateFunctions::isPositiveNonZero, interval, timeout) && (interval < timeout),
-            driver -> Wait.untilCore(new WaitData<>(ExpectedConditions.isUrlContainsData(url), WaitPredicateFunctions::isTruthyData, "Waiting for url", WaitTimeDataFactory.getWithDefaultClock(interval, timeout))).apply(driver),
+            driver -> Wait.core(new WaitData<>(ExpectedConditions.isUrlContainsData(url), WaitPredicateFunctions::isTruthyData, "Waiting for url", WaitTimeDataFactory.getWithDefaultClock(interval, timeout))).apply(driver),
             CoreDataConstants.PARAMETERS_NULL_BOOLEAN
         );
     }

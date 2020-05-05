@@ -1,5 +1,6 @@
 package selenium.records;
 
+import core.constants.CommandRangeDataConstants;
 import core.records.command.CommandRangeData;
 import core.constants.ExecutorConstants;
 
@@ -13,7 +14,7 @@ public class InternalSelectorData {
     }
 
     public InternalSelectorData(int limit) {
-        this(ExecutorConstants.DEFAULT_RANGE, limit);
+        this(CommandRangeDataConstants.DEFAULT_RANGE, limit);
     }
 
     public InternalSelectorData() {

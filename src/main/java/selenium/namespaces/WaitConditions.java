@@ -27,7 +27,7 @@ public interface WaitConditions {
         return ifDriver(
             "waitConditionCore",
             isNotNull(conditionGetter),
-            driver -> Wait.untilCore(new WaitData<>(
+            driver -> Wait.core(new WaitData<>(
                 conditionGetter.apply(locator),
                 isBlank(option) ? WaitPredicateFunctions::isTruthyData : WaitPredicateFunctions::isFalsyData,
                 "Element located by: " + locator + " to be " + (isBlank(message) ? "clickable" : message) + Strings.END_LINE,
@@ -42,7 +42,7 @@ public interface WaitConditions {
             "waitConditionCore",
             isNotNull(conditionGetter),
             driver -> prependMessage(
-                Wait.untilCore(new WaitData<>(
+                Wait.core(new WaitData<>(
                     conditionGetter.apply(data),
                     isBlank(option) ? WaitPredicateFunctions::isTruthyData : WaitPredicateFunctions::isFalsyData,
                     data.name + " " + message,

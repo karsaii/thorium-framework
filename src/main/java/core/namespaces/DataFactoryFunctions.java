@@ -97,8 +97,16 @@ public interface DataFactoryFunctions {
         return getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, message), data.exception, data.exceptionMessage);
     }
 
+    static <T> Data<T> replaceStatus(Data<T> data, boolean status) {
+        return getWithMethodMessage(data.object, status, data.message, data.exception, data.exceptionMessage);
+    }
+
     static <T> Data<T> replaceMessage(Data<T> data, String message) {
         return getWithMethodMessage(data.object, data.status, new MethodMessageData(message), data.exception, data.exceptionMessage);
+    }
+
+    static <T> Data<T> replaceStatusAndMessage(Data<T> data, boolean status, String message) {
+        return getWithMethodMessage(data.object, status, new MethodMessageData(data.message.nameof, message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceName(Data<T> data, String nameof) {

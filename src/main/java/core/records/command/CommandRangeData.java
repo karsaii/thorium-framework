@@ -26,7 +26,7 @@ public class CommandRangeData {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        var that = (CommandRangeData) o;
+        final var that = (CommandRangeData) o;
         return min == that.min && max == that.max && Objects.equals(rangeInvalidator, that.rangeInvalidator);
     }
 

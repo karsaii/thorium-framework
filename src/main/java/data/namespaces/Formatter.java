@@ -1,8 +1,10 @@
 package data.namespaces;
 
+import core.constants.CommandRangeDataConstants;
 import core.extensions.DecoratedList;
 import core.extensions.interfaces.IEmptiable;
 import core.extensions.namespaces.BasicPredicateFunctions;
+import core.records.executor.ExecutionResultData;
 import selenium.constants.SeleniumDataConstants;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
@@ -20,7 +22,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import selectorSpecificity.tuples.SelectorSpecificsData;
 import selenium.abstracts.AbstractLazyElement;
-import core.constants.ExecutorConstants;
 import selenium.constants.SeleniumCoreConstants;
 import selenium.enums.ManyGetter;
 import selenium.enums.SingleGetter;
@@ -81,6 +82,15 @@ public interface Formatter {
         return isNullMessageWithName(object, "Object");
     }
 
+    static <T> String isEmptyMessage(T[] object) {
+        var message = isNullMessageWithName(object, "Objeect");
+        if (isBlank(message)) {
+            message += object.length < 1 ? "Object is empty" : Strings.EMPTY;
+        }
+
+        return getNamedErrorMessageOrEmpty("isEmptyMessage: ", message);
+    }
+
     static String isInvalidOrFalseMessageWithName(Data data, String parameterName) {
         var message = isParameterMessage(isInvalidOrFalse(data), parameterName, "false data");
         if (isNotBlank(message)) {
@@ -92,6 +102,11 @@ public interface Formatter {
 
     static String isInvalidOrFalseMessage(Data data) {
         return isInvalidOrFalseMessageWithName(data, "data");
+    }
+
+
+    static String isInvalidOrFalseMessageE(ExecutionResultData data) {
+        return isInvalidOrFalseMessageWithName(data.result, "data");
     }
 
     static String isFalseMessageWithName(Data data, String parameterName) {
@@ -534,7 +549,7 @@ public interface Formatter {
     }
 
     static String getCommandAmountRangeErrorMessage(int length) {
-        return getCommandAmountRangeErrorMessage(length, ExecutorConstants.MINIMUM_COMMAND_LIMIT, ExecutorConstants.MAXIMUM_COMMAND_LIMIT);
+        return getCommandAmountRangeErrorMessage(length, CommandRangeDataConstants.MINIMUM_COMMAND_LIMIT, CommandRangeDataConstants.MAXIMUM_COMMAND_LIMIT);
     }
 
     static String formatPrefixSuffixMessage(String prefix, Boolean status, String suffix) {
@@ -958,5 +973,9 @@ public interface Formatter {
 
     static String isNullOrEmpty(IEmptiable emptiable) {
         return isNullOrEmpty(emptiable, "Emptiable");
+    }
+
+    static String getExecutionResultKey(String name, int index) {
+        return name + "-" + index;
     }
 }
