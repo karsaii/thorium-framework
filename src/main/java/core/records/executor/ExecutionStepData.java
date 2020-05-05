@@ -29,7 +29,12 @@ public class ExecutionStepData<T, U> implements DataSupplier<U> {
     }
 
     @Override
-    public Data<U> get() {
+    public Data<U> apply() {
         return step.apply(dependency);
+    }
+
+    @Override
+    public Data<U> apply(Void aVoid) {
+        return apply();
     }
 }

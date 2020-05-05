@@ -28,7 +28,7 @@ public interface DataValidators {
     }
 
     static boolean isValidNonFalse(Data<?> data) {
-        return isValid(data) && data.status;
+        return isValid(data) && CoreUtilities.isTrue(data.status);
     }
 
     static boolean isInvalidOrFalse(Data<?> data) {

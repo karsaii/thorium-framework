@@ -1,5 +1,6 @@
 package core.namespaces;
 
+import core.constants.CommandRangeDataConstants;
 import core.constants.CoreConstants;
 import core.constants.CoreDataConstants;
 import core.constants.ExecutorConstants;
@@ -27,7 +28,7 @@ public interface StepExecutor {
         final var length = steps.length;
         final var exitCondition = executionData.exitCondition;
         for(; exitCondition.test(data, index, length); ++index) {
-            data = steps[index].get();
+            data = steps[index].apply();
             message = executionData.messageHandler.apply(message, Formatter.getExecutionStepMessage(index, data.message.toString()));
             status = executionData.endStatus.test(data.status);
         }
@@ -42,7 +43,7 @@ public interface StepExecutor {
         final var length = steps.length;
         final var exitCondition = executionData.exitCondition;
         for(; exitCondition.test(data, index, length); ++index) {
-            data = steps[index].get();
+            data = steps[index].apply();
             status = executionData.endStatus.test(data.status);
         }
 
@@ -50,11 +51,11 @@ public interface StepExecutor {
     }
 
     static <Any> DataSupplier<Any> executeCoreStepMessages(ExecutionData executionData, DataSupplier<?>... steps) {
-        return () -> executeCoreStepMessagesCore(executionData, steps);
+        return (nothing) -> executeCoreStepMessagesCore(executionData, steps);
     }
 
     static <Any> DataSupplier<Any> executeCoreNoMessages(ExecutionData executionData, DataSupplier<?>... steps) {
-        return () -> executeCoreNoMessagesCore(executionData, steps);
+        return (nothing) -> executeCoreNoMessagesCore(executionData, steps);
     }
 
     private static <Any> Data<Any> executeCore(Data<Any> data, ExecutionData executionData) {
@@ -82,7 +83,7 @@ public interface StepExecutor {
             new StepExecutionParametersData<>(
                 ExecutionDataFactory.getWithSpecificMessageData(stepMessage),
                 StepExecutor::executeCoreStepMessages,
-                ExecutorConstants.DEFAULT_RANGE
+                CommandRangeDataConstants.DEFAULT_RANGE
             ),
             steps
         );
@@ -117,7 +118,7 @@ public interface StepExecutor {
             new StepExecutionParametersData<>(
                 ExecutionDataFactory.getWithDefaultExecuteParametersData(new SimpleMessageData(Strings.EXECUTION_ENDED), guard),
                 StepExecutor::executeCoreStepMessages,
-                ExecutorConstants.TWO_COMMANDS_RANGE
+                CommandRangeDataConstants.TWO_COMMANDS_RANGE
             ),
             before,
             after
@@ -126,7 +127,7 @@ public interface StepExecutor {
 
     static <T, U, ReturnType> DataSupplier<ReturnType> conditionalSequence(DataSupplier<T> before, DataSupplier<U> after, Class<ReturnType> clazz) {
         return execute(
-            new StepExecutionParametersData<>(ExecutorConstants.DEFAULT_EXECUTION_ENDED, StepExecutor::executeCoreStepMessages, ExecutorConstants.TWO_COMMANDS_RANGE),
+            new StepExecutionParametersData<>(ExecutorConstants.DEFAULT_EXECUTION_ENDED, StepExecutor::executeCoreStepMessages, CommandRangeDataConstants.TWO_COMMANDS_RANGE),
             before,
             after
         );

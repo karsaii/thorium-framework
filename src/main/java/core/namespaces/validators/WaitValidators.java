@@ -22,6 +22,7 @@ public interface WaitValidators {
 
         return isBlank(message) ? message : (Strings.PARAMETER_ISSUES + message);
     }
+
     static <T, V> String validateUntilParameters(Function<T, V> condition, Predicate<V> continueCondition, WaitTimeData timeData) {
         final var message = (
             Formatter.isNullMessageWithName(condition, "Condition") +

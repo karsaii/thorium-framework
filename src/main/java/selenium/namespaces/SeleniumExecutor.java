@@ -1,5 +1,6 @@
 package selenium.namespaces;
 
+import core.constants.CommandRangeDataConstants;
 import core.constants.CoreConstants;
 import core.extensions.interfaces.functional.TriPredicate;
 import core.extensions.interfaces.functional.boilers.IGetMessage;
@@ -24,22 +25,13 @@ import static selenium.namespaces.ExecutionCore.ifDriver;
 import static selenium.namespaces.ExecutionCore.validChain;
 
 public interface SeleniumExecutor {
-    private static <Any> Data<Any> executeCore(Data<Any> data, ExecutionData executionData) {
-        final var status = data.status;
-        return DataFactoryFunctions.getWithNameAndMessage(data.object, status, "executeCore", executionData.messageData.get().apply(status) + data.message);
-    }
-
-    private static <Any> Function<Data<Any>, Data<Any>> executeCore(ExecutionData executionData) {
-        return data -> executeCore(data, executionData);
-    }
-
     static <Any> DriverFunction<Any> execute(ExecutionParametersData<WebDriver, Any> execution, DriverFunction<?>... steps) {
         final var data = execution.data;
         final var negative = DataFactoryFunctions.getWithMessage((Any) CoreConstants.STOCK_OBJECT, false, Strings.EMPTY);
         return ifDriver(
             "execute",
             Formatter.getCommandAmountRangeErrorMessage(steps.length, execution.range),
-            validChain(DriverFunctionFactory.getFunction(execution.executor.apply(data, steps)), executeCore(data), negative),
+            validChain(DriverFunctionFactory.getFunction(execution.executor.apply(data, steps)), Executor.executeCore(data), negative),
             negative
         );
     }
@@ -82,7 +74,7 @@ public interface SeleniumExecutor {
             new ExecutionParametersData<>(
                 ExecutionDataFactory.getWithDefaultExecuteParametersData(new SimpleMessageData(Strings.EXECUTION_ENDED), guard),
                 Executor::executeCoreStepMessages,
-                ExecutorConstants.TWO_COMMANDS_RANGE
+                CommandRangeDataConstants.TWO_COMMANDS_RANGE
             ),
             before,
             after
@@ -91,7 +83,7 @@ public interface SeleniumExecutor {
 
     static <T, U, Any> DriverFunction<Any> conditionalSequence(DriverFunction<T> before, DriverFunction<U> after, Class<Any> clazz) {
         return execute(
-            ExecutionParametersDataFactory.getWithMessagesAndSpecificRange(ExecutorConstants.TWO_COMMANDS_RANGE),
+            ExecutionParametersDataFactory.getWithMessagesAndSpecificRange(CommandRangeDataConstants.TWO_COMMANDS_RANGE),
             before,
             after
         );

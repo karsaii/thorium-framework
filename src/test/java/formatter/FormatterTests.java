@@ -1,5 +1,6 @@
 package formatter;
 
+import core.constants.CommandRangeDataConstants;
 import data.namespaces.Formatter;
 import org.junit.jupiter.api.Assertions;
 
@@ -19,15 +20,15 @@ public class FormatterTests {
     @DisplayName("Default command range")
     @Test
     void defaultCommandRangeTest() {
-        final var result = Formatter.getCommandRangeParameterMessage(ExecutorConstants.DEFAULT_RANGE);
+        final var result = Formatter.getCommandRangeParameterMessage(CommandRangeDataConstants.DEFAULT_RANGE);
         Assertions.assertTrue(isBlank(result), result);
     }
 
     @DisplayName("isNumberConditionCore with Default Executor Range")
     @Test
     void isNumberConditionCoreWithDefaultCommandRangeTest() {
-        final var min = ExecutorConstants.DEFAULT_RANGE.min;
-        final var result = Formatter.isNumberConditionCore(min > 0, min, 0, "Range minimum", "more than", "isMoreThanExceptec");
+        final var min = CommandRangeDataConstants.DEFAULT_RANGE.min;
+        final var result = Formatter.isNumberConditionCore(min > 0, min, 0, "Range minimum", "more than", "isMoreThanExpected");
         Assertions.assertTrue(result.status, result.object + " Message:  " + result.message);
     }
 
