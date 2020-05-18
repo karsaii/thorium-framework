@@ -1,4 +1,4 @@
-package core.namespaces;
+package core.namespaces.wait;
 
 import core.records.WaitTimeData;
 import core.constants.WaitConstants;

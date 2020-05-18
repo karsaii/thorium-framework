@@ -6,7 +6,7 @@ import selenium.namespaces.SeleniumExecutor;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.interfaces.functional.TriFunction;
 import core.namespaces.DataFactoryFunctions;
-import core.namespaces.Executor;
+import core.namespaces.executor.Executor;
 import core.records.Data;
 import data.constants.Strings;
 import data.namespaces.Formatter;
@@ -131,14 +131,14 @@ public interface Element {
     }
 
     static <T, U> DriverFunction<U> actionWhenCore(ActionWhenData<T, U> data) {
-        return SeleniumExecutor.execute(Executor::aggregateMessage, data.condition, data.action);
+        return SeleniumExecutor.execute(Formatter::getExecutionEndMessageAggregate, data.condition, data.action);
     }
 
     static <T, U> DriverFunction<U> actionWhenCore(LazyElement data, Function<LazyElement, DriverFunction<U>> action, Function<LazyElement, DriverFunction<T>> condition) {
         return ifDriver(
             "actionWhenCore",
             Formatter.isNullLazyElementMessage(data),
-            SeleniumExecutor.execute(Executor::aggregateMessage, condition.apply(data), action.apply(data)),
+            SeleniumExecutor.execute(Formatter::getExecutionEndMessageAggregate, condition.apply(data), action.apply(data)),
             DataFactoryFunctions.getWithMessage(null, false, "")
         );
     }
@@ -147,7 +147,7 @@ public interface Element {
         return ifDriver(
             "actionWhenCore",
             isNotNullLazyElementWaitParametersData(data),
-            SeleniumExecutor.execute(Executor::aggregateMessage, condition.apply(data), action.apply(data.object)),
+            SeleniumExecutor.execute(Formatter::getExecutionEndMessageAggregate, condition.apply(data), action.apply(data.object)),
             DataFactoryFunctions.getWithMessage(null, false, Strings.LAZY_ELEMENT_WAIT_PARAMETERS_WERE_NULL)
         );
     }

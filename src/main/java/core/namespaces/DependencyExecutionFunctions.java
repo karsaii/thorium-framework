@@ -37,9 +37,7 @@ public interface DependencyExecutionFunctions {
     }
 
     private static <T, U> Data<U> ifDependencyAnyWrappedCore(T dependency, String nameof, Function<T, Data<U>> function) {
-        return isNotNull(dependency) ? (
-            ifDependencyAnyCore(nameof, function.apply(dependency))
-        ) : DataFactoryFunctions.getWithNameAndMessage(null, false, nameof, Strings.DRIVER_WAS_NULL, CoreConstants.EXCEPTION);
+        return ifDependencyAnyCore(nameof, function.apply(dependency));
     }
 
     private static <T, U> Function<T, Data<U>> ifDependencyAnyWrappedCore(String nameof, Function<T, Data<U>> function) {
@@ -65,35 +63,10 @@ public interface DependencyExecutionFunctions {
         final var lNameof = isBlank(nameof) ? "ifDependency" : nameof;
         return condition && isNotNull(positive) ? (
             ifDependencyAnyWrappedCore(lNameof, positive)
-        ) : (nothing) -> ifDependencyAnyCore(lNameof, negative);
+        ) : nothing -> ifDependencyAnyCore(lNameof, negative);
     }
 
     static <T> DataSupplier<T> ifDependency(String nameof, String errorMessage, DataSupplier<T> positive, Data<T> negative) {
         return ifDependency(nameof, isBlank(errorMessage), positive, replaceMessage(negative, nameof, errorMessage));
     }
-
-    static <T> ExecutionResultData<T> ifDependencyAnyCore(String nameof, ExecutionResultData<T> data) {
-        final var name = isNotBlank(nameof) ? nameof : "ifDependencyAnyCore";
-        final var lData = data.result;
-        return isNotNull(lData) ? (
-            new ExecutionResultData<>(null, DataFactoryFunctions.getWithNameAndMessage(lData.object, lData.status, DataFunctions.getNameIfAbsent(lData, name), lData.message.message, lData.exception))
-        ) : new ExecutionResultData<>(null, DataFactoryFunctions.getWithNameAndMessage(null, false, name, "Data " + Strings.WAS_NULL, CoreConstants.EXCEPTION));
-    }
-
-
-    private static <T, U> Function<T, ExecutionResultData<U>> ifDependencyAnyWrappedCoreR(String nameof, Function<T, ExecutionResultData<U>> function) {
-        return (T dep) -> ifDependencyAnyCore(nameof, function.apply(dep));
-    }
-
-    static <T, U> Function<T, ExecutionResultData<U>> ifDependencyR(String nameof, boolean condition, Function<T, ExecutionResultData<U>> positive, ExecutionResultData<U> negative) {
-        final var lNameof = isBlank(nameof) ? "ifDependencyR" : nameof;
-        return condition && isNotNull(positive) ? (
-                ifDependencyAnyWrappedCoreR(lNameof, positive)
-        ) : (nothing) -> ifDependencyAnyCore(lNameof, negative);
-    }
-
-    static <T, U> Function<T, ExecutionResultData<U>> ifDependencyR(String nameof, String errorMessage, Function<T, ExecutionResultData<U>> positive, ExecutionResultData<U> negative) {
-        return ifDependencyR(nameof, isBlank(errorMessage), positive, ExecutionResultDataFactory.replaceMessage(negative, nameof, errorMessage));
-    }
-
 }

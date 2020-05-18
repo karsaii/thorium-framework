@@ -9,11 +9,11 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public class RepeatExecutionParametersData<DependencyType, ReturnType> {
-    public final ExecutionData data;
-    public final TriFunction<ExecutionData, Map<String, Data<?>>, Function<DependencyType, Data<?>>[], Function<DependencyType, ExecutionResultData<ReturnType>>> executor;
+    public final ExecutorFunctionData data;
+    public final TriFunction<ExecutorFunctionData, Map<String, Data<?>>, Function<DependencyType, Data<?>>[], Function<DependencyType, ExecutionResultData<ReturnType>>> executor;
     public final CommandRangeData range;
 
-    public RepeatExecutionParametersData(ExecutionData data, TriFunction<ExecutionData, Map<String, Data<?>>, Function<DependencyType, Data<?>>[], Function<DependencyType, ExecutionResultData<ReturnType>>> executor, CommandRangeData range) {
+    public RepeatExecutionParametersData(ExecutorFunctionData data, TriFunction<ExecutorFunctionData, Map<String, Data<?>>, Function<DependencyType, Data<?>>[], Function<DependencyType, ExecutionResultData<ReturnType>>> executor, CommandRangeData range) {
         this.data = data;
         this.executor = executor;
         this.range = range;

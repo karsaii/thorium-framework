@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import core.constants.ExecutorConstants;
+import selenium.namespaces.extensions.boilers.DriverFunction;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -20,6 +21,7 @@ public class FormatterTests {
     @DisplayName("Default command range")
     @Test
     void defaultCommandRangeTest() {
+        final var x = new DriverFunction<?>[0];
         final var result = Formatter.getCommandRangeParameterMessage(CommandRangeDataConstants.DEFAULT_RANGE);
         Assertions.assertTrue(isBlank(result), result);
     }

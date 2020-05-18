@@ -1,7 +1,12 @@
 package core.extensions.namespaces;
 
 import core.constants.CardinalityDefaults;
+import core.extensions.interfaces.functional.QuadPredicate;
+import core.extensions.interfaces.functional.TriPredicate;
+import core.namespaces.validators.DataValidators;
 import core.records.CardinalityData;
+import core.records.Data;
+import core.records.executor.ExecutionStateData;
 import org.apache.commons.lang3.StringUtils;
 import core.constants.CoreConstants;
 
@@ -140,5 +145,54 @@ public interface CoreUtilities {
 
     static String getIncrementalUUID(AtomicInteger counter) {
         return "" + counter.getAndIncrement() + UUID.randomUUID().toString();
+    }
+
+    static boolean isAllDone(ExecutionStateData stateData, int length, int index, int indicesLength) {
+        if (
+            NullableFunctions.isNull(stateData) ||
+            areAny(BasicPredicateFunctions::isNegative, length, index, indicesLength) ||
+            BasicPredicateFunctions.isSmallerThan(length, indicesLength) ||
+            BasicPredicateFunctions.isSmallerThan(length, index)
+        ) {
+            return false;
+        }
+
+        final var executionMap = stateData.executionMap;
+        final var mapNull = NullableFunctions.isNull(executionMap);
+        final var indicesRemain = BasicPredicateFunctions.isPositiveNonZero(indicesLength);
+        if (mapNull || indicesRemain) {
+            return false;
+        }
+
+        final var mapFilled = SizableFunctions.isSizeEqualTo(executionMap::size, length);
+        final var areValid = areAll(DataValidators::isValidNonFalse, executionMap.values().toArray(new Data[0]));
+        return (mapFilled && areValid);
+    }
+
+    static boolean isAnyDone(ExecutionStateData stateData, int length, int index, int indicesLength) {
+        if (
+            NullableFunctions.isNull(stateData) ||
+            areAny(BasicPredicateFunctions::isNegative, length, index, indicesLength) ||
+            BasicPredicateFunctions.isSmallerThan(length, indicesLength) ||
+            BasicPredicateFunctions.isSmallerThan(length, index)
+        ) {
+            return false;
+        }
+
+        final var executionMap = stateData.executionMap;
+        final var mapNull = NullableFunctions.isNull(executionMap);
+        final var indicesRemain = BasicPredicateFunctions.isPositiveNonZero(indicesLength);
+        if (mapNull || indicesRemain) {
+            return false;
+        }
+
+        final var mapSize = executionMap.size();
+        final var mapFilled = SizableFunctions.isSizeEqualTo(mapSize, length);
+        final var areValid = DataValidators.isValidNonFalse(executionMap.values().toArray(new Data[0])[mapSize-1]);
+        return (mapFilled && areValid);
+    }
+
+    static QuadPredicate<ExecutionStateData, Integer, Integer, Integer> isSomeDone(int expected) {
+        return (stateData, length, index, indicesLength) -> CoreUtilities.isAnyDone(stateData, length, index, indicesLength) && ((length - indicesLength) == expected);
     }
 }

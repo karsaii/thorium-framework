@@ -1,28 +1,23 @@
 package core.records.executor;
 
+import core.extensions.interfaces.functional.QuadFunction;
+import core.extensions.interfaces.functional.QuadPredicate;
 import core.extensions.interfaces.functional.TriFunction;
+import core.records.Data;
 import core.records.command.CommandRangeData;
 
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 public class ExecuteParametersData {
     public final CommandRangeData range;
-    public final Predicate<Boolean> endStatus;
-    public final BiFunction<String, String, String> messageHandler;
-    public final TriFunction<Integer, Integer, String, String> endMessageHandler;
+    public final QuadPredicate<ExecutionStateData, Integer, Integer, Integer> endCondition;
+    public final QuadFunction<ExecutionStateData, Data<?>, Integer, Integer, String> messageHandler;
 
-    public ExecuteParametersData(
-        CommandRangeData range,
-        Predicate<Boolean> endStatus,
-        BiFunction<String, String, String> messageHandler,
-        TriFunction<Integer, Integer, String, String> endMessageHandler
-    ) {
+    public ExecuteParametersData(CommandRangeData range, QuadPredicate<ExecutionStateData, Integer, Integer, Integer> endCondition, QuadFunction<ExecutionStateData, Data<?>, Integer, Integer, String> messageHandler) {
         this.range = range;
-        this.endStatus = endStatus;
+        this.endCondition = endCondition;
         this.messageHandler = messageHandler;
-        this.endMessageHandler = endMessageHandler;
     }
 
     @Override
@@ -30,16 +25,11 @@ public class ExecuteParametersData {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final var that = (ExecuteParametersData) o;
-        return (
-            Objects.equals(range, that.range) &&
-            Objects.equals(endStatus, that.endStatus) &&
-            Objects.equals(messageHandler, that.messageHandler) &&
-            Objects.equals(endMessageHandler, that.endMessageHandler)
-        );
+        return Objects.equals(range, that.range) && Objects.equals(endCondition, that.endCondition) && Objects.equals(messageHandler, that.messageHandler);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(range, endStatus, messageHandler);
+        return Objects.hash(range, endCondition, messageHandler);
     }
 }

@@ -1,4 +1,4 @@
-package core.namespaces;
+package core.namespaces.wait;
 
 import core.constants.SystemIdentityConstants;
 import data.constants.Strings;
