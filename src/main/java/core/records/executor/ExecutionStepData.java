@@ -19,7 +19,7 @@ public class ExecutionStepData<T, U> implements DataSupplier<U> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        var that = (ExecutionStepData<?, ?>) o;
+        final var that = (ExecutionStepData<?, ?>) o;
         return Objects.equals(step, that.step) && Objects.equals(dependency, that.dependency);
     }
 

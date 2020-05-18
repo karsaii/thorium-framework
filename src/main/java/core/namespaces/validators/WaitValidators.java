@@ -30,6 +30,16 @@ public interface WaitValidators {
             validateWaitTimeData(timeData)
         );
 
-        return isBlank(message) ? message : ("Wait.until: " + message);
+        return isBlank(message) ? message : ("validateUntilParameters: " + message);
+    }
+
+    static <T, V> String validateUntilParametersRepeat(Function<T, ?> condition, Predicate<?> continueCondition, WaitTimeData timeData) {
+        final var message = (
+            Formatter.isNullMessageWithName(condition, "Condition") +
+            Formatter.isNullMessageWithName(continueCondition, "ContinueCondition") +
+            validateWaitTimeData(timeData)
+        );
+
+        return isBlank(message) ? message : ("validateUntilParametersRepeat: " + message);
     }
 }

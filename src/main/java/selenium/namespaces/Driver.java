@@ -21,7 +21,7 @@ import core.extensions.namespaces.CoreUtilities;
 import core.extensions.namespaces.NullableFunctions;
 import core.namespaces.DataFactoryFunctions;
 import core.namespaces.ExceptionHandlers;
-import core.namespaces.Executor;
+import core.namespaces.executor.Executor;
 import core.namespaces.InvokeFunctions;
 import core.namespaces.repositories.MethodRepository;
 import core.records.Data;
@@ -515,7 +515,7 @@ public interface Driver {
         return ifDriver(
             InvokeConstants.ELEMENT_CLICKABLE,
             isNullLazyElementMessage(element),
-            SeleniumExecutor.execute(Executor::aggregateMessage, invokeElementDisplayed(element), invokeElementEnabled(element)),
+            SeleniumExecutor.execute(Formatter::getExecutionEndMessageAggregate, invokeElementDisplayed(element), invokeElementEnabled(element)),
             CoreDataConstants.NULL_BOOLEAN
         );
     }

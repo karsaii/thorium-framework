@@ -4,27 +4,27 @@ import java.util.Collection;
 import java.util.Map;
 
 public interface EmptiableFunctions {
-    static <T> boolean isEmpty(Collection<T> collection) {
+    static boolean isEmpty(Collection<?> collection) {
         return NullableFunctions.isNotNull(collection) && collection.isEmpty();
     }
 
-    static <T> boolean isNullOrEmpty(Collection<T> collection) {
+    static boolean isNullOrEmpty(Collection<?> collection) {
         return NullableFunctions.isNull(collection) || collection.isEmpty();
     }
 
-    static <T> boolean isNotNullAndNonEmpty(Collection<T> collection) {
+    static boolean isNotNullAndNonEmpty(Collection<?> collection) {
         return !(isNullOrEmpty(collection));
     }
 
-    static <T, U> boolean isEmpty(Map<T, U> map) {
+    static boolean isEmpty(Map<?, ?> map) {
         return NullableFunctions.isNotNull(map) && map.isEmpty();
     }
 
-    static <T, U> boolean isNullOrEmpty(Map<T, U> map) {
+    static boolean isNullOrEmpty(Map<?, ?> map) {
         return NullableFunctions.isNull(map) || map.isEmpty();
     }
 
-    static <T, U> boolean isNotNullAndNonEmpty(Map<T, U> map) {
+    static boolean isNotNullAndNonEmpty(Map<?, ?> map) {
         return !(isNullOrEmpty(map));
     }
 }

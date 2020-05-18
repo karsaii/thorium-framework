@@ -1,10 +1,14 @@
 package data.namespaces;
 
 import core.constants.CommandRangeDataConstants;
+import core.constants.CoreDataConstants;
 import core.extensions.DecoratedList;
 import core.extensions.interfaces.IEmptiable;
 import core.extensions.namespaces.BasicPredicateFunctions;
+import core.extensions.namespaces.EmptiableFunctions;
+import core.namespaces.validators.DataValidators;
 import core.records.executor.ExecutionResultData;
+import core.records.executor.ExecutionStateData;
 import selenium.constants.SeleniumDataConstants;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.CoreUtilities;
@@ -56,6 +60,7 @@ import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.namespaces.DataFunctions.isTrue;
 import static core.namespaces.DataFunctions.isFalse;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
+import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.utilities.SeleniumUtilities.getLocator;
@@ -106,7 +111,7 @@ public interface Formatter {
 
 
     static String isInvalidOrFalseMessageE(ExecutionResultData data) {
-        return isInvalidOrFalseMessageWithName(data.result, "data");
+        return isNullMessageWithName(data.result, "Result Object");
     }
 
     static String isFalseMessageWithName(Data data, String parameterName) {
@@ -293,11 +298,97 @@ public interface Formatter {
     }
 
     static String getExecutionEndMessage(int index, int length, String message) {
-        return "Execution End: " + (index == length ? ("All(" + length) : ("Some(" + (index + 1))) + ") steps were executed" + Strings.COLON_NEWLINE + "\t" + message.replaceAll("\n", "\n\t");
+        return "Execution End: " + (index == length ? ("All(" + length) : ("Some(" + index)) + ") steps were executed" + Strings.COLON_NEWLINE + "\t" + message.replaceAll("\n", "\n\t");
     }
 
-    static String getExecutionEndNoMessagesMessage(int index, int length, String message) {
-        return BasicPredicateFunctions.isSmallerThan(index, length) ? "Execution ended early:\n Some(" + (index + 1) + ") steps were executed" + Strings.COLON_NEWLINE + "\t" + message.replaceAll("\n", "\n\t") : Strings.EMPTY;
+    static String getExecutionStatusInvalidMessage(ExecutionStateData data) {
+        var message = isNullMessageWithName(data, "Execution State Data");
+        if (isBlank(message)) {
+            message += (
+                isNullMessageWithName(data.executionMap, "Execution Map") +
+                isNullMessageWithName(data.indices, "Indices")
+            );
+        }
+
+        return getNamedErrorMessageOrEmpty("getExecutionStatusInvalidMessage: ", message);
+    }
+
+    static String getExecutionEndParametersInvalidMessage(ExecutionStateData state, Data<?> data, int index, int length) {
+        return getNamedErrorMessageOrEmpty(
+            "getExecutionEndParametersInvalidMessage: ",
+            (
+                getExecutionStatusInvalidMessage(state) +
+                isInvalidOrFalseMessageWithName(data, "Last data from execution") +
+                isNegativeMessageWithName(index, "Index") +
+                isNegativeMessageWithName(length, "Length")
+            )
+        );
+    }
+
+    static String getExecutionEndMessage(ExecutionStateData state, Data<?> data, int index, int length) {
+        final var errorMessage = getExecutionEndParametersInvalidMessage(state, data, index, length);
+        if (isNotBlank(errorMessage)) {
+            return errorMessage;
+        }
+
+        final var valueSet = state.executionMap.values();
+        final var passedValueAmount = valueSet.stream().filter(DataValidators::isValidNonFalse).count();
+        final var failedValueAmount = length - passedValueAmount;
+        final var lastContained = valueSet.contains(data);
+        final var builder = new StringBuilder();
+        final var values = valueSet.toArray(new Data<?>[0]);
+        var stepIndex = BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount) ? 0 : (length - 1);
+        var passedMessage = "";
+        Data<?> step;
+        for(; stepIndex < length; ++stepIndex) {
+            step = values[stepIndex];
+            passedMessage = isValidNonFalse(step) ? "Passed" : "Failed";
+            builder.append(getExecutionStepMessage(stepIndex, passedMessage + step.message.toString()));
+        }
+
+        final var message = (
+            ((index == length) ? "All" : "Some") + "steps were executed" + Strings.COLON_NEWLINE +
+            (BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount) ? (
+                "Some (" + passedValueAmount + ") steps passed, Some(" + failedValueAmount + ") steps failed"
+            ) : ((lastContained ? "All(" : "All except the last(") + passedValueAmount + ") steps passed")) + Strings.END_LINE +
+            (lastContained ? "" : ("Last step" + (isValidNonFalse(data) ? "passed" : ("failed" + data.message.toString())))) +
+            builder.toString().replaceAll("\n", "\n\t")
+        );
+
+        return getNamedErrorMessageOrEmpty("getExecutionEndMessage", message);
+    }
+
+    static String getExecutionEndMessageAggregate(ExecutionStateData state, Data<?> data, int index, int length) {
+        final var errorMessage = getExecutionEndParametersInvalidMessage(state, data, index, length);
+        if (isNotBlank(errorMessage)) {
+            return errorMessage;
+        }
+
+        final var valueSet = state.executionMap.values();
+        final var passedValueAmount = valueSet.stream().filter(DataValidators::isValidNonFalse).count();
+        final var failedValueAmount = length - passedValueAmount;
+        final var lastContained = valueSet.contains(data);
+        final var builder = new StringBuilder();
+        final var values = valueSet.toArray(new Data<?>[0]);
+        var stepIndex = 0;
+        var passedMessage = "";
+        Data<?> step;
+        for(; stepIndex < length; ++stepIndex) {
+            step = values[stepIndex];
+            passedMessage = isValidNonFalse(step) ? "Passed" : "Failed";
+            builder.append(getExecutionStepMessage(stepIndex, passedMessage + step.message.toString()));
+        }
+
+        final var message = (
+            ((index == length) ? "All" : "Some") + "steps were executed" + Strings.COLON_NEWLINE +
+            (BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount) ? (
+                "Some (" + passedValueAmount + ") steps passed, Some(" + failedValueAmount + ") steps failed"
+            ) : ((lastContained ? "All(" : "All except the last(") + passedValueAmount + ") steps passed")) + Strings.END_LINE +
+            (lastContained ? "" : ("Last step" + (isValidNonFalse(data) ? "passed" : ("failed" + data.message.toString())))) +
+            builder.toString().replaceAll("\n", "\n\t")
+        );
+
+        return getNamedErrorMessageOrEmpty("getExecutionEndMessage", message);
     }
 
     static String getMethodFromMapMessage(String methodName, boolean status) {
@@ -385,11 +476,11 @@ public interface Formatter {
         if (isBlank(message)) {
             //TODO Java13-14 instanceof + switch expression.
             var type = "";
-            if (data instanceof List && ((List)data).isEmpty()) {
+            if (data instanceof List && EmptiableFunctions.isEmpty((List)data)) {
                 type = "(List)";
             }
 
-            if (data instanceof Map && ((Map)data).isEmpty()) {
+            if (data instanceof Map && EmptiableFunctions.isEmpty((Map)data)) {
                 type = "(Map)";
             }
 

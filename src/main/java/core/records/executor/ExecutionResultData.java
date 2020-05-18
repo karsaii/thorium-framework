@@ -2,15 +2,14 @@ package core.records.executor;
 
 import core.records.Data;
 
-import java.util.Map;
 import java.util.Objects;
 
 public class ExecutionResultData<T> {
-    public final Map<String, Data<?>> executionResult;
-    public final Data<T> result;
+    public final ExecutionStateData stateData;
+    public final T result;
 
-    public ExecutionResultData(Map<String, Data<?>> executionResult, Data<T> result) {
-        this.executionResult = executionResult;
+    public ExecutionResultData(ExecutionStateData stateData, T result) {
+        this.stateData = stateData;
         this.result = result;
     }
 
@@ -19,11 +18,11 @@ public class ExecutionResultData<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final var that = (ExecutionResultData<?>) o;
-        return Objects.equals(executionResult, that.executionResult) && Objects.equals(result, that.result);
+        return Objects.equals(stateData, that.stateData) && Objects.equals(result, that.result);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(executionResult, result);
+        return Objects.hash(stateData, result);
     }
 }

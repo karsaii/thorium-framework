@@ -1,8 +1,8 @@
 package selenium.namespaces;
 
 import core.constants.CoreDataConstants;
-import core.namespaces.Wait;
-import core.namespaces.WaitTimeDataFactory;
+import core.namespaces.wait.Wait;
+import core.namespaces.wait.WaitTimeDataFactory;
 import core.records.WaitData;
 import data.constants.Strings;
 import org.openqa.selenium.By;

@@ -1,10 +1,10 @@
 package selenium.namespaces;
 
 import core.constants.CoreDataConstants;
-import core.namespaces.Wait;
+import core.namespaces.wait.Wait;
 import selenium.namespaces.extensions.boilers.DriverFunction;
 import core.extensions.namespaces.BasicPredicateFunctions;
-import core.namespaces.WaitTimeDataFactory;
+import core.namespaces.wait.WaitTimeDataFactory;
 import core.records.WaitData;
 
 import static core.extensions.namespaces.CoreUtilities.areAll;

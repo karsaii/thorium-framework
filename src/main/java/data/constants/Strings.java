@@ -80,6 +80,7 @@ public abstract class Strings {
     public static final String PARAMETERS_WERE_WRONG = "Parameters were wrong" + END_LINE;
     public static final String ELEMENT_WAS_FOUND = "Element was found" + END_LINE;
     public static final String DRIVER_WAS_NULL = "Driver" + WAS_NULL;
+    public static final String DEPENDENCY_WAS_NULL = "Dependency" + WAS_NULL;
     public static final String NON_EXCEPTION_MESSAGE = "No exception occurred" + END_LINE;
 
     public static final String EXCEPTION_WAS_NULL = "Exception" + WAS_NULL;
