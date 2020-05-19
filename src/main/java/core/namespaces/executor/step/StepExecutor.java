@@ -71,7 +71,7 @@ public interface StepExecutor {
 
     static <ReturnType> DataSupplier<ReturnType> execute(IGetMessage stepMessage, DataSupplier<?>... steps) {
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRangeDataSupplier(
+            ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(stepMessage, ExecutorConstants.DEFAULT_EXECUTION_DATA),
                 Executor::execute
             ),
@@ -81,7 +81,7 @@ public interface StepExecutor {
 
     static <ReturnType> DataSupplier<ReturnType> execute(String message, DataSupplier<?>... steps) {
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRangeDataSupplier(
+            ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithSpecificMessage(message),
                 Executor::execute
             ),
@@ -91,7 +91,7 @@ public interface StepExecutor {
 
     static <ReturnType> DataSupplier<ReturnType> execute(QuadFunction<ExecutionStateData, String, Integer, Integer, String> messageHandler, DataSupplier<?>... steps) {
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithTwoCommandsRangeDataSupplier(
+            ExecutionParametersDataFactory.getWithTwoCommandsRange(
                 ExecutionDataFactory.getWithDefaultExitConditionAndMessageData(messageHandler),
                 Executor::execute
             ),
@@ -100,16 +100,15 @@ public interface StepExecutor {
     }
 
     static <ReturnType> DataSupplier<ReturnType> execute(DataSupplier<?>... steps) {
-        return DataSupplierFactory.get(Executor.execute(ExecutionParametersDataFactory.getWithMessagesAndDefaultRangeDataSupplier(Executor::execute), steps));
+        return DataSupplierFactory.get(Executor.execute(ExecutionParametersDataFactory.getWithDefaultFunctionDataAndDefaultRange(Executor::execute), steps));
     }
-
 
     static <ReturnType> DataSupplier<ReturnType> conditionalSequence(TriPredicate<Data<?>, Integer, Integer> guard, DataSupplier<?> before, DataSupplier<?> after) {
         final DataSupplier<?>[] steps = Arrays.asList(before, after).toArray(new DataSupplier<?>[0]);
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithTwoCommandsRangeDataSupplier(
-                    ExecutionDataFactory.getWithSpecificMessageDataAndBreakCondition(new SimpleMessageData(Strings.EXECUTION_ENDED), guard),
-                    Executor::execute
+            ExecutionParametersDataFactory.getWithTwoCommandsRange(
+                ExecutionDataFactory.getWithSpecificMessageDataAndBreakCondition(new SimpleMessageData(Strings.EXECUTION_ENDED), guard),
+                Executor::execute
             ),
             steps
         ));
@@ -118,7 +117,7 @@ public interface StepExecutor {
     static <T, U, ReturnType> DataSupplier<ExecutionResultData<ReturnType>> conditionalSequence(DataSupplier<T> before, DataSupplier<U> after, Class<ReturnType> clazz) {
         final DataSupplier<?>[] steps = Arrays.asList(before, after).toArray(new DataSupplier<?>[0]);
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultFunctionDataAndTwoCommandRangeDataSupplier(Executor::execute),
+            ExecutionParametersDataFactory.getWithDefaultFunctionDataAndTwoCommandRange(Executor::execute),
             steps
         ));
     }
@@ -126,7 +125,7 @@ public interface StepExecutor {
     static <ReturnType> DataSupplier<ExecutionResultData<ReturnType>> execute(IGetMessage stepMessage, ExecutionStateData stateData, DataSupplier<?>... steps) {
         final var localStateData = (isNotNull(stateData.indices) && !stateData.indices.isEmpty()) ? stateData : ExecutionStateDataFactory.getWith(stateData.executionMap, steps.length);
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRangeDataSupplier(
+            ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(stepMessage, ExecutorConstants.DEFAULT_EXECUTION_DATA),
                 Executor::execute
             ),
@@ -138,7 +137,7 @@ public interface StepExecutor {
     static <ReturnType> DataSupplier<ExecutionResultData<ReturnType>> execute(String message, ExecutionStateData stateData, DataSupplier<?>... steps) {
         final var localStateData = (isNotNull(stateData.indices) && !stateData.indices.isEmpty()) ? stateData : ExecutionStateDataFactory.getWith(stateData.executionMap, steps.length);
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRangeDataSupplier(
+            ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithSpecificMessage(message),
                 Executor::execute
             ),
@@ -150,7 +149,7 @@ public interface StepExecutor {
     static <ReturnType> DataSupplier<ExecutionResultData<ReturnType>> execute(QuadFunction<ExecutionStateData, String, Integer, Integer, String> messageHandler, ExecutionStateData stateData, DataSupplier<?>... steps) {
         final var localStateData = (isNotNull(stateData.indices) && !stateData.indices.isEmpty()) ? stateData : ExecutionStateDataFactory.getWith(stateData.executionMap, steps.length);
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithTwoCommandsRangeDataSupplier(
+            ExecutionParametersDataFactory.getWithTwoCommandsRange(
                 ExecutionDataFactory.getWithDefaultExitConditionAndMessageData(messageHandler),
                 Executor::execute
             ),
@@ -161,7 +160,7 @@ public interface StepExecutor {
 
     static <ReturnType> DataSupplier<ExecutionResultData<ReturnType>> execute(ExecutionStateData stateData, DataSupplier<?>... steps) {
         final var localStateData = (isNotNull(stateData.indices) && !stateData.indices.isEmpty()) ? stateData : ExecutionStateDataFactory.getWith(stateData.executionMap, steps.length);
-        return DataSupplierFactory.get(Executor.execute(ExecutionParametersDataFactory.getWithMessagesAndDefaultRangeDataSupplier(Executor::execute), localStateData, steps));
+        return DataSupplierFactory.get(Executor.execute(ExecutionParametersDataFactory.getWithDefaultFunctionDataAndDefaultRange(Executor::execute), localStateData, steps));
     }
 
 
@@ -169,7 +168,7 @@ public interface StepExecutor {
         final DataSupplier<?>[] steps = Arrays.asList(before, after).toArray(new DataSupplier<?>[0]);
         final var localStateData = (isNotNull(stateData.indices) && !stateData.indices.isEmpty()) ? stateData : ExecutionStateDataFactory.getWith(stateData.executionMap, steps.length);
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithTwoCommandsRangeDataSupplier(
+            ExecutionParametersDataFactory.getWithTwoCommandsRange(
                 ExecutionDataFactory.getWithSpecificMessageDataAndBreakCondition(new SimpleMessageData(Strings.EXECUTION_ENDED), guard),
                 Executor::execute
             ),
@@ -182,7 +181,7 @@ public interface StepExecutor {
         final DataSupplier<?>[] steps = Arrays.asList(before, after).toArray(new DataSupplier<?>[0]);
         final var localStateData = (isNotNull(stateData.indices) && !stateData.indices.isEmpty()) ? stateData : ExecutionStateDataFactory.getWith(stateData.executionMap, steps.length);
         return DataSupplierFactory.get(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultFunctionDataAndTwoCommandRangeDataSupplier(Executor::execute),
+            ExecutionParametersDataFactory.getWithDefaultFunctionDataAndTwoCommandRange(Executor::execute),
             localStateData,
             steps
         ));
