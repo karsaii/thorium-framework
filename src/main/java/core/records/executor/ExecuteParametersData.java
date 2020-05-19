@@ -12,9 +12,9 @@ import java.util.function.Predicate;
 public class ExecuteParametersData {
     public final CommandRangeData range;
     public final QuadPredicate<ExecutionStateData, Integer, Integer, Integer> endCondition;
-    public final QuadFunction<ExecutionStateData, Data<?>, Integer, Integer, String> messageHandler;
+    public final QuadFunction<ExecutionStateData, String, Integer, Integer, String> messageHandler;
 
-    public ExecuteParametersData(CommandRangeData range, QuadPredicate<ExecutionStateData, Integer, Integer, Integer> endCondition, QuadFunction<ExecutionStateData, Data<?>, Integer, Integer, String> messageHandler) {
+    public ExecuteParametersData(CommandRangeData range, QuadPredicate<ExecutionStateData, Integer, Integer, Integer> endCondition, QuadFunction<ExecutionStateData, String, Integer, Integer, String> messageHandler) {
         this.range = range;
         this.endCondition = endCondition;
         this.messageHandler = messageHandler;

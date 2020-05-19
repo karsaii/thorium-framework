@@ -13,14 +13,14 @@ public class ExecutorFunctionData {
     public final IGetMessage messageData;
     public final TriPredicate<Data<?>, Integer, Integer> breakCondition;
     public final QuadPredicate<ExecutionStateData, Integer, Integer, Integer> endCondition;
-    public final QuadFunction<ExecutionStateData, Data<?>, Integer, Integer, String> endMessageHandler;
+    public final QuadFunction<ExecutionStateData, String, Integer, Integer, String> endMessageHandler;
     public final Predicate<Data<?>> filterCondition;
 
     public ExecutorFunctionData(
         IGetMessage messageData,
         TriPredicate<Data<?>, Integer, Integer> breakCondition,
         QuadPredicate<ExecutionStateData, Integer, Integer, Integer> endCondition,
-        QuadFunction<ExecutionStateData, Data<?>, Integer, Integer, String> endMessageHandler,
+        QuadFunction<ExecutionStateData, String, Integer, Integer, String> endMessageHandler,
         Predicate<Data<?>> filterCondition
     ) {
         this.messageData = messageData;

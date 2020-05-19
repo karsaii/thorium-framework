@@ -34,26 +34,6 @@ public interface Executor {
         return isValidNonFalse(data) && BasicPredicateFunctions.isSmallerThan(index, length);
     }
 
-    static boolean isExecutingUntilAny(Data<?> data, int index, int length) {
-        return isInvalidOrFalse(data) && BasicPredicateFunctions.isSmallerThan(index, length);
-    }
-
-    static String aggregateMessage(String message, String newMessage) {
-        return message + newMessage;
-    }
-
-    static String reduceMessage(String message, String newMessage) {
-        return newMessage;
-    }
-
-    static Boolean returnStatus(Boolean status) {
-        return status;
-    }
-
-    static Boolean returnTrue(Boolean status) {
-        return true;
-    }
-
     private static <DependencyType, ReturnType> Data<ExecutionResultData<ReturnType>> executeCore(
         ExecutionStepsData<DependencyType> stepsData,
         ExecutorFunctionData functionData,
@@ -67,21 +47,27 @@ public interface Executor {
         final var length = indices.size();
         final var steps = stepsData.steps;
         final var dependency = stepsData.dependency;
-        var intervalIndex = 0;
+        var stepIndex = 0;
         var index = 0;
-        for(; exitCondition.test(data, index, length); ++index) {
-            data = steps[indices.get(intervalIndex)].apply(dependency);
-            map.put(Formatter.getExecutionResultKey(data.message.nameof, index), data);
+        var key = "";
+        for(; exitCondition.test(data, index, indices.size());) {
+            stepIndex = indices.get(index);
+            data = steps[stepIndex].apply(dependency);
+            key = Formatter.getExecutionResultKey(data.message.nameof, stepIndex);
+            if (!map.containsKey(key) || isInvalidOrFalse(map.get(key))) {
+                map.put(key, data);
+            }
+
             if (filter.test(data)) {
-                indices.remove(intervalIndex);
+                indices.remove(index);
             } else {
-                ++intervalIndex;
+                ++index;
             }
         }
 
         final var executionStatus = ExecutionStateDataFactory.getWith(map, indices);
         final var status = functionData.endCondition.test(executionStatus, steps.length, index, indices.size());
-        final var message = functionData.messageData.get().apply(status) + functionData.endMessageHandler.apply(executionStatus, data, index, length);
+        final var message = functionData.messageData.get().apply(status) + Strings.COLON_NEWLINE + functionData.endMessageHandler.apply(executionStatus, key, index, length);
         return DataFactoryFunctions.getWithNameAndMessage(ExecutionResultDataFactory.getWith(executionStatus, (ReturnType)data.object), status, "executeCore", message);
     }
 

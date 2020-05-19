@@ -66,6 +66,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static selenium.namespaces.utilities.SeleniumUtilities.getLocator;
 
 public interface Formatter {
+    static String getNamedErrorMessageOrEmptyNoIssues(String name, String message) {
+        final var nameof = isNotBlank(name) ? name : "getNamedErrorMessageOrEmpty: (Name was empty.) ";
+        return isNotBlank(message) ? nameof + message : Strings.EMPTY;
+    }
+
     static String getNamedErrorMessageOrEmpty(String name, String message) {
         final var nameof = isNotBlank(name) ? name : "getNamedErrorMessageOrEmpty: (Name was empty.) ";
         return isNotBlank(message) ? nameof + Strings.PARAMETER_ISSUES_LINE + message : Strings.EMPTY;
@@ -286,11 +291,11 @@ public interface Formatter {
     }
 
     static String getWaitErrorMessage(String message, long timeout, long interval) {
-        return FormatterStrings.WAITING_FAILED + message + " tried for " + timeout + " second(s) with " + interval + " milliseconds INTERVAL" + Strings.END_LINE;
+        return FormatterStrings.WAITING_FAILED + message + "Tried for " + timeout + " second(s) with " + interval + " milliseconds interval" + Strings.END_LINE;
     }
 
     static String getWaitInterruptMessage(String message) {
-        return FormatterStrings.WAITING_FAILED + "Thread interruption occurred, exception message:\n" + message;
+        return FormatterStrings.WAITING_FAILED + "Thread interruption occurred, exception message" + Strings.COLON_NEWLINE + message;
     }
 
     static String getExecutionStepMessage(int index, String message) {
@@ -313,53 +318,55 @@ public interface Formatter {
         return getNamedErrorMessageOrEmpty("getExecutionStatusInvalidMessage: ", message);
     }
 
-    static String getExecutionEndParametersInvalidMessage(ExecutionStateData state, Data<?> data, int index, int length) {
+    static String getExecutionEndParametersInvalidMessage(ExecutionStateData state, String key, int index, int length) {
         return getNamedErrorMessageOrEmpty(
             "getExecutionEndParametersInvalidMessage: ",
             (
                 getExecutionStatusInvalidMessage(state) +
-                isInvalidOrFalseMessageWithName(data, "Last data from execution") +
+                isBlankMessageWithName(key, "Last key from execution") +
                 isNegativeMessageWithName(index, "Index") +
                 isNegativeMessageWithName(length, "Length")
             )
         );
     }
 
-    static String getExecutionEndMessage(ExecutionStateData state, Data<?> data, int index, int length) {
-        final var errorMessage = getExecutionEndParametersInvalidMessage(state, data, index, length);
+    static String getExecutionEndMessage(ExecutionStateData state, String key, int index, int length) {
+        final var errorMessage = getExecutionEndParametersInvalidMessage(state, key, index, length);
         if (isNotBlank(errorMessage)) {
             return errorMessage;
         }
 
-        final var valueSet = state.executionMap.values();
+        final var map = state.executionMap;
+        final var valueSet = map.values();
         final var passedValueAmount = valueSet.stream().filter(DataValidators::isValidNonFalse).count();
-        final var failedValueAmount = length - passedValueAmount;
-        final var lastContained = valueSet.contains(data);
+        final var valuesLength = valueSet.size();
+        final var failedValueAmount = valuesLength - passedValueAmount;
         final var builder = new StringBuilder();
         final var values = valueSet.toArray(new Data<?>[0]);
-        var stepIndex = BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount) ? 0 : (length - 1);
-        var passedMessage = "";
         Data<?> step;
-        for(; stepIndex < length; ++stepIndex) {
-            step = values[stepIndex];
-            passedMessage = isValidNonFalse(step) ? "Passed" : "Failed";
-            builder.append(getExecutionStepMessage(stepIndex, passedMessage + step.message.toString()));
+        if (BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount)) {
+            for (var stepIndex = 0; stepIndex < valuesLength; ++stepIndex) {
+                step = values[stepIndex];
+                builder.append(getExecutionStepMessage(stepIndex, (isValidNonFalse(step) ? "Passed" : "Failed") + Strings.COLON_SPACE + step.message.toString()));
+            }
+        } else {
+            step = map.get(key);
+            builder.append(getExecutionStepMessage(valuesLength - 1, (isValidNonFalse(step) ? "Passed" : "Failed") + Strings.COLON_SPACE + step.message.toString()));
         }
 
         final var message = (
-            ((index == length) ? "All" : "Some") + "steps were executed" + Strings.COLON_NEWLINE +
+            ((index == length) ? "All" : "Some") + " steps were executed" + Strings.COLON_SPACE +
             (BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount) ? (
-                "Some (" + passedValueAmount + ") steps passed, Some(" + failedValueAmount + ") steps failed"
-            ) : ((lastContained ? "All(" : "All except the last(") + passedValueAmount + ") steps passed")) + Strings.END_LINE +
-            (lastContained ? "" : ("Last step" + (isValidNonFalse(data) ? "passed" : ("failed" + data.message.toString())))) +
-            builder.toString().replaceAll("\n", "\n\t")
+                passedValueAmount + " passed, " + failedValueAmount + " failed"
+            ) : ("All(" + passedValueAmount + ") steps passed")) + Strings.END_LINE +
+            "    " + builder.toString().replaceAll("\n", "\n    ")
         );
 
-        return getNamedErrorMessageOrEmpty("getExecutionEndMessage", message);
+        return getNamedErrorMessageOrEmptyNoIssues("Execution end: ", message);
     }
 
-    static String getExecutionEndMessageAggregate(ExecutionStateData state, Data<?> data, int index, int length) {
-        final var errorMessage = getExecutionEndParametersInvalidMessage(state, data, index, length);
+    static String getExecutionEndMessageAggregate(ExecutionStateData state, String key, int index, int length) {
+        final var errorMessage = getExecutionEndParametersInvalidMessage(state, key, index, length);
         if (isNotBlank(errorMessage)) {
             return errorMessage;
         }
@@ -367,25 +374,21 @@ public interface Formatter {
         final var valueSet = state.executionMap.values();
         final var passedValueAmount = valueSet.stream().filter(DataValidators::isValidNonFalse).count();
         final var failedValueAmount = length - passedValueAmount;
-        final var lastContained = valueSet.contains(data);
         final var builder = new StringBuilder();
         final var values = valueSet.toArray(new Data<?>[0]);
         var stepIndex = 0;
-        var passedMessage = "";
         Data<?> step;
         for(; stepIndex < length; ++stepIndex) {
             step = values[stepIndex];
-            passedMessage = isValidNonFalse(step) ? "Passed" : "Failed";
-            builder.append(getExecutionStepMessage(stepIndex, passedMessage + step.message.toString()));
+            builder.append(getExecutionStepMessage(stepIndex, (isValidNonFalse(step) ? "Passed" : "Failed") + Strings.COLON_SPACE + step.message.toString()));
         }
 
         final var message = (
-            ((index == length) ? "All" : "Some") + "steps were executed" + Strings.COLON_NEWLINE +
+            ((index == length) ? "All" : "Some") + " steps were executed" + Strings.COLON_SPACE +
             (BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount) ? (
-                "Some (" + passedValueAmount + ") steps passed, Some(" + failedValueAmount + ") steps failed"
-            ) : ((lastContained ? "All(" : "All except the last(") + passedValueAmount + ") steps passed")) + Strings.END_LINE +
-            (lastContained ? "" : ("Last step" + (isValidNonFalse(data) ? "passed" : ("failed" + data.message.toString())))) +
-            builder.toString().replaceAll("\n", "\n\t")
+                passedValueAmount + " passed, " + failedValueAmount + " failed"
+            ) : ("All(" + passedValueAmount + ") steps passed")) + Strings.END_LINE +
+            "    " + builder.toString().replaceAll("\n", "\n    ")
         );
 
         return getNamedErrorMessageOrEmpty("getExecutionEndMessage", message);

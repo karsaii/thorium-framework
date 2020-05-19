@@ -10,7 +10,7 @@ public abstract class FormatterStrings {
     public static final String IS = "is";
     public static final String ISN_T = "isn't";
     public static final String ELEMENT = "Element ";
-    public static final String WAITING_FAILED = "Waiting failed: ";
+    public static final String WAITING_FAILED = "Waiting failed" + Strings.COLON_NEWLINE;
     public static final String EXTENSION = ".png";
     public static final String NAME_START = "ss";
     public static final String SS_NAME_SEPARATOR = "-";

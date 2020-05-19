@@ -2,6 +2,7 @@ package core.namespaces.validators;
 
 import core.extensions.namespaces.CoreUtilities;
 import core.records.Data;
+import core.records.executor.ExecutionResultData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
 
@@ -27,11 +28,24 @@ public interface DataValidators {
         return !isValid(data);
     }
 
+    /*static boolean isValidNonFalse(Object object) {
+        return (object instanceof Data<?>) && isValidNonFalse((Data<?>)object);
+    }*/
+
     static boolean isValidNonFalse(Data<?> data) {
         return isValid(data) && CoreUtilities.isTrue(data.status);
     }
 
     static boolean isInvalidOrFalse(Data<?> data) {
+        return !isValidNonFalse(data);
+    }
+
+
+    static boolean isExecutionValidNonFalse(Data<ExecutionResultData<Object>> data) {
+        return isValid(data) && CoreUtilities.isTrue(data.status);
+    }
+
+    static boolean isExecutionInvalidOrFalse(Data<ExecutionResultData<Object>> data) {
         return !isValidNonFalse(data);
     }
 

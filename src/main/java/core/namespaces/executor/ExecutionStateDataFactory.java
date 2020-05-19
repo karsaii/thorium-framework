@@ -21,6 +21,11 @@ public interface ExecutionStateDataFactory {
         return new ArrayList<>();
     }
 
+    private static List<Integer> getListWithIndices(int length) {
+        final var localLength = BasicPredicateFunctions.isPositiveNonZero(length) ? length : 0;
+        return Interval.zeroTo(localLength > 0 ? localLength - 1 : localLength).toList();
+    }
+
     static ExecutionStateData getWith(Map<String, Data<?>> map, List<Integer> indices) {
         return new ExecutionStateData(
             isNotNull(map) ? map : getDefaultMap(),
@@ -42,6 +47,10 @@ public interface ExecutionStateDataFactory {
 
     static ExecutionStateData getWithDefaultMapAndSpecificLength(int length) {
         final var localLength = BasicPredicateFunctions.isPositiveNonZero(length) ? length : 0;
-        return getWithDefaultMap(Interval.zeroTo(localLength > 1 ? localLength - 1 : localLength).toList());
+        return getWithDefaultMap(getListWithIndices(localLength));
+    }
+
+    static ExecutionStateData getWith(Map<String, Data<?>> map, int length) {
+        return getWith(map, getListWithIndices(length));
     }
 }

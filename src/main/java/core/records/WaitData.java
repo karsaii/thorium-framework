@@ -4,13 +4,13 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class WaitData<T, V> {
-    public final Function<T, V> function;
+public class WaitData<T, U, V> {
+    public final Function<T, U> function;
     public final Predicate<V> exitCondition;
     public final String conditionMessage;
     public final WaitTimeData timeData;
 
-    public WaitData(Function<T, V> function, Predicate<V> exitCondition, String conditionMessage, WaitTimeData timeData) {
+    public WaitData(Function<T, U> function, Predicate<V> exitCondition, String conditionMessage, WaitTimeData timeData) {
         this.function = function;
         this.exitCondition = exitCondition;
         this.conditionMessage = conditionMessage;
@@ -21,7 +21,7 @@ public class WaitData<T, V> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final var waitData = (WaitData<?, ?>) o;
+        final var waitData = (WaitData<?, ?, ?>) o;
         return (
             Objects.equals(function, waitData.function) &&
             Objects.equals(exitCondition, waitData.exitCondition) &&
