@@ -69,7 +69,7 @@ public interface SeleniumExecutor {
 
     static <ReturnType> DriverFunction<ReturnType> execute(IGetMessage stepMessage, DriverFunction<?>... steps) {
         return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRangeDriver(
+            ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(stepMessage, ExecutorConstants.DEFAULT_EXECUTION_DATA),
                 Executor::execute
             ),
@@ -79,7 +79,7 @@ public interface SeleniumExecutor {
 
     static <Any> DriverFunction<Any> execute(String message, DriverFunction<?>... steps) {
         return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRangeDriver(
+            ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithSpecificMessage(message),
                 Executor::execute
             ),
@@ -89,7 +89,7 @@ public interface SeleniumExecutor {
 
     static <Any> DriverFunction<Any> execute(QuadFunction<ExecutionStateData, String, Integer, Integer, String> messageHandler, DriverFunction<?>... steps) {
         return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithTwoCommandsRangeDriver(
+            ExecutionParametersDataFactory.getWithTwoCommandsRange(
                 ExecutionDataFactory.getWithDefaultExitConditionAndMessageData(messageHandler),
                 Executor::execute
             ),
@@ -98,14 +98,13 @@ public interface SeleniumExecutor {
     }
 
     static <Any> DriverFunction<Any> execute(DriverFunction<?>... steps) {
-        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithMessagesAndDefaultRangeDriver(Executor::execute), steps));
+        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultFunctionDataAndDefaultRange(Executor::execute), steps));
     }
-
 
     static <ReturnType> DriverFunction<ReturnType> conditionalSequence(TriPredicate<Data<?>, Integer, Integer> guard, DriverFunction<?> before, DriverFunction<?> after) {
         final var steps = Arrays.asList(before, after).toArray(new DriverFunction<?>[0]);
         return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithTwoCommandsRangeDriver(
+            ExecutionParametersDataFactory.getWithTwoCommandsRange(
                 ExecutionDataFactory.getWithSpecificMessageAndBreakCondition(Strings.EXECUTION_ENDED, guard),
                 Executor::execute
             ),
@@ -115,12 +114,12 @@ public interface SeleniumExecutor {
 
     static <T, U, Any> DriverFunction<Any> conditionalSequence(DriverFunction<T> before, DriverFunction<U> after, Class<Any> clazz) {
         final var steps = Arrays.asList(before, after).toArray(new DriverFunction<?>[0]);
-        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultFunctionDataAndTwoCommandRangeDriver(Executor::execute), steps));
+        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultFunctionDataAndTwoCommandRange(Executor::execute), steps));
     }
 
     static <ReturnType> DriverFunction<ExecutionResultData<ReturnType>> execute(IGetMessage stepMessage, ExecutionStateData stateData, DriverFunction<?>... steps) {
         return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRangeDriver(
+            ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithExecuteParametersDataAndDefaultExitCondition(stepMessage, ExecutorConstants.DEFAULT_EXECUTION_DATA),
                 Executor::execute
             ),
@@ -131,7 +130,7 @@ public interface SeleniumExecutor {
 
     static <ReturnType> DriverFunction<ExecutionResultData<ReturnType>> execute(String message, ExecutionStateData stateData, DriverFunction<?>... steps) {
         return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithDefaultRangeDriver(
+            ExecutionParametersDataFactory.getWithDefaultRange(
                 ExecutionDataFactory.getWithSpecificMessage(message),
                 Executor::execute
             ),
@@ -142,7 +141,7 @@ public interface SeleniumExecutor {
 
     static <ReturnType> DriverFunction<ExecutionResultData<ReturnType>> execute(QuadFunction<ExecutionStateData, String, Integer, Integer, String> messageHandler, ExecutionStateData stateData, DriverFunction<?>... steps) {
         return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithTwoCommandsRangeDriver(
+            ExecutionParametersDataFactory.getWithTwoCommandsRange(
                 ExecutionDataFactory.getWithDefaultExitConditionAndMessageData(messageHandler),
                 Executor::execute
             ),
@@ -152,14 +151,13 @@ public interface SeleniumExecutor {
     }
 
     static <ReturnType> DriverFunction<ExecutionResultData<ReturnType>> execute(ExecutionStateData stateData, DriverFunction<?>... steps) {
-        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithMessagesAndDefaultRangeDriver(Executor::execute), stateData, steps));
+        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultFunctionDataAndDefaultRange(Executor::execute), stateData, steps));
     }
-
 
     static <ReturnType> DriverFunction<ExecutionResultData<ReturnType>> conditionalSequence(TriPredicate<Data<?>, Integer, Integer> guard, ExecutionStateData stateData, DriverFunction<?> before, DriverFunction<?> after) {
         final var steps = Arrays.asList(before, after).toArray(new DriverFunction<?>[0]);
         return DriverFunctionFactory.getFunction(Executor.execute(
-            ExecutionParametersDataFactory.getWithTwoCommandsRangeDriver(
+            ExecutionParametersDataFactory.getWithTwoCommandsRange(
                 ExecutionDataFactory.getWithSpecificMessageAndBreakCondition(Strings.EXECUTION_ENDED, guard),
                 Executor::execute
             ),
@@ -170,6 +168,6 @@ public interface SeleniumExecutor {
 
     static <T, U, ReturnType> DriverFunction<ExecutionResultData<ReturnType>> conditionalSequence(ExecutionStateData stateData, DriverFunction<T> before, DriverFunction<U> after, Class<ReturnType> clazz) {
         final var steps = Arrays.asList(before, after).toArray(new DriverFunction<?>[0]);
-        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultFunctionDataAndTwoCommandRangeDriver(Executor::execute), stateData, steps));
+        return DriverFunctionFactory.getFunction(Executor.execute(ExecutionParametersDataFactory.getWithDefaultFunctionDataAndTwoCommandRange(Executor::execute), stateData, steps));
     }
 }
