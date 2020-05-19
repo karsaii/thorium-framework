@@ -13,8 +13,8 @@ public class DataSupplierTests {
     void defaultCommandRangeTest() {
         final var stepOne = StepFactory.step((Void nothing) -> DataFactoryFunctions.getWithNameAndMessage("Applesauce", true, "test1", "Step was okay"), null);
         final var stepOne2 = StepFactory.step((Void nothing) -> DataFactoryFunctions.getWithNameAndMessage("Applesauce", true, "test2", "Step was okay"), null);
-        final var stepOne3 = StepFactory.step((Void nothing) -> DataFactoryFunctions.getWithNameAndMessage("Applesauce3", true, "test3", "Step was okay"), null);
-        final var stepTwo = StepFactory.step((String str) -> DataFactoryFunctions.getWithNameAndMessage(str, false, str + "NAME", "The message for " + str), "Johnny Applesauce");
+        final var stepOne3 = StepFactory.step((Void nothing) -> DataFactoryFunctions.getWithNameAndMessage("Applesauce3", false, "test3", "Step was okay"), null);
+        final var stepTwo = StepFactory.step((String str) -> DataFactoryFunctions.getWithNameAndMessage(str, true, str + "NAME", "The message for " + str), "Johnny Applesauce");
         final var result = StepExecutor.execute("This is smokin.", stepOne, stepOne2, stepOne3, stepTwo).get();
 
         Assertions.assertTrue(result.status, result.message.toString());

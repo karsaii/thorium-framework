@@ -87,7 +87,7 @@ public interface SeleniumExecutor {
         ));
     }
 
-    static <Any> DriverFunction<Any> execute(QuadFunction<ExecutionStateData, Data<?>, Integer, Integer, String> messageHandler, DriverFunction<?>... steps) {
+    static <Any> DriverFunction<Any> execute(QuadFunction<ExecutionStateData, String, Integer, Integer, String> messageHandler, DriverFunction<?>... steps) {
         return DriverFunctionFactory.getFunction(Executor.execute(
             ExecutionParametersDataFactory.getWithTwoCommandsRangeDriver(
                 ExecutionDataFactory.getWithDefaultExitConditionAndMessageData(messageHandler),
@@ -140,7 +140,7 @@ public interface SeleniumExecutor {
         ));
     }
 
-    static <ReturnType> DriverFunction<ExecutionResultData<ReturnType>> execute(QuadFunction<ExecutionStateData, Data<?>, Integer, Integer, String> messageHandler, ExecutionStateData stateData, DriverFunction<?>... steps) {
+    static <ReturnType> DriverFunction<ExecutionResultData<ReturnType>> execute(QuadFunction<ExecutionStateData, String, Integer, Integer, String> messageHandler, ExecutionStateData stateData, DriverFunction<?>... steps) {
         return DriverFunctionFactory.getFunction(Executor.execute(
             ExecutionParametersDataFactory.getWithTwoCommandsRangeDriver(
                 ExecutionDataFactory.getWithDefaultExitConditionAndMessageData(messageHandler),

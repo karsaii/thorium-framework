@@ -2,12 +2,11 @@ package core.namespaces.wait;
 
 import core.exceptions.ArgumentNullException;
 import core.exceptions.WaitTimeoutException;
-import core.extensions.namespaces.NullableFunctions;
+import core.extensions.interfaces.functional.boilers.DataSupplier;
 import core.namespaces.executor.ExecutionStateDataFactory;
 import core.namespaces.validators.WaitValidators;
 import core.extensions.namespaces.CoreUtilities;
 import core.records.Data;
-import core.records.StepWaitData;
 import core.records.WaitData;
 import core.records.executor.ExecutionResultData;
 import core.records.executor.ExecutionStateData;
@@ -22,7 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface Wait {
-    private static <T, V> V core(T dependency, WaitData<T, V> waitData) {
+    private static <T, V> V core(T dependency, WaitData<T, V, V> waitData) {
         if (CoreUtilities.areAnyNull(dependency, waitData)) {
             throw new ArgumentNullException("Dependency or WaitData was wrong" + Strings.END_LINE);
         }
@@ -65,7 +64,7 @@ public interface Wait {
         throw new WaitTimeoutException(message + conditionMessage);
     }
 
-    private static <T> Data<ExecutionResultData<T>> core(ExecutionStateData dependency, StepWaitData<T> waitData) {
+    private static <ReturnType> Data<ExecutionResultData<ReturnType>> repeat(ExecutionStateData dependency, WaitData<ExecutionStateData, DataSupplier<ExecutionResultData<ReturnType>>, Data<ExecutionResultData<ReturnType>>> waitData) {
         if (CoreUtilities.areAnyNull(dependency, waitData)) {
             throw new ArgumentNullException("Starting state or StepWaitData was wrong, " + Strings.WAS_NULL);
         }
@@ -85,7 +84,7 @@ public interface Wait {
         final var start = clock.instant();
         final var end = start.plus(timeout);
         var message = "";
-        Data<ExecutionResultData<T>> value = null;
+        Data<ExecutionResultData<ReturnType>> value = null;
         var state = dependency;
         try {
             for(; end.isAfter(clock.instant()); Thread.sleep(interval)) {
@@ -111,11 +110,15 @@ public interface Wait {
         throw new WaitTimeoutException(message + conditionMessage);
     }
 
-    static <T, V> Function<T, V> core(WaitData<T, V> waitData) {
+    static <T, V> Function<T, V> core(WaitData<T, V, V> waitData) {
         return dependency -> core(dependency, waitData);
     }
 
-    static <T> Function<ExecutionStateData, Data<ExecutionResultData<T>>> core(StepWaitData<T> waitData) {
-        return dependency -> core(dependency, waitData);
+    static <ReturnType> Function<ExecutionStateData, Data<ExecutionResultData<ReturnType>>> repeat(WaitData<ExecutionStateData, DataSupplier<ExecutionResultData<ReturnType>>, Data<ExecutionResultData<ReturnType>>> waitData) {
+        return dependency -> repeat(dependency, waitData);
+    }
+
+    static <ReturnType> Data<ExecutionResultData<ReturnType>> repeatWithDefaultState(WaitData<ExecutionStateData, DataSupplier<ExecutionResultData<ReturnType>>, Data<ExecutionResultData<ReturnType>>> waitData) {
+        return repeat(waitData).apply(ExecutionStateDataFactory.getWithDefaults());
     }
 }
