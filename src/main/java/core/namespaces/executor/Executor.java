@@ -51,23 +51,19 @@ public interface Executor {
         var stepIndex = 0;
         var index = 0;
         var key = "";
-        try {
-            for (; exitCondition.test(data, index, indices.size()); ) {
-                stepIndex = indices.get(index);
-                data = steps[stepIndex].apply(dependency);
-                key = Formatter.getExecutionResultKey(data.message.nameof, stepIndex);
-                if (!map.containsKey(key) || isInvalidOrFalse(map.get(key))) {
-                    map.put(key, data);
-                }
-
-                if (filter.test(data)) {
-                    indices.remove(index);
-                } else {
-                    ++index;
-                }
+        for (; exitCondition.test(data, index, indices.size());) {
+            stepIndex = indices.get(index);
+            data = steps[stepIndex].apply(dependency);
+            key = Formatter.getExecutionResultKey(data.message.nameof, stepIndex);
+            if (!map.containsKey(key) || isInvalidOrFalse(map.get(key))) {
+                map.put(key, data);
             }
-        } catch (IndexOutOfBoundsException ex) {
-            throw new IndexOutOfBoundsException("executeCore: An exception occurred: ex.getMessage()" + Strings.END_LINE + "Steps" + Strings.COLON_NEWLINE + Arrays.asList(steps).toString() + Strings.NEW_LINE + "Map: " + map.toString());
+
+            if (filter.test(data)) {
+                indices.remove(index);
+            } else {
+                ++index;
+            }
         }
 
         final var executionStatus = ExecutionStateDataFactory.getWith(map, indices);
