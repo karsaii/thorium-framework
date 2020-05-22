@@ -357,7 +357,7 @@ public interface Formatter {
             ((index == length) ? "All" : "Some") + " steps were executed" + Strings.COLON_SPACE +
             (BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount) ? (
                 passedValueAmount + " passed, " + failedValueAmount + " failed"
-            ) : ("All(" + passedValueAmount + ") steps passed")) + Strings.END_LINE +
+            ) : ("All(" + passedValueAmount + ") passed")) + Strings.END_LINE +
             "    " + builder.toString().replaceAll("\n", "\n    ")
         );
 
@@ -374,10 +374,11 @@ public interface Formatter {
         final var passedValueAmount = valueSet.stream().filter(DataValidators::isValidNonFalse).count();
         final var failedValueAmount = length - passedValueAmount;
         final var builder = new StringBuilder();
+        final var valuesLength = valueSet.size();
         final var values = valueSet.toArray(new Data<?>[0]);
         var stepIndex = 0;
         Data<?> step;
-        for(; stepIndex < length; ++stepIndex) {
+        for(; stepIndex < valuesLength; ++stepIndex) {
             step = values[stepIndex];
             builder.append(getExecutionStepMessage(stepIndex, (isValidNonFalse(step) ? "Passed" : "Failed") + Strings.COLON_SPACE + step.message.toString()));
         }
@@ -386,7 +387,7 @@ public interface Formatter {
             ((index == length) ? "All" : "Some") + " steps were executed" + Strings.COLON_SPACE +
             (BasicPredicateFunctions.isPositiveNonZero((int)failedValueAmount) ? (
                 passedValueAmount + " passed, " + failedValueAmount + " failed"
-            ) : ("All(" + passedValueAmount + ") steps passed")) + Strings.END_LINE +
+            ) : ("All(" + passedValueAmount + ") passed")) + Strings.END_LINE +
             "    " + builder.toString().replaceAll("\n", "\n    ")
         );
 
