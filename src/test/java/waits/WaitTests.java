@@ -81,4 +81,13 @@ public class WaitTests {
         Assertions.assertThrows(WaitTimeoutException.class, () -> Wait.repeatWithDefaultState(waitData));
     }
 
+    @DisplayName("Wait Repeat - single one always fails")
+    @Test
+    void singleOneAlwaysFailsTest() {
+        final var countStep = StepFactory.step((Void nothing) -> DataFactoryFunctions.getBoolean(increaseAndGetCount4() < -1, "test1", "Step was okay"), null);
+        final var steps = StepExecutor.executeState("waitRepeat Test result message", countStep);
+        final var waitData = new WaitData<>(steps, DataValidators::isExecutionValidNonFalse, "Steps passed", WaitTimeDataFactory.getWithDefaultClock(100, 1000));
+
+        Assertions.assertThrows(WaitTimeoutException.class, () -> Wait.repeatWithDefaultState(waitData));
+    }
 }

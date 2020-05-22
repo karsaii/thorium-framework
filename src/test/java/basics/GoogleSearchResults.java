@@ -13,10 +13,10 @@ public class GoogleSearchResults {
         final var driver = DriverFactory.get();
     }
 
-    @DisplayName("Navigated to Google")
+    /*@DisplayName("Navigated to Google")
     @Test
     void navigateToGoogle() {
         final var result = MainPage.navigateTo().apply(DriverFactory.get());
         Assertions.assertTrue(result.status, result.message.toString());
-    }
+    }*/
 }
