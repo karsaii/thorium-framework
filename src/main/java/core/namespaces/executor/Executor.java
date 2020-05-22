@@ -14,6 +14,7 @@ import core.records.executor.ExecutionParametersData;
 import data.constants.Strings;
 import data.namespaces.Formatter;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
@@ -50,19 +51,23 @@ public interface Executor {
         var stepIndex = 0;
         var index = 0;
         var key = "";
-        for(; exitCondition.test(data, index, indices.size());) {
-            stepIndex = indices.get(index);
-            data = steps[stepIndex].apply(dependency);
-            key = Formatter.getExecutionResultKey(data.message.nameof, stepIndex);
-            if (!map.containsKey(key) || isInvalidOrFalse(map.get(key))) {
-                map.put(key, data);
-            }
+        try {
+            for (; exitCondition.test(data, index, indices.size()); ) {
+                stepIndex = indices.get(index);
+                data = steps[stepIndex].apply(dependency);
+                key = Formatter.getExecutionResultKey(data.message.nameof, stepIndex);
+                if (!map.containsKey(key) || isInvalidOrFalse(map.get(key))) {
+                    map.put(key, data);
+                }
 
-            if (filter.test(data)) {
-                indices.remove(index);
-            } else {
-                ++index;
+                if (filter.test(data)) {
+                    indices.remove(index);
+                } else {
+                    ++index;
+                }
             }
+        } catch (IndexOutOfBoundsException ex) {
+            throw new IndexOutOfBoundsException("executeCore: An exception occurred: ex.getMessage()" + Strings.END_LINE + "Steps" + Strings.COLON_NEWLINE + Arrays.asList(steps).toString() + Strings.NEW_LINE + "Map: " + map.toString());
         }
 
         final var executionStatus = ExecutionStateDataFactory.getWith(map, indices);

@@ -190,11 +190,12 @@ public interface Driver {
     }
 
     private static <HandlerType, ReturnType> Data<ReturnType> executeCore(WebDriver driver, ExecutorData<HandlerType, String, Boolean, ReturnType> data, HandlerType handler, String script) {
+        final var nameof = "executeCore";
         final var castData = data.castData;
         final var executor = data.getter.apply(driver);
         final var defaultValue = castData.defaultValue.object;
         if (isInvalidOrFalse(executor)) {
-            return DataFactoryFunctions.getWithMessage(defaultValue, false, "Executor" + Strings.WAS_NULL);
+            return DataFactoryFunctions.getWithNameAndMessage(defaultValue, false, nameof, "Executor" + Strings.WAS_NULL);
         }
 
         final var parameters = new ExecuteCommonData<>(script, StringUtils::isNotBlank);
@@ -207,14 +208,15 @@ public interface Driver {
         if (status) {
             message = resultFunctions.messageHandler.apply(status);
         }
-        return DataFactoryFunctions.getWithMessage(result.object, status, message, result.exception);
+        return DataFactoryFunctions.getWithNameAndMessage(result.object, status, nameof, message, result.exception);
     }
 
     private static <T> Data<T> getCore(WebDriver driver, String property, Predicate<T> guard, Function<WebDriver, T> function, T defaultValue) {
         final var result = function.apply(driver);
+        final var nameof = "getCore";
         return guard.test(result) ? (
-            DataFactoryFunctions.getWithMessage(result, true, property + " is: \"" + result + "\"" + Strings.END_LINE)
-        ) : DataFactoryFunctions.getWithMessage(defaultValue, false, property + Strings.WAS_NULL);
+            DataFactoryFunctions.getWithNameAndMessage(result, true, nameof, property + " is: \"" + result + "\"" + Strings.END_LINE)
+        ) : DataFactoryFunctions.getWithNameAndMessage(defaultValue, false, nameof, property + Strings.WAS_NULL);
     }
 
     private static <HandlerType, ParameterType, ReturnType> Data<ReturnType> invokeCore(
@@ -224,6 +226,7 @@ public interface Driver {
         HandlerType handler,
         ParameterType parameter
     ) {
+        final var nameof = "invokeCore";
         final var castData = defaults.castData;
         final var methodData = data.object;
         final var method = methodData.method;
@@ -237,7 +240,7 @@ public interface Driver {
                 .apply(result.exception)
         ) : result.message.toString();
 
-        return DataFactoryFunctions.getWithMessage(result.object, status, message, result.exception);
+        return DataFactoryFunctions.getWithNameAndMessage(result.object, status, nameof, message, result.exception);
     }
 
     private static <HandlerType, ParameterType, ReturnType> Data<ReturnType> invokeCore(
