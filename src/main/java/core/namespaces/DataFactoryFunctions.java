@@ -1,6 +1,7 @@
 package core.namespaces;
 
 import core.constants.CoreDataConstants;
+import core.constants.DataFactoryConstants;
 import core.records.Data;
 import core.records.MethodMessageData;
 import data.constants.Strings;
@@ -13,44 +14,60 @@ import static core.extensions.namespaces.NullableFunctions.isNotNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public interface DataFactoryFunctions {
-    static Data<Void> getVoid() {
-        return new Data<>(null, false, new MethodMessageData(Strings.EMPTY), CoreConstants.EXCEPTION, Strings.NON_EXCEPTION_MESSAGE);
-    }
-
-    static <T> Data<T> getWithMethodMessage(T object, boolean status, MethodMessageData messageData, Exception exception, String exceptionMessage) {
+    static <T> Data<T> getWith(T object, boolean status, MethodMessageData messageData, Exception exception, String exceptionMessage) {
         final var isExceptionNull = Objects.isNull(exception);
         final var message = (isExceptionNull ? Strings.EXCEPTION_WAS_NULL : Strings.EMPTY) + messageData.message;
         final var exMessage = isNotBlank(exceptionMessage) ? exceptionMessage : ((isExceptionNull ? Strings.EXCEPTION_WAS_NULL : exception.getMessage()));
         return new Data<T>(object, status, new MethodMessageData(messageData.nameof, message), exception, exMessage);
     }
 
+    static <T> Data<T> getWithDefaultExceptionData(T object, boolean status, MethodMessageData messageData) {
+        return getWith(object, status, messageData, DataFactoryConstants.DEFAULT_EXCEPTION, DataFactoryConstants.DEFAULT_EXCEPTION_MESSAGE);
+    }
+
+    static <T> Data<T> getWithSpecificObjectAndStatus(T object, boolean status) {
+        return getWithDefaultExceptionData(object, status, DataFactoryConstants.DEFAULT_METHOD_MESSAGE_DATA);
+    }
+
+    static <T> Data<T> getWithNameAndDefaultExceptionData(T object, boolean status, String nameof) {
+        return getWith(object, status, new MethodMessageData(nameof, ""),  DataFactoryConstants.DEFAULT_EXCEPTION, DataFactoryConstants.DEFAULT_EXCEPTION_MESSAGE);
+    }
+
+    static <T> Data<T> getWithMessageAndDefaultExceptionData(T object, boolean status, String message) {
+        return getWith(object, status, new MethodMessageData("getWithMessageAndDefaultExceptionData", message), DataFactoryConstants.DEFAULT_EXCEPTION, DataFactoryConstants.DEFAULT_EXCEPTION_MESSAGE);
+    }
+
+    static Data<Void> getVoid() {
+        return getWithSpecificObjectAndStatus(null, false);
+    }
+
     static <T> Data<T> getWithMethodMessage(T object, boolean status, MethodMessageData messageData, Exception exception) {
         final var exceptionMessage = (Objects.isNull(exception) ? Strings.EXCEPTION_WAS_NULL : exception.getMessage());
-        return getWithMethodMessage(object, status, messageData, exception, exceptionMessage);
+        return getWith(object, status, messageData, exception, exceptionMessage);
     }
 
     static <T> Data<T> getWithMethodMessage(T object, boolean status, MethodMessageData message) {
-        return getWithMethodMessage(object, status, message, CoreConstants.EXCEPTION);
+        return getWithDefaultExceptionData(object, status, message);
     }
 
     static <T> Data<T> getWithMethodMessage(T object, boolean status, String nameof, MethodMessageData messageData) {
-        return getWithMethodMessage(object, status, new MethodMessageData(nameof, messageData.message), CoreConstants.EXCEPTION, Strings.NON_EXCEPTION_MESSAGE);
+        return getWithDefaultExceptionData(object, status, new MethodMessageData(nameof, messageData.message));
     }
 
     static <T> Data<T> getWithNameAndMessage(T object, boolean status, String nameof, String message, Exception exception, String exceptionMessage) {
-        return getWithMethodMessage(object, status, new MethodMessageData(nameof, message), exception, exceptionMessage);
+        return getWith(object, status, new MethodMessageData(nameof, message), exception, exceptionMessage);
     }
 
     static <T> Data<T> getWithNameAndMessage(T object, boolean status, String nameof, MethodMessageData messageData, Exception exception, String exceptionMessage) {
-        return getWithMethodMessage(object, status, new MethodMessageData(nameof, messageData.message), exception, exceptionMessage);
+        return getWith(object, status, new MethodMessageData(nameof, messageData.message), exception, exceptionMessage);
     }
 
     static <T> Data<T> getWithNameAndMessage(T object, boolean status, String nameof, String message, Exception exception) {
-        return getWithMethodMessage(object, status, new MethodMessageData(nameof, message), exception, exception.getMessage());
+        return getWith(object, status, new MethodMessageData(nameof, message), exception, exception.getMessage());
     }
 
     static <T> Data<T> getWithNameAndMessage(T object, boolean status, String nameof, String message) {
-        return getWithMethodMessage(object, status, new MethodMessageData(nameof, message), CoreConstants.EXCEPTION, Strings.NON_EXCEPTION_MESSAGE);
+        return getWithDefaultExceptionData(object, status, new MethodMessageData(nameof, message));
     }
 
     static <T> Data<T> getInvalidWithNameAndMessage(T object, String nameof, String message) {
@@ -62,55 +79,59 @@ public interface DataFactoryFunctions {
     }
 
     static <T> Data<T> getWithMessage(T object, boolean status, String nameof, String message, Exception exception, String exceptionMessage) {
-        return getWithMethodMessage(object, status, new MethodMessageData(nameof, message), exception, exceptionMessage);
+        return getWith(object, status, new MethodMessageData(nameof, message), exception, exceptionMessage);
+    }
+
+    static <T> Data<T> getWithMessageAndExceptionDefaults(T object, boolean status, String nameof, String message) {
+        return getWith(object, status, new MethodMessageData(nameof, message), CoreConstants.EXCEPTION, Strings.NON_EXCEPTION_MESSAGE);
     }
 
     static <T> Data<T> getWithMessage(T object, boolean status, String message, Exception exception, String exceptionMessage) {
-        return getWithMethodMessage(object, status, new MethodMessageData(message), exception, exceptionMessage);
+        return getWithMessage(object, status, "getWithMessage", message, exception, exceptionMessage);
     }
 
     static <T> Data<T> getWithMessage(T object, boolean status, String message, Exception exception) {
-        return getWithMethodMessage(object, status, new MethodMessageData(message), exception, exception.getMessage());
+        return getWithMessage(object, status, "getWithMessage", message, exception, exception.getMessage());
     }
 
     static <T> Data<T> getWithMessage(T object, boolean status, String message) {
-        return getWithMethodMessage(object, status, new MethodMessageData(message), CoreConstants.EXCEPTION, Strings.NON_EXCEPTION_MESSAGE);
+        return getWithMessageAndExceptionDefaults(object, status, "getWithMessage", message);
     }
 
-    static <T> Data<T> getErrorFunction(T value, String message) {
-        return getWithMethodMessage(value, false, new MethodMessageData(message));
+    static <T> Data<T> getErrorFunction(T object, String nameof, String message) {
+        return getWithNameAndMessage(object, false, nameof, message);
     }
 
-    static <T> Data<T> getErrorFunction(T value, String nameof, String message) {
-        return getWithNameAndMessage(value, false, nameof, message);
+    static <T> Data<T> getErrorFunction(T object, String message) {
+        return getErrorFunction(object, "getErrorFunction", message);
     }
 
     static <T> Data<T> replaceMethodMessageAndName(Data<T> data, String nameof, MethodMessageData messageData) {
-        return getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, messageData.message), data.exception, data.exceptionMessage);
+        return getWith(data.object, data.status, new MethodMessageData(nameof, messageData.message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceMethodMessageData(Data<T> data, MethodMessageData message) {
-        return getWithMethodMessage(data.object, data.status, message, data.exception, data.exceptionMessage);
+        return getWith(data.object, data.status, message, data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceNameAndMessage(Data<T> data, String nameof, String message) {
-        return getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, message), data.exception, data.exceptionMessage);
+        return getWith(data.object, data.status, new MethodMessageData(nameof, message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceObject(Data<?> data, T object) {
-        return getWithMethodMessage(object, data.status, data.message, data.exception, data.exceptionMessage);
+        return getWith(object, data.status, data.message, data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceStatus(Data<T> data, boolean status) {
-        return getWithMethodMessage(data.object, status, data.message, data.exception, data.exceptionMessage);
+        return getWith(data.object, status, data.message, data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceMessage(Data<T> data, String message) {
-        return getWithMethodMessage(data.object, data.status, new MethodMessageData(message), data.exception, data.exceptionMessage);
+        return getWith(data.object, data.status, new MethodMessageData(message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceStatusAndMessage(Data<T> data, boolean status, String message) {
-        return getWithMethodMessage(data.object, status, new MethodMessageData(data.message.nameof, message), data.exception, data.exceptionMessage);
+        return getWith(data.object, status, new MethodMessageData(data.message.nameof, message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceName(Data<T> data, String nameof) {
@@ -122,11 +143,11 @@ public interface DataFactoryFunctions {
     }
 
     static <T> Data<T> prependMessage(Data<T> data, String nameof, String message) {
-        return getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, message + data.message.message), data.exception, data.exceptionMessage);
+        return getWith(data.object, data.status, new MethodMessageData(nameof, message + data.message.message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> replaceMessage(Data<T> data, String nameof, String message) {
-        return getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, message), data.exception, data.exceptionMessage);
+        return getWith(data.object, data.status, new MethodMessageData(nameof, message), data.exception, data.exceptionMessage);
     }
 
     static <T> Data<T> appendMessage(Data<T> data, String message) {
@@ -134,7 +155,7 @@ public interface DataFactoryFunctions {
     }
 
     static <T> Data<T> appendMessage(Data<T> data, String nameof, String message) {
-        return getWithMethodMessage(data.object, data.status, new MethodMessageData(nameof, data.message.message + message), data.exception, data.exceptionMessage);
+        return getWith(data.object, data.status, new MethodMessageData(nameof, data.message.message + message), data.exception, data.exceptionMessage);
     }
 
     static Data<Boolean> getBoolean(boolean status, String nameof, String message, Exception exception, String exceptionMessage) {

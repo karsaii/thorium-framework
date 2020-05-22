@@ -1,7 +1,6 @@
 package data.namespaces;
 
 import core.constants.CommandRangeDataConstants;
-import core.constants.CoreDataConstants;
 import core.extensions.DecoratedList;
 import core.extensions.interfaces.IEmptiable;
 import core.extensions.namespaces.BasicPredicateFunctions;
@@ -29,6 +28,7 @@ import selenium.abstracts.AbstractLazyElement;
 import selenium.constants.SeleniumCoreConstants;
 import selenium.enums.ManyGetter;
 import selenium.enums.SingleGetter;
+import selenium.namespaces.extensions.boilers.WebElementList;
 import selenium.records.element.is.ElementConditionParameters;
 import selenium.records.element.is.ElementFormatData;
 import selenium.abstracts.ElementValueParameters;
@@ -235,7 +235,6 @@ public interface Formatter {
 
         return getNamedErrorMessageOrEmpty("isValidElementConditionParametersMessage: ", message);
     }
-
 
     static String getConditionStatusMessage(boolean key) {
         return key ? "is" : "isn't";
@@ -1053,7 +1052,7 @@ public interface Formatter {
         return isNegativeMessageWithName(value, "Value parameter");
     }
 
-    static String isNullOrEmpty(IEmptiable emptiable, String parameterName) {
+    static String isNullOrEmptyMessageWithName(IEmptiable emptiable, String parameterName) {
         final var baseName = isNotBlank(parameterName) ? parameterName : "Emptiable";
         var message = isNullMessageWithName(emptiable, baseName);
         if (isBlank(message)) {
@@ -1065,11 +1064,20 @@ public interface Formatter {
         return getNamedErrorMessageOrEmpty("isNullOrEmpty: ", message);
     }
 
-    static String isNullOrEmpty(IEmptiable emptiable) {
-        return isNullOrEmpty(emptiable, "Emptiable");
+    static String isNullOrEmptyMessage(IEmptiable emptiable) {
+        return isNullOrEmptyMessageWithName(emptiable, "Emptiable");
     }
 
     static String getExecutionResultKey(String name, int index) {
         return name + "-" + index;
+    }
+
+    static String getElementsParametersMessage(LazyLocatorList locators, Function<LazyLocator, DriverFunction<WebElementList>> getter) {
+        return getNamedErrorMessageOrEmpty("getElementsParametersMessage: ", isNullOrEmptyMessageWithName(locators, "Lazy Locators List") + isNullMessageWithName(getter, "Getter"));
+    }
+
+    static String getElementsParametersMessage(LazyLocatorList locators) {
+        return getNamedErrorMessageOrEmpty("getElementsParametersMessage: ", isNullOrEmptyMessageWithName(locators, "Lazy Locators List"));
+
     }
 }

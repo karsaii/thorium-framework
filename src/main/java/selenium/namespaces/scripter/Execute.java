@@ -37,10 +37,10 @@ import static core.extensions.namespaces.CoreUtilities.areNotBlank;
 import static core.extensions.namespaces.CoreUtilities.areNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNotNull;
 import static core.extensions.namespaces.NullableFunctions.isNull;
+import static core.namespaces.DataFactoryFunctions.getWithDefaultExceptionData;
 import static core.namespaces.validators.DataValidators.isInvalidOrFalse;
 import static core.namespaces.validators.DataValidators.isValidNonFalse;
 import static core.namespaces.DataFactoryFunctions.getArrayWithName;
-import static core.namespaces.DataFactoryFunctions.getWithMethodMessage;
 import static core.namespaces.DataFactoryFunctions.replaceMessage;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -57,7 +57,7 @@ public interface Execute {
             isNotBlank(isExists) && isNotNull(defaultValue),
             driver -> {
                 final var result = Driver.execute(isExists).apply(driver);
-                return getWithMethodMessage((T)result.object, result.status, result.message);
+                return getWithDefaultExceptionData((T)result.object, result.status, result.message);
             },
             defaultValue
         );
@@ -91,7 +91,7 @@ public interface Execute {
             isNotNull(getter),
             driver -> {
                 final var result = Driver.executeSingleParameter(function, ScriptExecuteFunctions.handleDataParameterWithDefaults(getter.apply(driver))).apply(driver);
-                return getWithMethodMessage((T)result.object, result.status, result.message);
+                return getWithDefaultExceptionData((T)result.object, result.status, result.message);
             },
             defaultValue
         );
@@ -102,7 +102,7 @@ public interface Execute {
             "isScrollIntoViewExistsData",
             driver -> {
                 final var result = Driver.execute(ScrollIntoView.IS_EXISTS).apply(driver);
-                return getWithMethodMessage(Boolean.valueOf(result.object.toString()), result.status, result.message);
+                return getWithDefaultExceptionData(Boolean.valueOf(result.object.toString()), result.status, result.message);
             },
             CoreDataConstants.NULL_BOOLEAN
         );
@@ -119,7 +119,7 @@ public interface Execute {
             driver -> {
                 final var parameters = new ScriptParametersData<>(getter.apply(driver), DataValidators::isValidNonFalse, DataFunctions::unwrapToArray);
                 final var result = Driver.executeSingleParameter(ScrollIntoView.EXECUTE, ScriptExecuteFunctions.handleDataParameter(parameters)).apply(driver);
-                return getWithMethodMessage(isNotNull(result.object), result.status, result.message);
+                return getWithDefaultExceptionData(isNotNull(result.object), result.status, result.message);
             },
             CoreDataConstants.NULL_BOOLEAN
         );
@@ -187,7 +187,7 @@ public interface Execute {
 
                 final var result = Driver.executeSingleParameter(ShadowRoot.GET_SHADOW_ROOT, parameter.object).apply(driver);
                 return isValidNonFalse(result) ? (
-                    getWithMethodMessage((WebElement)result.object, result.status, result.message)
+                    getWithDefaultExceptionData((WebElement)result.object, result.status, result.message)
                 ) : replaceMessage(SeleniumDataConstants.NULL_ELEMENT, result.message.toString());
             },
             SeleniumDataConstants.NULL_ELEMENT
@@ -281,42 +281,32 @@ public interface Execute {
     static DriverFunction<Boolean> clickEventDispatcher(Data<WebElement> element) {
         final var nameof = "clickEventDispatcher";
         return ifDriver(
-                nameof,
-                isNotNullWebElement(element),
-                driver -> {
-                    if (isInvalidOrFalse(element)) {
-                        return CoreDataConstants.NULL_BOOLEAN;
-                    }
+            nameof,
+            isNotNullWebElement(element),
+            driver -> {
+                if (isInvalidOrFalse(element)) {
+                    return CoreDataConstants.NULL_BOOLEAN;
+                }
 
-                    final var parametersData = DataFunctions.unwrapToArray(element);
-                    if (isNull(parametersData)) {
-                        return CoreDataConstants.NULL_BOOLEAN;
-                    }
+                final var parametersData = DataFunctions.unwrapToArray(element);
+                if (isNull(parametersData)) {
+                    return CoreDataConstants.NULL_BOOLEAN;
+                }
 
-                    final var result = Driver.executeParameters(ClickFunctions.CLICK_DISPATCHER, parametersData).apply(driver);
-                    final var returnedValue = String.valueOf(result.object);
-                    final var status = isValidNonFalse(result);
-                    return DataFactoryFunctions.getWithMessage(CoreUtilities.castToBoolean(returnedValue), status, "Element was " + Formatter.getOptionMessage(status) + "clicked" + Strings.END_LINE);
-                },
-                CoreDataConstants.NULL_BOOLEAN
+                final var result = Driver.executeParameters(ClickFunctions.CLICK_DISPATCHER, parametersData).apply(driver);
+                final var returnedValue = String.valueOf(result.object);
+                final var status = isValidNonFalse(result);
+                return DataFactoryFunctions.getWithMessage(CoreUtilities.castToBoolean(returnedValue), status, "Element was " + Formatter.getOptionMessage(status) + "clicked" + Strings.END_LINE);
+            },
+            CoreDataConstants.NULL_BOOLEAN
         );
     }
 
     static DriverFunction<Boolean> clickEventDispatcher(DriverFunction<WebElement> getter) {
-        return ifDriver(
-                "clickEventDispatcher",
-                isNotNull(getter),
-                driver -> clickEventDispatcher(getter.apply(driver)).apply(driver),
-                CoreDataConstants.NULL_BOOLEAN
-        );
+        return ifDriver("clickEventDispatcher", isNotNull(getter), driver -> clickEventDispatcher(getter.apply(driver)).apply(driver), CoreDataConstants.NULL_BOOLEAN);
     }
 
     static DriverFunction<Boolean> clickEventDispatcher(LazyElement element) {
-        return ifDriver(
-                "clickEventDispatcher",
-                isNotNullLazyElement(element),
-                clickEventDispatcher(element.get()),
-                CoreDataConstants.NULL_BOOLEAN
-        );
+        return ifDriver("clickEventDispatcher", isNotNullLazyElement(element), clickEventDispatcher(element.get()), CoreDataConstants.NULL_BOOLEAN);
     }
 }
