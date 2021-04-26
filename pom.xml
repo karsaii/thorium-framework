@@ -17,7 +17,7 @@
         <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
         <maven-failsafe-plugin.version>2.22.0</maven-failsafe-plugin.version>
         <eclipse-collections.version>10.2.0</eclipse-collections.version>
-        <commons.io.version>2.6</commons.io.version>
+        <commons.io.version>2.7</commons.io.version>
         <selector.specificity.version>54eae1f786</selector.specificity.version>
         <thorium-core.version>566b1744fc616a53cd2e04ff590818139670cd50</thorium-core.version>
         <jackson.version>2.11.0</jackson.version>
